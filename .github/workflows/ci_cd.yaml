@@ -1,4 +1,4 @@
- name: Workflow Checks
+name: Workflow Checks
 
 on:
 
