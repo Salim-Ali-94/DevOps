@@ -1,6 +1,8 @@
 
 
-def displayBoard(board):
+def display_board(board):
+
+    '''function to render current game board state'''
 
     print()
     print()
@@ -19,7 +21,9 @@ def displayBoard(board):
     print()
 
 
-def initializeGame():
+def initialize_game():
+
+    '''function to reset all game variables'''
 
     board = {"1": "",
              "2": "",
