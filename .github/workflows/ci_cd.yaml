@@ -21,7 +21,10 @@ jobs:
 
       - name: Set up Python for testing project on remote server
         uses: actions/setup-python@v2
-        with: python-version: 3.x
+
+        with: 
+
+          python-version: 3.x
 
       - name: Install dependencies required for GitHub checks
         run: pip install flake8 pylint
