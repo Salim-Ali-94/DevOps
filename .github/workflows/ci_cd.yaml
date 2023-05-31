@@ -1,0 +1,41 @@
+name: Workflow Checks
+
+on:
+
+  push:
+
+    branches-ignore:
+
+      - main
+
+jobs:
+
+  lint:
+
+    runs-on: ubuntu-latest
+
+    steps:
+
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up Python
+        uses: actions/setup-python@v2
+
+        with:
+
+          python-version: 3.x
+
+      - name: Install dependencies
+
+        run: pip install flake8 pylint
+
+      - name: Run linting
+
+        run: |
+
+          # Run Flake8
+          flake8 .
+
+          # Or run pylint
+          pylint constants.py
