@@ -10,27 +10,26 @@ on:
 
 jobs:
 
-  lint:
+  linting:
 
     runs-on: ubuntu-latest
 
     steps:
 
-      - name: Checkout code
+      - name: Checkout code to prepare for merging 
         uses: actions/checkout@v2
 
-      - name: Set up Python
+      - name: Set up Python for testing project on remote server
         uses: actions/setup-python@v2
 
         with:
 
           python-version: 3.x
 
-      - name: Install dependencies
-
+      - name: Install dependencies required for GitHub checks
         run: pip install flake8 pylint
 
-      - name: Run linting
+      - name: Run code lint checks
 
         run: |
 
