@@ -22,7 +22,7 @@ jobs:
       - name: Set up Python for testing project on remote server
         uses: actions/setup-python@v2
 
-        with:
+        with: 
 
           python-version: 3.x
 
@@ -37,4 +37,4 @@ jobs:
           flake8 .
 
           # Or run pylint
-          pylint constants.py
+          pylint utility.py constants.py

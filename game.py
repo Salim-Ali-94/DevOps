@@ -1,5 +1,9 @@
 
+def gameManager():
+
+    print("PLAY THE GAME")
+
 
 if __name__ == "__main__":
 
-    print("PLAY THE GAME")
+    gameManager()
