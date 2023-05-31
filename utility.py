@@ -1,4 +1,5 @@
 
+''' a collection of functions for carrying out common game actions'''
 
 def display_board(board):
 
