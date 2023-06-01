@@ -1,6 +1,8 @@
-# .pylintrc
 [MESSAGES CONTROL]
-disable = C0303
+disable = C0303, C0326, C0330
+
+[INDENTATION]
+indent-string = \t
 
 [BASIC]
-function-naming-style = camelCase
+function-rgx = [a-z_][a-z0-9_]{2,30}$
