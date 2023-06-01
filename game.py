@@ -4,6 +4,6 @@ def gameManager():
 	print("PLAY THE GAME")
 
 
-if _name__ == "__main__":
+if __name__ == "__main__":
 
 	gameManager()
