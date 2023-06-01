@@ -4,7 +4,7 @@
 
 def render_board(board):
 
-    '''function to render current game board state'''
+	'''function to render current game board state'''
 
 	print()
 	print()
@@ -25,7 +25,7 @@ def render_board(board):
 
 def initialize_game():
 
-    '''function to reset all game variables'''
+	'''function to reset all game variables'''
 
 	board = {"1": "",
 			 "2": "",
