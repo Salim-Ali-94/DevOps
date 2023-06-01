@@ -27,17 +27,10 @@ jobs:
           python-version: 3.x
 
       - name: Install dependencies required for GitHub checks
-        # run: pip install flake8 pylint
         run: pip install pylint
 
       - name: Run code lint checks
 
-        # run: |
         run:
 
-          # Run Flake8
-          # flake8 .
-
-          # Or run pylint
-          pylint utility.py constants.py game.py
-          # pylint --rcfile=.pylintrc .
+          pylint .
