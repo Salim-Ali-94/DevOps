@@ -39,5 +39,5 @@ jobs:
           # flake8 .
 
           # Or run pylint
-          # pylint utility.py constants.py
-          pylint --rcfile=.pylintrc .
+          pylint utility.py constants.py
+          # pylint --rcfile=.pylintrc .
