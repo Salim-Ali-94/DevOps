@@ -1,6 +1,6 @@
 # .pylintrc
 [MESSAGES CONTROL]
-disable = *
+disable = all
 
 [BASIC]
 function-naming-style = camelCase
