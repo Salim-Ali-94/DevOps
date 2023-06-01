@@ -4,12 +4,16 @@ import utility
 
 def gameManager():
 
-	human = utility.promptUser(board)
-	board[human] = "x"
-	utility.renderBoard(board)
-	computer = random.choice(utility.openBlocks(board))
-	board[computer] = "o"
-	utility.renderBoard(board)
+	while True:
+
+		human = utility.promptUser(board)
+		board[human] = "x"
+		utility.renderBoard(board)
+		utility.gameState(board)
+		computer = random.choice(utility.openBlocks(board))
+		board[computer] = "o"
+		utility.renderBoard(board)
+		utility.gameState(board)
 
 
 

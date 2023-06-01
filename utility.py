@@ -1,7 +1,8 @@
-import os
+import os, sys
 
 
 openBlocks = lambda board: [key for key, value in board.items() if (value == " ")]
+gameState = lambda board: sys.exit() if (len(openBlocks(board)) == 0) else None
 
 def renderBoard(board):
 
@@ -42,11 +43,11 @@ def initializeGame():
 def promptUser(board):
 
 	renderBoard(board)
-	human = input(f"\n\nPlease select an available space: {', '.join(openBlocks(board))}\n\n")
+	position = input(f"\n\nPlease select an available space: {', '.join(openBlocks(board))}\n\n")
 
-	while (human.lower().lstrip().rstrip() not in openBlocks(board)):
+	while (position.lower().lstrip().rstrip() not in openBlocks(board)):
 
 		renderBoard(board)
-		human = input(f"\n\nPlease select an available space: {', '.join(openBlocks(board))}\n\n")
+		position = input(f"\n\nPlease select an available space: {', '.join(openBlocks(board))}\n\n")
 
-	return human
+	return position
