@@ -1,8 +1,13 @@
+import os
+import sys
 
+
+openBlocks = lambda board: [key for key, value in board.items() if (value == " ")]
 
 def renderBoard(board):
 
 
+	os.system("cls")
 	print()
 	print()
 	print("     |     |     ")
@@ -22,14 +27,34 @@ def renderBoard(board):
 
 def initializeGame():
 
-	board = { "1": "",
-			  "2": "",
-			  "3": "",
-			  "4": "",
-			  "5": "",
-			  "6": "",
-			  "7": "",
-			  "8": "",
-			  "9": "" }
+	board = { "1": " ",
+			  "2": " ",
+			  "3": " ",
+			  "4": " ",
+			  "5": " ",
+			  "6": " ",
+			  "7": " ",
+			  "8": " ",
+			  "9": " " }
 
 	return board
+
+
+def promptUser(board):
+
+	renderBoard(board)
+	position = input(f"\n\nPlease select an available space: {', '.join(openBlocks(board))}\n\n")
+
+	while (position.lower().lstrip().rstrip() not in openBlocks(board)):
+
+		renderBoard(board)
+		position = input(f"\n\nPlease select an available space: {', '.join(openBlocks(board))}\n\n")
+
+	return position
+
+
+def gameState(board):
+
+	if (len(openBlocks(board)) == 0):
+
+		sys.exit()
