@@ -1,3 +1,5 @@
+[MESSAGES CONTROL]
+disable = C0114,C0116
 
 [INDENTATION]
 indent-string = \t
