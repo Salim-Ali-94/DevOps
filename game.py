@@ -4,7 +4,7 @@ import utility
 
 def gameManager():
 
-	human = utility.promptUder(board)
+	human = utility.promptUser(board)
 	board[human] = "x"
 	utility.renderBoard(board)
 	computer = random.choice(utility.openBlocks(board))

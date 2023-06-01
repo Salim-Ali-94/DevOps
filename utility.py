@@ -41,12 +41,12 @@ def initializeGame():
 
 def promptUser(board):
 
-	utility.renderBoard(board)
-	human = input(f"\n\nPlease select an available space: {', '.join(utility.openBlocks(board))}\n\n")
+	renderBoard(board)
+	human = input(f"\n\nPlease select an available space: {', '.join(openBlocks(board))}\n\n")
 
-	while (human.lower().lstrip().rstrip() not in utility.openBlocks(board)):
+	while (human.lower().lstrip().rstrip() not in openBlocks(board)):
 
-		utility.renderBoard(board)
-		human = input(f"\n\nPlease select an available space: {', '.join(utility.openBlocks(board))}\n\n")
+		renderBoard(board)
+		human = input(f"\n\nPlease select an available space: {', '.join(openBlocks(board))}\n\n")
 
 	return human
