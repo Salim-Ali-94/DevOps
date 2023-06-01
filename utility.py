@@ -2,7 +2,7 @@
 ''' a collection of functions for carrying out common game actions'''
 
 
-def display_board(board):
+def render_board(board):
 
     '''function to render current game board state'''
 
