@@ -53,8 +53,8 @@ def promptUser(board):
 	return position
 
 
-def gameState(board): 
+def gameState(board):
 
-	if (len(openBlocks(board)) == 0): 
+	if (len(openBlocks(board)) == 0):
 
 		sys.exit()
