@@ -24,7 +24,7 @@ def initializeGame():
 
 	'''function to reset all game variables'''
 
-	board = {"1": "",
+	board = { "1": "",
 			 "2": "",
 			 "3": "",
 			 "4": "",
