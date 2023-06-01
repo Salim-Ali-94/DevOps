@@ -1,3 +1,6 @@
 
 [INDENTATION]
 indent-string = \t
+
+[BASIC]
+function-naming-style = camelCase
