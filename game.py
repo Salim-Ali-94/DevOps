@@ -4,8 +4,7 @@ import utility
 
 def gameManager():
 
-	utility.renderBoard(board)
-	human = input(f"\n\nPlease select an available space: {', '.join(utility.openBlocks(board))}\n\n")
+	human = utility.promptUder(board)
 	board[human] = "x"
 	utility.renderBoard(board)
 	computer = random.choice(utility.openBlocks(board))
