@@ -22,7 +22,7 @@ def renderBoard(board):
 
 def initializeGame():
 
-	board = { "1": "", 
+	board = { "1": "",
 			  "2": "",
 			  "3": "",
 			  "4": "",
