@@ -1,10 +1,7 @@
 
-''' a collection of functions for carrying out common game actions'''
 
+def renderBoard(board):
 
-def render_board(board):
-
-	'''function to render current game board state'''
 
 	print()
 	print()
@@ -23,7 +20,7 @@ def render_board(board):
 	print()
 
 
-def initialize_game():
+def initializeGame():
 
 	'''function to reset all game variables'''
 
@@ -35,6 +32,6 @@ def initialize_game():
 			 "6": "",
 			 "7": "",
 			 "8": "",
-			 "9": ""}
+			 "9": "" }
 
 	return board
