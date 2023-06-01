@@ -3,7 +3,6 @@ import sys
 
 
 openBlocks = lambda board: [key for key, value in board.items() if (value == " ")]
-gameState = lambda board: sys.exit() if (len(openBlocks(board)) == 0) else None
 
 def renderBoard(board):
 
@@ -52,3 +51,10 @@ def promptUser(board):
 		position = input(f"\n\nPlease select an available space: {', '.join(openBlocks(board))}\n\n")
 
 	return position
+
+
+def gameState(board): 
+
+	if (len(openBlocks(board)) == 0): 
+
+		sys.exit()
