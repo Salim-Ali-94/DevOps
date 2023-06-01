@@ -37,4 +37,4 @@ def initialize_game():
 			 "8": "",
 			 "9": ""}
 
-    return board
+	return board
