@@ -1,4 +1,5 @@
-import os, sys
+import os
+import sys
 
 
 openBlocks = lambda board: [key for key, value in board.items() if (value == " ")]
