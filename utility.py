@@ -22,16 +22,14 @@ def renderBoard(board):
 
 def initializeGame():
 
-	'''function to reset all game variables'''
-
 	board = { "1": "",
-			 "2": "",
-			 "3": "",
-			 "4": "",
-			 "5": "",
-			 "6": "",
-			 "7": "",
-			 "8": "",
-			 "9": "" }
+			  "2": "",
+			  "3": "",
+			  "4": "",
+			  "5": "",
+			  "6": "",
+			  "7": "",
+			  "8": "",
+			  "9": "" }
 
 	return board
