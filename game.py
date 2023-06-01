@@ -1,5 +1,5 @@
-import utility
 import random
+import utility
 
 
 def gameManager():
