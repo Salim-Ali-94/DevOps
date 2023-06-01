@@ -1,8 +1,12 @@
+import os
 
+
+openBlocks = lambda board: [key for key, value in board.items() if (value == " ")]
 
 def renderBoard(board):
 
 
+	os.system("cls")
 	print()
 	print()
 	print("     |     |     ")
@@ -22,14 +26,14 @@ def renderBoard(board):
 
 def initializeGame():
 
-	board = { "1": "",
-			  "2": "",
-			  "3": "",
-			  "4": "",
-			  "5": "",
-			  "6": "",
-			  "7": "",
-			  "8": "",
-			  "9": "" }
+	board = { "1": " ",
+			  "2": " ",
+			  "3": " ",
+			  "4": " ",
+			  "5": " ",
+			  "6": " ",
+			  "7": " ",
+			  "8": " ",
+			  "9": " " }
 
 	return board
