@@ -3,8 +3,7 @@ import sys
 from constants import WINNING_STATES
 
 
-# openBlocks = lambda board, player = " ": [key for key, value in board.items() if (value == player)]
-boardState = lambda board, player = " ": [key for key, value in board.items() if (value.lower().lstrip().rstrip() == player.lower().lstrip().rstrip())]
+boardState = lambda board, player = " ": [key for key, value in board.items() if (value == player)]
 extractStates = lambda board: { "x": boardState(board, "x"),
 								"o": boardState(board, "o") }
 
@@ -77,8 +76,13 @@ def checkStates(board):
 
 		for position in state:
 
-			if position in x: X += 1
-			elif position in o: O += 1
+			if position in x: 
+
+				X += 1
+
+			elif position in o: 
+
+				O += 1
 
 			if ((X >= 3) or
 				(O >= 3)):
