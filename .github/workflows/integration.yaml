@@ -33,4 +33,4 @@ jobs:
 
         run:
 
-          pylint *.py
+          pylint DevOps/**/*.py
