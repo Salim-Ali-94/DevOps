@@ -15,7 +15,7 @@ def generatePopulation(chromosome_length = 2,
 	population = []
 	random.seed(42)
 
-	for _ in range(population_size):
+	for _ in population_size:
 
 		if (encoding in ("character", "binary")):
 
@@ -25,7 +25,7 @@ def generatePopulation(chromosome_length = 2,
 
 			chromosome = ()
 
-		for _ in range(chromosome_length):
+		for _ in chromosome_length:
 
 			if (encoding == "integer"):
 
@@ -63,7 +63,7 @@ def generatePopulation(chromosome_length = 2,
 
 def wordScore(chromosome, target):
 
-	wordAssertion(chromosome, target, ("str", "list", "tuple"))
+	wordAssertion(chromosome, target)
 	score = 0
 
 	for gene, character in zip(chromosome, target):
@@ -75,8 +75,27 @@ def wordScore(chromosome, target):
 	return score**2
 
 
-def wordAssertion(chromosome, target, allowed):
+def randomSelection(population, duplication_indicator = True, group_size = 2):
 
-	assert ((type(chromosome).__name__ in allowed) and 
-			(type(target).__name__ in allowed)), 
+	table = []
+
+	for _ in population:
+
+		candidate_pool = population.copy()
+
+		for _ in group_size:
+
+			candidate_member = random.choice(candidate_pool)
+			candidate_pool.remove(candidate_member)
+			table.append(candidate_member)
+
+	return table
+
+
+def wordAssertion(chromosome, target):
+
+	allowed = ("str", "list", "tuple")
+
+	assert ((type(chromosome).__name__ in allowed) and
+			(type(target).__name__ in allowed)),
 			f"Both the input string and the target word must be of type 'str', 'list' or 'tuple', but got '{type(chromosome).__name__}' and '{type(target).__name__}'."
