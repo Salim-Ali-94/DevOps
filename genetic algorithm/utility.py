@@ -54,5 +54,3 @@ def generatePopulation(chromosome_length = 2,
 		population.append(chromosome)
 
 	return population
-
-print(generatePopulation(0))
