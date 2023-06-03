@@ -1,7 +1,6 @@
 import os
 import sys
-# from constants import WINNING_STATES
-import constants
+from .constants import WINNING_STATES
 
 
 boardState = lambda board, player = " ": [key for key, value in board.items() if (value == player)]
@@ -69,7 +68,7 @@ def checkStates(board):
 	x = states["x"]
 	o = states["o"]
 
-	for state in constants.WINNING_STATES:
+	for state in WINNING_STATES:
 
 		X, O = 0, 0
 

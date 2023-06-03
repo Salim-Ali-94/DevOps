@@ -19,7 +19,7 @@ jobs:
       - name: Checkout code to prepare for linting tasks
         uses: actions/checkout@v2
 
-      - name: Set up Python for testing project on remote server
+      - name: Set up Python for checking project on remote server
         uses: actions/setup-python@v2
 
         with: 
