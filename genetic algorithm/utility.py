@@ -114,6 +114,26 @@ def randomSelection(population,
 	return table
 
 
+def randomMatching(dna, group_size = 2):
+
+	mixing_cluster = {}
+	group_number = len(dna) // group_size
+	DNA = dna.copy()
+
+	for index in range(group_number):
+
+		random.shuffle(DNA)
+		mixing_cluster[str(index + 1)] = DNA[0:group_size]
+		DNA = DNA[group_size:]
+
+	if (len(DNA) > 0):
+
+		last = group_number + 1
+		mixing_cluster[str(last)] = DNA.copy()
+
+	return mixing_cluster
+
+
 def sequentialMatching(dna, group_size = 2):
 
 	mixing_cluster = {}
@@ -128,8 +148,8 @@ def sequentialMatching(dna, group_size = 2):
 
 	if (remainder > 0):
 
-		last = group_number*group_size
-		mixing_cluster[str(last)] = dna[last:]
+		last = group_number + 1
+		mixing_cluster[str(last)] = dna[-remainder]
 
 	return mixing_cluster
 
