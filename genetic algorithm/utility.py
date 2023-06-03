@@ -75,29 +75,40 @@ def wordScore(chromosome, target):
 	return score**2
 
 
-def randomSelection(population, duplication_indicator = True, group_size = 2):
+def randomSelection(population,
+					duplication_indicator = True,
+					clone_flag = False,
+					group_size = 2):
 
+	candidate_pool = population.copy()
+	suspend = 0
 	table = []
 
 	for _ in population:
 
+		candidate_member = random.choice(candidate_pool)
+		table.append(candidate_member)
+
 		if not(duplication_indicator):
 
-			if (len(table) > 0):
-
-				for parent in table[-group_size]:
-
-					candidate_pool.remove(parent)
+			candidate_pool.remove(candidate_member)
 
 		else:
-	
-			candidate_pool = population.copy()
 
-		for _ in range(group_size):
+			if not(clone_flag):
 
-			candidate_member = random.choice(candidate_pool)
-			table.append(candidate_member)
-			candidate_pool.remove(candidate_member)
+				if (suspend < group_size):
+
+					candidate_pool.remove(candidate_member)
+					suspend += 1
+
+				else:
+
+					suspend = 0
+
+					for parent in table[-group_size:]:
+
+						candidate_pool.append(parent)
 
 	return table
 
