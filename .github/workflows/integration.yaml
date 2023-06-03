@@ -33,7 +33,9 @@ jobs:
         # run: pylint ./**/*.py
         # run: pylint "tic tac toe/**/*.py" "genetic algorithm/**/*.py"
         # run: pylint "genetic algorithm/**/*.py" "tic tac toe/**/*.py"
-        run: pylint .
+        # run: pylint .
+        run: pylint "genetic algorithm/**/*.py"
+        run: pylint "tic tac toe/**/*.py"
 
   testing:
 
