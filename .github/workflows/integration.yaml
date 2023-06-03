@@ -27,10 +27,12 @@ jobs:
           python-version: 3.10.9
 
       - name: Install dependencies required for GitHub checks
-        run: pip install pylint
+        # run: pip install pylint
+        run: pip install flake8
 
       - name: Run code lint checks
-        run: pylint ./**/*.py
+        # run: pylint ./**/*.py
+        run: flake8 ./**/*.py
 
   testing:
 

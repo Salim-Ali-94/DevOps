@@ -15,7 +15,7 @@ def generatePopulation(chromosome_length = 2,
 	population = []
 	random.seed(42)
 
-	for i in range(population_size):
+	for _ in range(population_size):
 
 		if (encoding in ("character", "binary")):
 
@@ -25,7 +25,7 @@ def generatePopulation(chromosome_length = 2,
 
 			chromosome = ()
 
-		for j in range(chromosome_length):
+		for _ in range(chromosome_length):
 
 			if (encoding == "integer"):
 
