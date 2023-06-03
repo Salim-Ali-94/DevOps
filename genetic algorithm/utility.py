@@ -97,5 +97,5 @@ def wordAssertion(chromosome, target):
 	allowed = ("str", "list", "tuple")
 
 	assert ((type(chromosome).__name__ in allowed) and
-			(type(target).__name__ in allowed)),
+			(type(target).__name__ in allowed)), \
 			f"Both the input string and the target word must be of type 'str', 'list' or 'tuple', but got '{type(chromosome).__name__}' and '{type(target).__name__}'."

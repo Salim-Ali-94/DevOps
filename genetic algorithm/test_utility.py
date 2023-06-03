@@ -20,6 +20,13 @@ class TestUtility(unittest.TestCase):
 
 			utility.wordScore([], 0)
 
+	def test_randomSelection(self):
+
+		population = utility.generatePopulation(2)
+		dna_pool = utility.randomSelection(population)
+		self.assertEqual(len(dna_pool), len(population))
+		self.assertEqual(len(dna_pool[0]), 2)
+
 
 
 
