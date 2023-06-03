@@ -1,5 +1,5 @@
 import random
-from constants import CHARACTERS
+from .constants import CHARACTERS
 
 
 def generatePopulation(chromosome_length = 2,
