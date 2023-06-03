@@ -1,6 +1,6 @@
 import os
 import sys
-from .constants import WINNING_STATES
+from constants import WINNING_STATES
 # import importlib
 # constants = importlib.import_module("constants")
 # WINNING_STATES = constants.WINNING_STATES

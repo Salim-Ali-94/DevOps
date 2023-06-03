@@ -30,7 +30,8 @@ jobs:
         run: pip install pylint
 
       - name: Run code lint checks
-        run: pylint ./**/*.py
+        # run: pylint ./**/*.py
+        run: pylint "tic tac toe/**/*.py" "genetic algorithm/**/*.py"
 
   testing:
 
