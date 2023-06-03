@@ -53,3 +53,4 @@ jobs:
 
       - name: Carry out unit testing
         run: python "./genetic algorithm/test_utility.py"
+        eco "ALL TESTS HAVE PASSED SUCCESSFULLY"
