@@ -53,7 +53,7 @@ def promptUser(board):
 		renderBoard(board)
 		position = input(f"\n\nPlease select an available space: {', '.join(boardState(board))}\n\n")
 
-	return position
+	return position 
 
 
 def gameState(board):
