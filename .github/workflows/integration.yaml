@@ -29,14 +29,10 @@ jobs:
       - name: Install dependencies required for GitHub checks
         run: pip install pylint
 
-      - name: Run code lint checks
-        # run: pylint ./**/*.py
-        # run: pylint "tic tac toe/**/*.py" "genetic algorithm/**/*.py"
-        # run: pylint "genetic algorithm/**/*.py" "tic tac toe/**/*.py"
-        # run: pylint .
+      - name: Run code lint checks for tic tac toe directory
         run: pylint "genetic algorithm/**/*.py"
 
-      - name: Run code lint checks
+      - name: Run code lint checks for genetic algorithm directory
         run: pylint "tic tac toe/**/*.py"
 
   testing:
