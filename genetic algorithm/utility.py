@@ -2,20 +2,16 @@ import random
 from constants import CHARACTERS
 
 
-def initializePopulation(chromosome_length, encoding = "number", domain = { "minimum": -100, "maximum": 100 }, population_size = 100):
-
-	population = generatePopulation(population_size, chromosome_length, encoding, domain)
-	return population
-
-
-def generatePopulation(population_size, chromosome_length, encoding, domain):
+def generatePopulation(chromosome_length,
+					   population_size = 100,
+					   encoding = "number",
+					   domain = { "minimum": -100, "maximum": 100 }):
 
 	population = []
 
 	for i in range(population_size):
 
-		if ((encoding == "character") or 
-			(encoding == "binary")):
+		if (encoding in ("character", "binary")):
 
 			chromosome = ""
 
@@ -40,14 +36,13 @@ def generatePopulation(population_size, chromosome_length, encoding, domain):
 
 			elif (encoding == "binary"):
 
-				gene = random.choice(["0", "1"])
+				gene = random.choice(("0", "1"))
 
 			else:
 
 				gene = random.uniform(domain["minimum"], domain["maximum"])
 
-			if ((encoding == "character") or 
-				(encoding == "binary")):
+			if (encoding in ("character", "binary")):
 
 				chromosome += gene
 
