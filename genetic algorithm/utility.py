@@ -15,7 +15,7 @@ def generatePopulation(chromosome_length = 2,
 	population = []
 	random.seed(42)
 
-	for _ in population_size:
+	for _ in range(population_size):
 
 		if (encoding in ("character", "binary")):
 
@@ -25,7 +25,7 @@ def generatePopulation(chromosome_length = 2,
 
 			chromosome = ()
 
-		for _ in chromosome_length:
+		for _ in range(chromosome_length):
 
 			if (encoding == "integer"):
 
@@ -83,7 +83,7 @@ def randomSelection(population, duplication_indicator = True, group_size = 2):
 
 		candidate_pool = population.copy()
 
-		for _ in group_size:
+		for _ in range(group_size):
 
 			candidate_member = random.choice(candidate_pool)
 			candidate_pool.remove(candidate_member)
