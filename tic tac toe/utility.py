@@ -1,6 +1,6 @@
 import os
 import sys
-from constants import WINNING_STATES
+from constants import *
 
 
 boardState = lambda board, player = " ": [key for key, value in board.items() if (value == player)]
