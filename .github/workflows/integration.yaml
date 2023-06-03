@@ -30,10 +30,7 @@ jobs:
         run: pip install pylint
 
       - name: Run code lint checks
-
-        run:
-
-          pylint ./**/*.py
+        run: pylint ./**/*.py
 
   testing:
 
@@ -42,17 +39,14 @@ jobs:
     steps:
 
       - name: Checkout code to prepare for testing
-      - uses: actions/checkout@v2
+        uses: actions/checkout@v2
 
       - name: Configure python environment for running test cases
-      - uses: actions/setup-python@v2
+        uses: actions/setup-python@v2
 
         with:
 
           python-version: 3.10.9
 
       - name: Carry out unit testing
-        
-        run:
-
-          python -m unittest ./genetic algorithm/test.py
+        run: python -m unittest ./genetic algorithm/test.py
