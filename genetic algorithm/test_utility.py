@@ -27,6 +27,22 @@ class TestUtility(unittest.TestCase):
 		self.assertEqual(len(dna_pool), len(population))
 		self.assertEqual(len(dna_pool[0]), 2)
 
+	def test_sequentialMatching(self):
+
+		population = utility.generatePopulation(2)
+		dna_pool = utility.randomSelection(population)
+		cluster = utility.sequentialMatching(dna_pool)
+		self.assertEqual(cluster["1"][0], dna_pool[0])
+		self.assertEqual(cluster[str(len(cluster))][-1], dna_pool[-1])
+
+	def test_randomMatching(self):
+
+		population = utility.generatePopulation(2)
+		dna_pool = utility.randomSelection(population)
+		cluster = utility.randomMatching(dna_pool)
+		self.assertEqual(len(cluster["1"][0]), len(dna_pool[0]))
+		self.assertEqual(len(cluster[str(len(cluster))][-1]), len(dna_pool[-1]))
+
 
 
 
