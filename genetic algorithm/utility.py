@@ -149,7 +149,7 @@ def sequentialMatching(dna, group_size = 2):
 	if (remainder > 0):
 
 		last = group_number + 1
-		mixing_cluster[str(last)] = dna[-remainder]
+		mixing_cluster[str(last)] = dna[-remainder:]
 
 	return mixing_cluster
 
