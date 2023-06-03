@@ -7,7 +7,7 @@ def generatePopulation(chromosome_length = 2,
 					   encoding = "number",
 					   domain = None):
 
-	if (domain == None):
+	if (domain is None):
 
 		domain = { "minimum": -10,
 	   			   "maximum": 10 }
