@@ -74,5 +74,7 @@ jobs:
           python-version: 3.10.9
 
       - name: Run code to ensure that it builds with no errors which linting can't pick up
-        run: python utility.py
-        echo "SUCCESSFULLY BUILT PROJECT"
+        run: |
+
+          python utility.py
+          echo "SUCCESSFULLY BUILT PROJECT"
