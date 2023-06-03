@@ -9,6 +9,15 @@ class TestUtility(unittest.TestCase):
 		population = utility.generatePopulation(0)
 		self.assertEqual(population, [(), (), (), (), ()])
 
+	def test_wordScore(self):
+
+		score = utility.wordScore("", "not empty")
+		self.assertEqual(score, 0)
+		score = utility.wordScore("word six", "word seven")
+		self.assertEqual(score, 36)
+		self.assertRaises(f"Both the input string and the target word must be of type 'str' or of type 'list', but got list and int.", 
+						  utility.wordScore([], 0))
+
 
 
 
