@@ -10,7 +10,7 @@ def gameManager():
 		board[human] = "x"
 		utility.renderBoard(board)
 		utility.gameState(board)
-		computer = random.choice(utility.openBlocks(board))
+		computer = random.choice(utility.boardState(board))
 		board[computer] = "o"
 		utility.renderBoard(board)
 		utility.gameState(board)
