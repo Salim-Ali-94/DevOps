@@ -81,13 +81,23 @@ def randomSelection(population, duplication_indicator = True, group_size = 2):
 
 	for _ in population:
 
-		candidate_pool = population.copy()
+		if not(duplication_indicator):
+
+			if (len(table) > 0):
+
+				for parent in table[-group_size]:
+
+					candidate_pool.remove(parent)
+
+		else:
+	
+			candidate_pool = population.copy()
 
 		for _ in range(group_size):
 
 			candidate_member = random.choice(candidate_pool)
-			candidate_pool.remove(candidate_member)
 			table.append(candidate_member)
+			candidate_pool.remove(candidate_member)
 
 	return table
 
