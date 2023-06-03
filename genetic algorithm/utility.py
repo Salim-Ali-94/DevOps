@@ -59,3 +59,17 @@ def generatePopulation(chromosome_length = 2,
 		population.append(chromosome)
 
 	return population
+
+
+def wordScore(chromosome, target):
+
+	score = 0
+
+	for gene, character in zip(chromosome, target):
+
+		if (gene == character):
+
+			score += 1
+
+	return score**2
+
