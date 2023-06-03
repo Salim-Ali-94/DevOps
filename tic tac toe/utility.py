@@ -12,7 +12,6 @@ def renderBoard(board):
 
 	os.system("cls")
 	print()
-	# print()
 	print("\t     |     |     ")
 	print(f"\t  {board['1']}  |  {board['2']}  |  {board['3']}  ")
 	print("\t     |     |     ")
@@ -24,7 +23,6 @@ def renderBoard(board):
 	print("\t     |     |     ")
 	print(f"\t  {board['7']}  |  {board['8']}  |  {board['9']}  ")
 	print("\t     |     |     ")
-	# print()
 	print()
 
 
