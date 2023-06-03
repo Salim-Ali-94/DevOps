@@ -1,5 +1,0 @@
-
-[flake8]
-ignore = E303,E251 
-indent-string = \t
-function-naming-style = camelCase
