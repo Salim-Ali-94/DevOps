@@ -7,4 +7,4 @@ class TestUtility(unittest.TestCase):
 	def test_generatePopulation(self):
 
 		population = utility.generatePopulation(0)
-		self.assertEquals(population, [(), (), (), (), ()])
+		self.assertEqual(population, [(), (), (), (), ()])
