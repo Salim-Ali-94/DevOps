@@ -5,7 +5,12 @@ from constants import CHARACTERS
 def generatePopulation(chromosome_length = 2,
 					   population_size = 5,
 					   encoding = "number",
-					   domain = { "minimum": -10, "maximum": 10 }):
+					   domain = None):
+
+	if (domain == None):
+
+		domain = { "minimum": -10,
+	   			   "maximum": 10 }
 
 	population = []
 	random.seed(42)
