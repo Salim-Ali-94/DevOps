@@ -61,20 +61,6 @@ def generatePopulation(chromosome_length = 2,
 	return population
 
 
-def wordScore(chromosome, target):
-
-	wordAssertion(chromosome, target)
-	score = 0
-
-	for gene, character in zip(chromosome, target):
-
-		if (gene == character):
-
-			score += 1
-
-	return score**2
-
-
 def randomSelection(population,
 					duplication_indicator = True,
 					clone_flag = False,
@@ -154,10 +140,30 @@ def sequentialMatching(dna, group_size = 2):
 	return mixing_cluster
 
 
-def wordAssertion(chromosome, target):
+def wordAssertion(fitness):
 
-	allowed = ("str", "list", "tuple")
+	def testArguments(chromosome, target):
 
-	assert ((type(chromosome).__name__ in allowed) and
-			(type(target).__name__ in allowed)), \
-			f"Both the input string and the target word must be of type 'str', 'list' or 'tuple', but got '{type(chromosome).__name__}' and '{type(target).__name__}'."
+		allowed = ("str", "list", "tuple")
+
+		assert ((type(chromosome).__name__ in allowed) and
+				(type(target).__name__ in allowed)), \
+				f"Both the input string and the target word must be of type 'str', 'list' or 'tuple', but got '{type(chromosome).__name__}' and '{type(target).__name__}'."
+
+		return fitness(chromosome, target)
+
+	return testArguments
+
+
+@wordAssertion
+def wordScore(chromosome, target):
+
+	score = 0
+
+	for gene, character in zip(chromosome, target):
+
+		if (gene == character):
+
+			score += 1
+
+	return score**2
