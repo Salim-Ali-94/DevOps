@@ -2,12 +2,13 @@ import random
 from constants import CHARACTERS
 
 
-def generatePopulation(chromosome_length,
-					   population_size = 100,
+def generatePopulation(chromosome_length = 2,
+					   population_size = 5,
 					   encoding = "number",
-					   domain = { "minimum": -100, "maximum": 100 }):
+					   domain = { "minimum": -10, "maximum": 10 }):
 
 	population = []
+	random.seed(42)
 
 	for i in range(population_size):
 
@@ -53,3 +54,5 @@ def generatePopulation(chromosome_length,
 		population.append(chromosome)
 
 	return population
+
+print(generatePopulation(0))
