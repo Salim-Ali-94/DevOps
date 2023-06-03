@@ -52,5 +52,7 @@ jobs:
           python-version: 3.10.9
 
       - name: Carry out unit testing
-        run: python "./genetic algorithm/test_utility.py"
-        eco "ALL TESTS HAVE PASSED SUCCESSFULLY"
+        run: |
+        
+          python "./genetic algorithm/test_utility.py"
+          eco "ALL TESTS HAVE PASSED SUCCESSFULLY"
