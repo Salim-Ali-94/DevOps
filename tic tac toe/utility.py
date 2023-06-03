@@ -1,9 +1,6 @@
 import os
 import sys
 from constants import WINNING_STATES
-# import importlib
-# constants = importlib.import_module("constants")
-# WINNING_STATES = constants.WINNING_STATES
 
 
 boardState = lambda board, player = " ": [key for key, value in board.items() if (value == player)]
