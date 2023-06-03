@@ -13,7 +13,7 @@ def generatePopulation(chromosome_length = 2,
 	   			   "maximum": 10 }
 
 	population = []
-	random.seed(42)
+	# random.seed(42)
 
 	for _ in range(population_size):
 
@@ -80,20 +80,21 @@ def randomSelection(population,
 					clone_flag = False,
 					group_size = 2):
 
+	random.shuffle(population)
 	candidate_pool = population.copy()
 	suspend = 0
 	table = []
 
-	for _ in population:
+	if not(duplication_indicator):
 
-		candidate_member = random.choice(candidate_pool)
-		table.append(candidate_member)
+		table = candidate_pool.copy()
 
-		if not(duplication_indicator):
+	else:
 
-			candidate_pool.remove(candidate_member)
+		for _ in population:
 
-		else:
+			candidate_member = random.choice(candidate_pool)
+			table.append(candidate_member)
 
 			if not(clone_flag):
 
