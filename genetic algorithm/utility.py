@@ -64,7 +64,7 @@ def generatePopulation(chromosome_length = 2,
 def wordScore(chromosome, target):
 
 	allowed = ("str", "list", "tuple")
-	assert ((type(chromosome) in allowed) and (type(target) in allowed)), f"Both the input string and the target word must be of type 'str' or of type 'list', but got {type(chromosome)} and {type(target)}."
+	assert ((type(chromosome).__name__ in allowed) and (type(target).__name__ in allowed)), f"Both the input string and the target word must be of type 'str' or of type 'list', but got {type(chromosome).__name__} and {type(target).__name__}."
 	score = 0
 
 	for gene, character in zip(chromosome, target):

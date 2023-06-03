@@ -15,7 +15,7 @@ class TestUtility(unittest.TestCase):
 		self.assertEqual(score, 0)
 		score = utility.wordScore("word six", "word seven")
 		self.assertEqual(score, 36)
-		self.assertRaises(f"Both the input string and the target word must be of type 'str' or of type 'list', but got list and int.", 
+		self.assertRaises("Both the input string and the target word must be of type 'str' or of type 'list', but got list and int.",
 						  utility.wordScore([], 0))
 
 
