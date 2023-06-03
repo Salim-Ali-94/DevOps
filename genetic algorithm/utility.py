@@ -114,6 +114,26 @@ def randomSelection(population,
 	return table
 
 
+def sequentialMatching(dna, group_size = 2):
+
+	mixing_cluster = {}
+	group_number = len(dna) // group_size
+	remainder = len(dna) % group_size
+
+	for index in range(group_number):
+
+		start = group_size*index
+		end = group_size*(index + 1)
+		mixing_cluster[str(index + 1)] = dna[start:end]
+
+	if (remainder > 0):
+
+		last = group_number*group_size
+		mixing_cluster[str(last)] = dna[last:]
+
+	return mixing_cluster
+
+
 def wordAssertion(chromosome, target):
 
 	allowed = ("str", "list", "tuple")
