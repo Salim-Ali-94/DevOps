@@ -15,8 +15,7 @@ class TestUtility(unittest.TestCase):
 		self.assertEqual(score, 0)
 		score = utility.wordScore("word six", "word seven")
 		self.assertEqual(score, 36)
-		with self.assertRaises(Exception) as context: utility.wordScore([], 0)
-		self.assertTrue("Both the input string and the target word must be of type 'str', 'list' or 'tuple', but got 'list' and 'int'." in context.exception)
+		with self.assertRaisesRegex(AssertionError, "Both the input string and the target word must be of type 'str', 'list' or 'tuple', but got 'list' and 'int'."): utility.wordScore([], 0)
 
 
 
