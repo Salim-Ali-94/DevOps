@@ -76,13 +76,8 @@ def checkStates(board):
 
 		for position in state:
 
-			if position in x: 
-
-				X += 1
-
-			elif position in o: 
-
-				O += 1
+			if position in x: X += 1
+			elif position in o: O += 1
 
 			if ((X >= 3) or
 				(O >= 3)):

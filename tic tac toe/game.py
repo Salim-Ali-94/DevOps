@@ -1,24 +1,26 @@
 import random
-import utility
+# import utility
+from utility import promptUser, renderBoard, gameState, boardState, initializeGame
+# from utility import *
 
 
 def gameManager():
 
 	while True:
 
-		human = utility.promptUser(board)
+		human = promptUser(board)
 		board[human] = "x"
-		utility.renderBoard(board)
-		utility.gameState(board)
-		computer = random.choice(utility.boardState(board))
+		renderBoard(board)
+		gameState(board)
+		computer = random.choice(boardState(board))
 		board[computer] = "o"
-		utility.renderBoard(board)
-		utility.gameState(board)
+		renderBoard(board)
+		gameState(board)
 
 
 
 
 if __name__ == "__main__":
 
-	board = utility.initializeGame()
+	board = initializeGame()
 	gameManager()
