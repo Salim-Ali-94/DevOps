@@ -6,5 +6,8 @@ disable = C0114,C0116,C0325,C3001,C0301,C0103,C0321
 [INDENTATION]
 indent-string = \t
 
+[TYPECHECK]
+ignored-modules = utility
+
 [BASIC]
 function-naming-style = camelCase
