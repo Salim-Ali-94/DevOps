@@ -181,8 +181,16 @@ def pointCrossOver(cluster):
 	for group in cluster:
 
 		point = random.randint(0, len(group[0]) - 1)
-		clones = swapAllele(group, point)
-		population.extend(clones)
+
+		if (len(group) == 1):
+
+			clone = forcedMutation(group[0])
+			population.append(clone)
+
+		else:
+
+			clones = swapAllele(group, point)
+			population.extend(clones)
 
 	return population
 
@@ -201,6 +209,25 @@ def swapAllele(parents, point):
 		section = allele
 
 	return clones
+
+
+def forcedMutation(member):
+
+	return swapMutation(member)
+
+
+def swapMutation(chromosome):
+
+	point_a = random.randint(0, len(chromosome) - 1)
+	gene_a = chromosome[point_a]
+	point_b = random.randint(0, len(chromosome) - 1)
+	while (point_b == point_a): point_b = random.randint(0, len(chromosome) - 1)
+	gene_b = chromosome[point_b]
+	buffer = list(chromosome)
+	buffer[point_a] = gene_b
+	buffer[point_b] = gene_a
+	chromosome = type(chromosome)(buffer)
+	return chromosome
 
 
 def wordAssertion(chromosome, target):
