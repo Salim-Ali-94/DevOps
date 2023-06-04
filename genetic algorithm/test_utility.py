@@ -49,7 +49,7 @@ class TestUtility(unittest.TestCase):
 
 	def test_pointCrossOver(self):
 
-		population = generatePopulation(2)
+		population = utility.generatePopulation(2)
 		dna_pool = utility.randomSelection(population)
 		cluster = utility.randomMatching(dna_pool)
 		mutants = utility.pointCrossOver(cluster)
@@ -57,7 +57,7 @@ class TestUtility(unittest.TestCase):
 
 	def test_swapAllele(self):
 
-		population = generatePopulation(5)
+		population = utility.generatePopulation(5)
 		dna_pool = utility.randomSelection(population)
 		cluster = utility.randomMatching(dna_pool)
 		mutant = utility.swapAllele(cluster[0], 2)
