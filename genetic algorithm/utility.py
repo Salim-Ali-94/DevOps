@@ -252,13 +252,20 @@ def rotateMutation(chromosome):
 	buffer[point_a] = gene_b
 	buffer[point_b] = gene_a
 
-	if (type(chromosome) == str):
+	if (type(chromosome) != list):
 
-		chromosome = "".join(buffer)
+
+		if (type(chromosome) == str):
+
+			chromosome = "".join(buffer)
+
+		else:
+
+			chromosome = type(chromosome)(buffer)
 
 	else:
 
-		chromosome = type(chromosome)(buffer)
+		chromosome = buffer.copy()
 
 	return chromosome
 
@@ -269,12 +276,19 @@ def randomMutation(chromosome, mutation_number = 1):
 
 		mutation_number = len(chromosome)
 
-	defects = random.sample(range(0, len(chromosome)), mutation_number)
 
 	if ((type(chromosome) == str) or
 		(type(chromosome[0]) == str)):
 
-		buffer = list(chromosome)
+		defects = random.sample(range(0, len(chromosome)), mutation_number)
+
+		if (type(chromosome) != list):
+
+			buffer = list(chromosome)
+
+		else:
+
+			buffer = chromosome.copy()
 
 		for index in defects:
 
@@ -298,11 +312,53 @@ def randomMutation(chromosome, mutation_number = 1):
 
 			buffer[index] = value
 
-		chromosome = "".join(buffer)
+		if (type(chromosome) != list):
+
+			if (type(chromosome) == str):
+
+				chromosome = "".join(buffer)
+
+			else:
+
+				chromosome = type(chromosome)(buffer)
+
+		else:
+
+			chromosome = buffer.copy()
 
 	else:
 
-		chromosome = None
+		if (type(chromosome) == int):
+		
+			chromosome += random.randint(-2, 2)
+
+		elif (type(chromosome) == float):
+			
+			chromosome += random.uniform(-2, 2)
+
+		else:
+
+			defects = random.sample(range(0, len(chromosome)), mutation_number)
+
+			if (type(chromosome) != list):
+
+				buffer = list(chromosome)
+
+			else:
+
+				buffer = chromosome.copy()
+
+			for index in defects:
+
+				buffer[index] += random.uniform(-2, 2)
+
+			if (type(chromosome) != list):
+
+				chromosome = type(chromosome)(buffer)
+
+			else:
+
+				chromosome = chromosome.copy()
 
 	return chromosome
 
