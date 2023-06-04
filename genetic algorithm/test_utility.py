@@ -61,7 +61,7 @@ class TestUtility(unittest.TestCase):
 		dna_pool = utility.randomSelection(population)
 		cluster = utility.randomMatching(dna_pool)
 		mutant = utility.swapAllele(cluster[0], 2)
-		self.assertEqual(len(mutant), len(population[0]))
+		self.assertEqual(len(mutant[0]), len(population[0]))
 		self.assertEqual(mutant[3:], cluster[3:])
 
 
