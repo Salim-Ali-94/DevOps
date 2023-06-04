@@ -40,8 +40,26 @@ class TestUtility(unittest.TestCase):
 		population = utility.generatePopulation(2)
 		dna_pool = utility.randomSelection(population)
 		cluster = utility.randomMatching(dna_pool)
-		self.assertEqual(len(cluster["1"][0]), len(dna_pool[0]))
-		self.assertEqual(len(cluster[str(len(cluster))][-1]), len(dna_pool[-1]))
+		# self.assertEqual(len(cluster["1"][0]), len(dna_pool[0]))
+		# self.assertEqual(len(cluster[str(len(cluster))][-1]), len(dna_pool[-1]))
+		self.assertEqual(len(cluster[0][0]), len(dna_pool[0]))
+		self.assertEqual(len(cluster[-1][-1]), len(dna_pool[-1]))
+
+	def test_pointCrossOver(self):
+
+		population = generatPopulation(2)
+		dna_pool = utility.randomSelection(population)
+		cluster = utility.randomMatching(dna_pool)
+		mutants = utility.pointCrossOver(cluster)
+		self.assertEqual(len(mutants), len(population))
+
+	def test_swapAllele(self):
+
+		population = generatPopulation(2)
+		dna_pool = utility.randomSelection(population)
+		cluster = utility.randomMatching(dna_pool)
+		mutant = utility.swapAllele(cluster[0])
+		self.assertEqual(len(mutant), len(population[0]))
 
 
 

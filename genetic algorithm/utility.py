@@ -15,7 +15,8 @@ def generatePopulation(chromosome_length = 2,
 	population = []
 	# random.seed(42)
 
-	for _ in range(population_size):
+	# for _ in range(population_size):
+	while (len(population) < population_size):
 
 		if (encoding in ("character", "binary")):
 
@@ -25,7 +26,8 @@ def generatePopulation(chromosome_length = 2,
 
 			chromosome = ()
 
-		for _ in range(chromosome_length):
+		# for _ in range(chromosome_length):
+		while (len(chromosome) < chromosome_length):
 
 			if (encoding == "integer"):
 
@@ -91,7 +93,8 @@ def randomSelection(population,
 
 	else:
 
-		for _ in population:
+		# for _ in population:
+		while (len(table) < len(population)):
 
 			candidate_member = random.choice(candidate_pool)
 			table.append(candidate_member)
@@ -114,17 +117,24 @@ def randomSelection(population,
 	return table
 
 
-def randomMatching(dna, group_size = 2):
+def randomMatching(dna,
+				   group_size = 2,
+				   chaos = False):
 
 	# mixing_cluster = {}
 	mixing_cluster = []
 	group_number = len(dna) // group_size
 	DNA = dna.copy()
+	if not(chaos): random.shuffle(DNA)
 
-	for index in range(group_number):
+	# for index in range(group_number):
+	# for _ in range(group_number):
+	while (len(mixing_cluster) < group_number):
 
-		random.shuffle(DNA)
 		# mixing_cluster[str(index + 1)] = DNA[0:group_size]
+
+		# random.shuffle(DNA)
+		if chaos: random.shuffle(DNA)
 		mixing_cluster.append(DNA[0:group_size])
 		DNA = DNA[group_size:]
 
@@ -139,20 +149,27 @@ def randomMatching(dna, group_size = 2):
 
 def sequentialMatching(dna, group_size = 2):
 
-	mixing_cluster = {}
+	# mixing_cluster = {}
+	mixing_cluster = []
 	group_number = len(dna) // group_size
 	remainder = len(dna) % group_size
+	DNA = dna.copy()
 
-	for index in range(group_number):
+	# for index in range(group_number):
+	# while (len(mixing_cluster) < group_number):
+	while (len(DNA) >= group_size):
 
-		start = group_size*index
-		end = group_size*(index + 1)
-		mixing_cluster[str(index + 1)] = dna[start:end]
+		# start = group_size*index
+		# end = group_size*(index + 1)
+		# mixing_cluster[str(index + 1)] = dna[start:end]
+		mixing_cluster.append(DNA[0:group_size])
+		DNA = DNA[group_size:]
 
 	if (remainder > 0):
 
-		last = group_number + 1
-		mixing_cluster[str(last)] = dna[-remainder:]
+		# last = group_number + 1
+		# mixing_cluster[str(last)] = dna[-remainder:]
+		mixing_cluster.append(dna[-remainder:])
 
 	return mixing_cluster
 
@@ -164,7 +181,7 @@ def pointCrossOver(cluster):
 	for group in cluster:
 
 		point = random.randint(0, len(group[0]) - 1)
-		clones = swapAllele(group, point) 
+		clones = swapAllele(group, point)
 		population.extend(clones)
 
 	return population
