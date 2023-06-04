@@ -25,6 +25,7 @@ class TestUtility(unittest.TestCase):
 		population = utility.generatePopulation(2)
 		dna_pool = utility.randomSelection(population)
 		self.assertEqual(len(dna_pool), len(population))
+		self.assertEqual(type(dna_pool), type(population))
 		self.assertEqual(len(dna_pool[0]), 2)
 
 	def test_sequentialMatching(self):
@@ -41,7 +42,9 @@ class TestUtility(unittest.TestCase):
 		dna_pool = utility.randomSelection(population)
 		cluster = utility.randomMatching(dna_pool)
 		self.assertEqual(len(cluster[0][0]), len(dna_pool[0]))
+		self.assertEqual(type(cluster[0][0]), type(dna_pool[0]))
 		self.assertEqual(len(cluster[-1][-1]), len(dna_pool[-1]))
+		self.assertEqual(type(cluster[-1][-1]), type(dna_pool[-1]))
 
 	def test_pointCrossOver(self):
 
@@ -50,6 +53,7 @@ class TestUtility(unittest.TestCase):
 		cluster = utility.randomMatching(dna_pool)
 		mutants = utility.pointCrossOver(cluster)
 		self.assertEqual(len(mutants), len(population))
+		self.assertEqual(type(mutants), type(population))
 
 	def test_swapAllele(self):
 
@@ -58,22 +62,21 @@ class TestUtility(unittest.TestCase):
 		cluster = utility.randomMatching(dna_pool)
 		mutant = utility.swapAllele(cluster[0], 2)
 		self.assertEqual(len(mutant[0]), len(population[0]))
+		self.assertEqual(type(mutant[0]), type(population[0]))
 		self.assertEqual(mutant[3:], cluster[3:])
 
 	def test_rotateMutation(self):
 
 		population = utility.generatePopulation(5)
-		dna_pool = utility.randomSelection(population)
-		cluster = utility.randomMatching(dna_pool)
-		mutant = utility.rotateMutation(cluster[0][0])
+		mutant = utility.rotateMutation(population[0])
 		self.assertEqual(len(mutant), len(population[0]))
+		self.assertEqual(type(mutant), type(population[0]))
 
 	def test_randomMutation(self):
 
-		population = utility.generatePopulation(5)
-		dna_pool = utility.randomSelection(population)
-		cluster = utility.randomMatching(dna_pool)
-		mutant = utility.randomMutation(cluster[0][0])
+		population = utility.generatePopulation(5, category = "character", genotype = "base")
+		mutant = utility.randomMutation(population[0])
+		self.assertEqual(type(mutant), type(population[0]))
 		self.assertEqual(len(mutant), len(population[0]))
 
 
