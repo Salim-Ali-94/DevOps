@@ -302,21 +302,15 @@ def randomMutation(chromosome, mutation_number = 1):
 
 			if (chromosome.isdigit()):
 
-				value = random.choice(("0", "1"))
+				bits = ["0", "1"]
+				bits.remove(buffer[index])
+				value = bits[0]
 
 			else:
 
+				CHARACTERS.remove(buffer[index])
 				value = random.choice(CHARACTERS)
-
-			while (value == buffer[index]):
-
-				if (chromosome.isdigit()):
-
-					value = random.choice(("0", "1"))
-
-				else:
-
-					value = random.choice(CHARACTERS)
+				CHARACTERS.append(buffer[index])
 
 			buffer[index] = value
 
@@ -371,17 +365,35 @@ def randomMutation(chromosome, mutation_number = 1):
 	return chromosome
 
 
-def linearAverage(cluster, gamma = 0.75):
+def linearAverage(cluster):
 
 	population = []
 
 	for group in cluster:
 
+		gamma = random.random()
 		parent_a = group[0]
 		parent_b = group[1]
 		offspring_a = gamma*parent_a + (1 - gamma)*parent_b
 		offspring_b = gamma*parent_b + (1 - gamma)*parent_a
 		population.extend((offspring_a, offspring_b))
+
+	return population
+
+
+def heuristicAverage(pool):
+
+	population = []
+
+	while (len(population) < len(pool)):
+
+		gamma = random.random()
+		parent_a = random.choice(pool)
+		pool.remove(parent_a)
+		parent_b = random.choice(pool)
+		pool.append(parent_a)
+		offspring = gamma*(parent_a - parent_b) + parent_b
+		population.append(offspring)
 
 	return population
 
