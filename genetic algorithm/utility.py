@@ -4,7 +4,7 @@ from constants import CHARACTERS
 
 def generatePopulation(chromosome_length = 2,
 					   population_size = 5,
-					   encoding = None,
+					   # encoding = None,
 					   category = "number",
 					   genotype = "encoded",
 					   gene_width = 1,
