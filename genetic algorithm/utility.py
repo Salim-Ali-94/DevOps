@@ -4,7 +4,9 @@ from constants import CHARACTERS
 
 def generatePopulation(chromosome_length = 2,
 					   population_size = 5,
-					   encoding = "number",
+					   category = "number",
+					   genotype = "encoded",
+					   gene_width = 1,
 					   domain = None):
 
 	if (domain is None):
@@ -13,50 +15,72 @@ def generatePopulation(chromosome_length = 2,
 	   			   "maximum": 10 }
 
 	population = []
+	random.shuffle(CHARACTERS)
+	symbol = ("character", "binary")
 	# random.seed(42)
 
-	# for _ in range(population_size):
 	while (len(population) < population_size):
 
-		if (encoding in ("character", "binary")):
+		if (genotype == "encoded"):
 
-			chromosome = ""
+			if (category in symbol):
+
+				chromosome = ""
+				gene = ""
+
+			else:
+
+				chromosome = ()
+
+			while (len(chromosome) < chromosome_length):
+
+				if (category == "integer"):
+
+					gene = random.randint(domain["minimum"], domain["maximum"])
+
+				elif (category == "character"):
+
+					while (len(gene) < gene_width):
+
+						gene += random.choice(CHARACTERS)
+
+				elif (category == "binary"):
+
+					while (len(gene) < gene_width):
+
+						gene += random.choice(("0", "1"))
+
+				else:
+
+					gene = random.uniform(domain["minimum"], domain["maximum"])
+
+				chromosome = (*chromosome, gene)
 
 		else:
 
-			chromosome = ()
+			if (category in symbol):
 
-		# for _ in range(chromosome_length):
-		while (len(chromosome) < chromosome_length):
+				chromosome = ""
 
-			if (encoding == "integer"):
+			if (category == "integer"):
 
-				gene = random.randint(domain["minimum"], domain["maximum"])
+				chromosome = random.randint(domain["minimum"], domain["maximum"])
 
-			elif (encoding == "character"):
+			elif (category == "character"):
 
-				random.shuffle(CHARACTERS)
-				gene = random.choice(CHARACTERS)
+				while (len(chromosome) < chromosome_length):
 
-			elif (encoding == "bit"):
+					chromosome += random.choice(CHARACTERS)
 
-				gene = random.randint(0, 1)
+			elif (category == "binary"):
 
-			elif (encoding == "binary"):
+				while (len(chromosome) < chromosome_length):
 
-				gene = random.choice(("0", "1"))
+					chromosome += random.choice(("0", "1"))
 
 			else:
 
-				gene = random.uniform(domain["minimum"], domain["maximum"])
-
-			if (encoding in ("character", "binary")):
-
-				chromosome += gene
-
-			else:
-
-				chromosome = (*chromosome, gene)
+				chromosome = random.uniform(domain["minimum"], domain["maximum"])
 
 		population.append(chromosome)
 
@@ -66,13 +90,16 @@ def generatePopulation(chromosome_length = 2,
 def wordScore(chromosome, target):
 
 	wordAssertion(chromosome, target)
+	delta = len(chromosome) - len(target)
 	score = 0
 
-	for gene, character in zip(chromosome, target):
+	if (delta == 0):
 
-		if (gene == character):
+		for gene, character in zip(chromosome, target):
 
-			score += 1
+			if (gene == character):
+
+				score += 1
 
 	return score**2
 
@@ -93,7 +120,6 @@ def randomSelection(population,
 
 	else:
 
-		# for _ in population:
 		while (len(table) < len(population)):
 
 			candidate_member = random.choice(candidate_pool)
@@ -117,18 +143,22 @@ def randomSelection(population,
 	return table
 
 
-def randomMatching(dna,
-				   group_size = 2,
-				   chaos = False):
+def randomMatching(dna, group_size = 2, chaos = False):
 
 	mixing_cluster = []
 	group_number = len(dna) // group_size
 	DNA = dna.copy()
-	if not(chaos): random.shuffle(DNA)
+
+	if not(chaos):
+
+		random.shuffle(DNA)
 
 	while (len(mixing_cluster) < group_number):
 
-		if chaos: random.shuffle(DNA)
+		if chaos:
+
+			random.shuffle(DNA)
+
 		mixing_cluster.append(DNA[0:group_size])
 		DNA = DNA[group_size:]
 
@@ -196,20 +226,84 @@ def swapAllele(parents, point):
 
 def forcedMutation(member):
 
-	return swapMutation(member)
+	return rotateMutation(member)
 
 
-def swapMutation(chromosome):
+def rotateMutation(chromosome):
 
 	point_a = random.randint(0, len(chromosome) - 1)
 	gene_a = chromosome[point_a]
 	point_b = random.randint(0, len(chromosome) - 1)
-	while (point_b == point_a): point_b = random.randint(0, len(chromosome) - 1)
+
+	while (point_b == point_a):
+
+		point_b = random.randint(0, len(chromosome) - 1)
+
 	gene_b = chromosome[point_b]
-	buffer = list(chromosome)
+
+	if (type(chromosome) != list):
+
+		buffer = list(chromosome)
+
+	else:
+
+		buffer = chromosome.copy()
+
 	buffer[point_a] = gene_b
 	buffer[point_b] = gene_a
-	chromosome = type(chromosome)(buffer)
+
+	if (type(chromosome) == str):
+
+		chromosome = "".join(buffer)
+
+	else:
+
+		chromosome = type(chromosome)(buffer)
+
+	return chromosome
+
+
+def randomMutation(chromosome, mutation_number = 1):
+
+	if (mutation_number > len(chromosome)):
+
+		mutation_number = len(chromosome)
+
+	defects = random.sample(range(0, len(chromosome)), mutation_number)
+
+	if ((type(chromosome) == str) or
+		(type(chromosome[0]) == str)):
+
+		buffer = list(chromosome)
+
+		for index in defects:
+
+			if (chromosome.isdigit()):
+
+				value = random.choice(("0", "1"))
+
+			else:
+
+				value = random.choice(CHARACTERS)
+
+			while (value == buffer[index]):
+
+				if (chromosome.isdigit()):
+
+					value = random.choice(("0", "1"))
+
+				else:
+
+					value = random.choice(CHARACTERS)
+
+			buffer[index] = value
+
+		chromosome = "".join(buffer)
+
+	else:
+
+		chromosome = None
+
 	return chromosome
 
 
