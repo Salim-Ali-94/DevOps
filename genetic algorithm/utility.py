@@ -121,27 +121,19 @@ def randomMatching(dna,
 				   group_size = 2,
 				   chaos = False):
 
-	# mixing_cluster = {}
 	mixing_cluster = []
 	group_number = len(dna) // group_size
 	DNA = dna.copy()
 	if not(chaos): random.shuffle(DNA)
 
-	# for index in range(group_number):
-	# for _ in range(group_number):
 	while (len(mixing_cluster) < group_number):
 
-		# mixing_cluster[str(index + 1)] = DNA[0:group_size]
-
-		# random.shuffle(DNA)
 		if chaos: random.shuffle(DNA)
 		mixing_cluster.append(DNA[0:group_size])
 		DNA = DNA[group_size:]
 
 	if (len(DNA) > 0):
 
-		# last = group_number + 1
-		# mixing_cluster[str(last)] = DNA.copy()
 		mixing_cluster.append(DNA.copy())
 
 	return mixing_cluster
@@ -149,26 +141,17 @@ def randomMatching(dna,
 
 def sequentialMatching(dna, group_size = 2):
 
-	# mixing_cluster = {}
 	mixing_cluster = []
-	group_number = len(dna) // group_size
 	remainder = len(dna) % group_size
 	DNA = dna.copy()
 
-	# for index in range(group_number):
-	# while (len(mixing_cluster) < group_number):
 	while (len(DNA) >= group_size):
 
-		# start = group_size*index
-		# end = group_size*(index + 1)
-		# mixing_cluster[str(index + 1)] = dna[start:end]
 		mixing_cluster.append(DNA[0:group_size])
 		DNA = DNA[group_size:]
 
 	if (remainder > 0):
 
-		# last = group_number + 1
-		# mixing_cluster[str(last)] = dna[-remainder:]
 		mixing_cluster.append(dna[-remainder:])
 
 	return mixing_cluster
@@ -237,33 +220,3 @@ def wordAssertion(chromosome, target):
 	assert ((type(chromosome) in allowed) and
 			(type(target) in allowed)), \
 			f"Both the input string and the target word must be of type 'str', 'list' or 'tuple', but got '{type(chromosome).__name__}' and '{type(target).__name__}'."
-
-
-
-# def wordAssertion(fitness):
-
-# 	def testArguments(chromosome, target):
-
-# 		allowed = (str, list, tuple)
-
-# 		assert ((type(chromosome) in allowed) and
-# 				(type(target) in allowed)), \
-# 				f"Both the input string and the target word must be of type 'str', 'list' or 'tuple', but got '{type(chromosome).__name__}' and '{type(target).__name__}'."
-
-# 		return fitness(chromosome, target)
-
-# 	return testArguments
-
-
-# @wordAssertion
-# def wordScore(chromosome, target):
-
-# 	score = 0
-
-# 	for gene, character in zip(chromosome, target):
-
-# 		if (gene == character):
-
-# 			score += 1
-
-# 	return score**2
