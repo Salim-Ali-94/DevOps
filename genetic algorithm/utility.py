@@ -61,6 +61,20 @@ def generatePopulation(chromosome_length = 2,
 	return population
 
 
+def wordScore(chromosome, target):
+
+	wordAssertion(chromosome, target)
+	score = 0
+
+	for gene, character in zip(chromosome, target):
+
+		if (gene == character):
+
+			score += 1
+
+	return score**2
+
+
 def randomSelection(population,
 					duplication_indicator = True,
 					clone_flag = False,
@@ -102,20 +116,23 @@ def randomSelection(population,
 
 def randomMatching(dna, group_size = 2):
 
-	mixing_cluster = {}
+	# mixing_cluster = {}
+	mixing_cluster = []
 	group_number = len(dna) // group_size
 	DNA = dna.copy()
 
 	for index in range(group_number):
 
 		random.shuffle(DNA)
-		mixing_cluster[str(index + 1)] = DNA[0:group_size]
+		# mixing_cluster[str(index + 1)] = DNA[0:group_size]
+		mixing_cluster.append(DNA[0:group_size])
 		DNA = DNA[group_size:]
 
 	if (len(DNA) > 0):
 
-		last = group_number + 1
-		mixing_cluster[str(last)] = DNA.copy()
+		# last = group_number + 1
+		# mixing_cluster[str(last)] = DNA.copy()
+		mixing_cluster.append(DNA.copy())
 
 	return mixing_cluster
 
@@ -140,30 +157,69 @@ def sequentialMatching(dna, group_size = 2):
 	return mixing_cluster
 
 
-def wordAssertion(fitness):
+def pointCrossOver(cluster):
 
-	def testArguments(chromosome, target):
+	population = []
 
-		allowed = ("str", "list", "tuple")
+	for group in cluster:
 
-		assert ((type(chromosome).__name__ in allowed) and
-				(type(target).__name__ in allowed)), \
-				f"Both the input string and the target word must be of type 'str', 'list' or 'tuple', but got '{type(chromosome).__name__}' and '{type(target).__name__}'."
+		point = random.randint(0, len(group[0]) - 1)
+		clones = swapAllele(group, point) 
+		population.extend(clones)
 
-		return fitness(chromosome, target)
-
-	return testArguments
+	return population
 
 
-@wordAssertion
-def wordScore(chromosome, target):
+def swapAllele(parents, point):
 
-	score = 0
+	clones = []
+	section = parents[-1][(point + 1):]
 
-	for gene, character in zip(chromosome, target):
+	for parent in parents:
 
-		if (gene == character):
+		block = parent[0:(point + 1)]
+		allele = parent[(point + 1):]
+		clone = block + section
+		clones.append(clone)
+		section = allele
 
-			score += 1
+	return clones
 
-	return score**2
+
+def wordAssertion(chromosome, target):
+
+	allowed = (str, list, tuple)
+
+	assert ((type(chromosome) in allowed) and
+			(type(target) in allowed)), \
+			f"Both the input string and the target word must be of type 'str', 'list' or 'tuple', but got '{type(chromosome).__name__}' and '{type(target).__name__}'."
+
+
+
+# def wordAssertion(fitness):
+
+# 	def testArguments(chromosome, target):
+
+# 		allowed = (str, list, tuple)
+
+# 		assert ((type(chromosome) in allowed) and
+# 				(type(target) in allowed)), \
+# 				f"Both the input string and the target word must be of type 'str', 'list' or 'tuple', but got '{type(chromosome).__name__}' and '{type(target).__name__}'."
+
+# 		return fitness(chromosome, target)
+
+# 	return testArguments
+
+
+# @wordAssertion
+# def wordScore(chromosome, target):
+
+# 	score = 0
+
+# 	for gene, character in zip(chromosome, target):
+
+# 		if (gene == character):
+
+# 			score += 1
+
+# 	return score**2
