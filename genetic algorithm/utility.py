@@ -371,14 +371,19 @@ def randomMutation(chromosome, mutation_number = 1):
 	return chromosome
 
 
-def linearAverage(dna, gamma = 0.75):
+def linearAverage(cluster, gamma = 0.75):
 
 	population = []
 
-	while (len(population) < len(dna)):
+	for group in cluster:
 
-		offspring_a = dna
-		offspring_b = 
+		parent_a = group[0]
+		parent_b = group[1]
+		offspring_a = gamma*parent_a + (1 - gamma)*parent_b
+		offspring_b = gamma*parent_b + (1 - gamma)*parent_a
+		population.extend((offspring_a, offspring_b))
+
+	return population
 
 
 def wordAssertion(chromosome, target):
