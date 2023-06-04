@@ -4,7 +4,6 @@ from constants import CHARACTERS
 
 def generatePopulation(chromosome_length = 2,
 					   population_size = 5,
-					   # encoding = None,
 					   category = "number",
 					   genotype = "encoded",
 					   gene_width = 1,
@@ -18,24 +17,10 @@ def generatePopulation(chromosome_length = 2,
 	population = []
 	random.shuffle(CHARACTERS)
 	symbol = ("character", "binary")
-	# number = ("number", "integer")
 	# random.seed(42)
 
 	while (len(population) < population_size):
 
-		# if (encoding == "digital"):
-
-		# 	chromosome = binaryConverter()
-
-		# elif (encoding == "one-hot"):
-
-		# 	chromosome = oneHotEncoding()
-
-		# elif (encoding == "hex"):
-
-		# 	chromosome = hexConverter()
-
-		# elif (genotype == "encoded"):
 		if (genotype == "encoded"):
 
 			if (category in symbol):

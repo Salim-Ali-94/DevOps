@@ -60,6 +60,22 @@ class TestUtility(unittest.TestCase):
 		self.assertEqual(len(mutant[0]), len(population[0]))
 		self.assertEqual(mutant[3:], cluster[3:])
 
+	def test_rotateMutation(self):
+
+		population = utility.generatePopulation(5)
+		dna_pool = utility.randomSelection(population)
+		cluster = utility.randomMatching(dna_pool)
+		mutant = utility.rotateMutation(cluster[0][0])
+		self.assertEqual(len(mutant), len(population[0]))
+
+	def test_randomMutation(self):
+
+		population = utility.generatePopulation(5)
+		dna_pool = utility.randomSelection(population)
+		cluster = utility.randomMatching(dna_pool)
+		mutant = utility.randomMutation(cluster[0][0])
+		self.assertEqual(len(mutant), len(population[0]))
+
 
 
 
