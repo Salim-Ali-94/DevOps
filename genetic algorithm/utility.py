@@ -4,7 +4,10 @@ from constants import CHARACTERS
 
 def generatePopulation(chromosome_length = 2,
 					   population_size = 5,
-					   encoding = "number",
+					   encoding = None,
+					   category = "number",
+					   genotype = "base",
+					   gene_width = 1,
 					   domain = None):
 
 	if (domain is None):
@@ -13,50 +16,86 @@ def generatePopulation(chromosome_length = 2,
 	   			   "maximum": 10 }
 
 	population = []
+	random.shuffle(CHARACTERS)
+	symbol = ("character", "binary")
+	number = ("number", "integer")
 	# random.seed(42)
 
-	# for _ in range(population_size):
 	while (len(population) < population_size):
 
-		if (encoding in ("character", "binary")):
+		# if (encoding == "digital"):
 
-			chromosome = ""
+		# 	chromosome = binaryConverter()
+
+		# elif (encoding == "one-hot"):
+
+		# 	chromosome = oneHotEncoding()
+
+		# elif (encoding == "hex"):
+
+		# 	chromosome = hexConverter()
+
+		# elif (genotype == "encoded"):
+		if (genotype == "encoded"):
+
+			if (category in symbol):
+
+				chromosome = ""
+				gene = ""
+
+			else:
+
+				chromosome = ()
+
+			while (len(chromosome) < chromosome_length):
+
+				if (category == "integer"):
+
+					gene = random.randint(domain["minimum"], domain["maximum"])
+
+				elif (category == "character"):
+
+					while (len(gene) < gene_width):
+
+						gene += random.choice(CHARACTERS)
+
+				elif (category == "binary"):
+
+					while (len(gene) < gene_width):
+
+						gene += random.choice(("0", "1"))
+
+				else:
+
+					gene = random.uniform(domain["minimum"], domain["maximum"])
+
+				chromosome = (*chromosome, gene)
 
 		else:
 
-			chromosome = ()
+			if (category in symbol):
 
-		# for _ in range(chromosome_length):
-		while (len(chromosome) < chromosome_length):
+				chromosome = ""
 
-			if (encoding == "integer"):
+			if (category == "integer"):
 
-				gene = random.randint(domain["minimum"], domain["maximum"])
+				chromosome = random.randint(domain["minimum"], domain["maximum"])
 
-			elif (encoding == "character"):
+			elif (category == "character"):
 
-				random.shuffle(CHARACTERS)
-				gene = random.choice(CHARACTERS)
+				while (len(chromosome) < chromosome_length):
 
-			elif (encoding == "bit"):
+					chromosome += random.choice(CHARACTERS)
 
-				gene = random.randint(0, 1)
+			elif (category == "binary"):
 
-			elif (encoding == "binary"):
+				while (len(chromosome) < chromosome_length):
 
-				gene = random.choice(("0", "1"))
+					chromosome += random.choice(("0", "1"))
 
 			else:
 
-				gene = random.uniform(domain["minimum"], domain["maximum"])
-
-			if (encoding in ("character", "binary")):
-
-				chromosome += gene
-
-			else:
-
-				chromosome = (*chromosome, gene)
+				chromosome = random.uniform(domain["minimum"], domain["maximum"])
 
 		population.append(chromosome)
 
@@ -93,7 +132,6 @@ def randomSelection(population,
 
 	else:
 
-		# for _ in population:
 		while (len(table) < len(population)):
 
 			candidate_member = random.choice(candidate_pool)
@@ -196,21 +234,109 @@ def swapAllele(parents, point):
 
 def forcedMutation(member):
 
-	return swapMutation(member)
+	return rotateMutation(member)
 
 
-def swapMutation(chromosome):
+def rotateMutation(chromosome):
 
 	point_a = random.randint(0, len(chromosome) - 1)
 	gene_a = chromosome[point_a]
 	point_b = random.randint(0, len(chromosome) - 1)
-	while (point_b == point_a): point_b = random.randint(0, len(chromosome) - 1)
+
+	while (point_b == point_a):
+
+		point_b = random.randint(0, len(chromosome) - 1)
+
 	gene_b = chromosome[point_b]
-	buffer = list(chromosome)
+
+	if (type(chromosome) != list):
+
+		buffer = list(chromosome)
+
+	else:
+
+		buffer = chromosome.copy()
+
 	buffer[point_a] = gene_b
 	buffer[point_b] = gene_a
-	chromosome = type(chromosome)(buffer)
+
+	if (type(chromosome) == str):
+
+		chromosome = "".join(buffer)
+
+	else:
+
+		chromosome = type(chromosome)(buffer)
+
 	return chromosome
+
+
+# def randomMutation(chromosome, mutation_number = 1):
+
+# 	if (mutation_number > len(chromosome)):
+
+# 		mutation_number = len(chromosome)
+
+# 	defects = random.sample(range(0, len(chromosome)), mutation_number)
+	
+# 	if (type(chromosome) == str):
+
+# 		buffer = list(chromosome)
+
+# 		for index in defects:
+
+# 			value = random.choice(CHARACTERS)
+
+# 			while (value == buffer[index]):
+
+# 				value = random.choice(CHARACTERS)
+
+# 			buffer[index] = value
+
+# 		chromosome = "".join(buffer)
+
+# 	else:
+
+# 		encoding = identifyEncoding(chromosome)
+
+# 		for index in defects:
+
+# 			value = random.uniform(min(chromosome), max(chromosome))
+# 			value = random.randint(0, 1)
+# 			value = random.randint(0, 1)
+
+
+# def identifyEncoding(chromosome):
+
+# 	if (type(chromosome[0]) == float):
+
+# 		encoding = "number"
+
+# 	elif (type(chromosome[0]) == int):
+
+# 		if all(value in (0, 1) for value in chromosome):
+
+# 			encoding = "bit"
+
+# 		else:
+
+# 			encoding = "integer"
+
+# 	elif (type(chromosome) == str):
+
+# 		if all(value in ("0", "1") for value in chromosome):
+
+# 			encoding = "binary"
+
+# 		else:
+
+# 			encoding = "character"
+
+# 	else:
+
+# 		encoding = "character"
+
+# 	return encoding
 
 
 def wordAssertion(chromosome, target):
