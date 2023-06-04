@@ -226,7 +226,15 @@ def swapAllele(parents, point):
 
 def forcedMutation(member):
 
-	return rotateMutation(member)
+	if (random.random() >= 0.5):
+
+		variant = rotateMutation(member)
+
+	else:
+
+		variant = randomMutation(member)
+
+	return variant
 
 
 def rotateMutation(chromosome):
@@ -329,11 +337,11 @@ def randomMutation(chromosome, mutation_number = 1):
 	else:
 
 		if (type(chromosome) == int):
-		
+
 			chromosome += random.randint(-2, 2)
 
 		elif (type(chromosome) == float):
-			
+
 			chromosome += random.uniform(-2, 2)
 
 		else:
@@ -361,6 +369,16 @@ def randomMutation(chromosome, mutation_number = 1):
 				chromosome = chromosome.copy()
 
 	return chromosome
+
+
+def linearAverage(dna, gamma = 0.75):
+
+	population = []
+
+	while (len(population) < len(dna)):
+
+		offspring_a = dna
+		offspring_b = 
 
 
 def wordAssertion(chromosome, target):
