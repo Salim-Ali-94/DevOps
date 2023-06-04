@@ -32,8 +32,10 @@ class TestUtility(unittest.TestCase):
 		population = utility.generatePopulation(2)
 		dna_pool = utility.randomSelection(population)
 		cluster = utility.sequentialMatching(dna_pool)
-		self.assertEqual(cluster["1"][0], dna_pool[0])
-		self.assertEqual(cluster[str(len(cluster))][-1], dna_pool[-1])
+		# self.assertEqual(cluster["1"][0], dna_pool[0])
+		# self.assertEqual(cluster[str(len(cluster))][-1], dna_pool[-1])
+		self.assertEqual(cluster[0][0], dna_pool[0])
+		self.assertEqual(cluster[-1][-1], dna_pool[-1])
 
 	def test_randomMatching(self):
 
@@ -47,7 +49,7 @@ class TestUtility(unittest.TestCase):
 
 	def test_pointCrossOver(self):
 
-		population = generatPopulation(2)
+		population = generatePopulation(2)
 		dna_pool = utility.randomSelection(population)
 		cluster = utility.randomMatching(dna_pool)
 		mutants = utility.pointCrossOver(cluster)
@@ -55,11 +57,12 @@ class TestUtility(unittest.TestCase):
 
 	def test_swapAllele(self):
 
-		population = generatPopulation(2)
+		population = generatePopulation(5)
 		dna_pool = utility.randomSelection(population)
 		cluster = utility.randomMatching(dna_pool)
-		mutant = utility.swapAllele(cluster[0])
+		mutant = utility.swapAllele(cluster[0], 2)
 		self.assertEqual(len(mutant), len(population[0]))
+		self.assertEqual(mutant[3:], cluster[3:])
 
 
 
