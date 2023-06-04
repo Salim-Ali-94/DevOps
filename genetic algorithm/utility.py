@@ -1,5 +1,75 @@
 import random
+import os
 from constants import CHARACTERS
+
+
+# def evolve(target,
+# 		   population_size = 100,
+# 		   fitnessFunction = wordScore,
+# 		   category = "number",
+# 		   genotype = "base",
+# 		   generations = 1000,
+# 		   mutation_rate = 0.1,
+# 		   dominanceFilter = randomSelection,
+# 		   matchingProcedure = randomMatching,
+# 		   memberEvolution = linearAverage,
+# 		   mutation = randomMutation,
+# 		   group_size = 2):
+
+# 	population = generatePopulation(chromosome_length = len(target),
+# 								    population_size = population_size,
+# 								    category = category,
+# 								    genotype = genotype)
+
+# 	alpha = random.choice(population)
+# 	# alpha, average_score = groupFitness(population, fitnessFunction)
+
+# 	for generation in range(generations):
+# 	# while (x < generations):
+
+# 		DNA_pool = dominanceFilter(population, group_size = group_size)
+# 		cluster = matchingProcedure(DNA_pool, group_size = group_size)
+# 		replication = memberEvolution(cluster)
+# 		evolution = mutate(mutation, replication)
+# 		report = evaluateFitness(evolution, fitnessFunction)
+# 		alpha = max(report, key = lambda data: data["fitness"])
+# 		population = DNA_pool.copy()
+# 		os.system("cls")
+# 		print(f"\n{alpha}")
+
+# 	return alpha
+
+
+def evaluateFitness(population, fitness, target = None):
+
+	portfolio = []
+
+	for member in population:
+
+		score = fitness(member, target)
+		portfolio.append({ "member": member,
+							"fitness": score })
+
+	return portfolio
+
+
+def mutate(mutationFunction, mutation_rate, population):
+
+	community = []
+
+	for member in population:
+
+		if (random.random() < mutation_rate):
+
+			mutant = mutationFunction(member)
+
+		else:
+
+			mutant = member
+
+		community.append(mutant)
+
+	return community
 
 
 def generatePopulation(chromosome_length = 2,
@@ -187,6 +257,35 @@ def sequentialMatching(dna, group_size = 2):
 	return mixing_cluster
 
 
+def symbolMatching(dna,
+				   strategy = "random",
+				   group_size = 2,
+				   chaos = False):
+
+	mixing_cluster = []
+	group_number = len(dna) // group_size
+	DNA = dna.copy()
+
+	if (not(chaos) and (strategy == "random")):
+
+		random.shuffle(DNA)
+
+	while (len(mixing_cluster) < group_number):
+
+		if (chaos and (strategy == "random")):
+
+			random.shuffle(DNA)
+
+		mixing_cluster.append(DNA[0:group_size])
+		DNA = DNA[group_size:]
+
+	if (len(DNA) > 0):
+
+		mixing_cluster.append(DNA.copy())
+
+	return mixing_cluster
+
+
 def pointCrossOver(cluster):
 
 	population = []
@@ -283,7 +382,6 @@ def randomMutation(chromosome, mutation_number = 1):
 	if (mutation_number > len(chromosome)):
 
 		mutation_number = len(chromosome)
-
 
 	if ((type(chromosome) == str) or
 		(type(chromosome[0]) == str)):
@@ -411,3 +509,41 @@ def wordAssertion(chromosome, target):
 	assert ((type(chromosome) in allowed) and
 			(type(target) in allowed)), \
 			f"Both the input string and the target word must be of type 'str', 'list' or 'tuple', but got '{type(chromosome).__name__}' and '{type(target).__name__}'."
+
+
+def evolve(target,
+		   population_size = 100,
+		   fitnessFunction = wordScore,
+		   category = "number",
+		   genotype = "base",
+		   generations = 1000,
+		   mutation_rate = 0.1,
+		   dominanceFilter = randomSelection,
+		   matchingProcedure = randomMatching,
+		   memberEvolution = linearAverage,
+		   mutation = randomMutation,
+		   group_size = 2):
+
+	population = generatePopulation(chromosome_length = len(target),
+								    population_size = population_size,
+								    category = category,
+								    genotype = genotype)
+
+	alpha = random.choice(population)
+	# alpha, average_score = groupFitness(population, fitnessFunction)
+	os.system("cls")
+	print()
+
+	for generation in range(generations):
+	# while (x < generations):
+
+		DNA_pool = dominanceFilter(population, group_size = group_size)
+		cluster = matchingProcedure(DNA_pool, group_size = group_size)
+		replication = memberEvolution(cluster)
+		evolution = mutate(mutation, mutation_rate, replication)
+		report = evaluateFitness(evolution, fitnessFunction, target)
+		alpha = max(report, key = lambda data: data["fitness"])
+		population = DNA_pool.copy()
+		print(f"{alpha['member']} / {alpha['fitness']}")
+
+	return alpha
