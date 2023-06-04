@@ -15,7 +15,8 @@ def generatePopulation(chromosome_length = 2,
 	population = []
 	# random.seed(42)
 
-	for _ in range(population_size):
+	# for _ in range(population_size):
+	while (len(population) < population_size):
 
 		if (encoding in ("character", "binary")):
 
@@ -25,7 +26,8 @@ def generatePopulation(chromosome_length = 2,
 
 			chromosome = ()
 
-		for _ in range(chromosome_length):
+		# for _ in range(chromosome_length):
+		while (len(chromosome) < chromosome_length):
 
 			if (encoding == "integer"):
 
@@ -91,7 +93,8 @@ def randomSelection(population,
 
 	else:
 
-		for _ in population:
+		# for _ in population:
+		while (len(table) < len(population)):
 
 			candidate_member = random.choice(candidate_pool)
 			table.append(candidate_member)
@@ -114,50 +117,106 @@ def randomSelection(population,
 	return table
 
 
-def randomMatching(dna, group_size = 2):
+def randomMatching(dna,
+				   group_size = 2,
+				   chaos = False):
 
-	mixing_cluster = {}
+	mixing_cluster = []
 	group_number = len(dna) // group_size
 	DNA = dna.copy()
+	if not(chaos): random.shuffle(DNA)
 
-	for index in range(group_number):
+	while (len(mixing_cluster) < group_number):
 
-		random.shuffle(DNA)
-		mixing_cluster[str(index + 1)] = DNA[0:group_size]
+		if chaos: random.shuffle(DNA)
+		mixing_cluster.append(DNA[0:group_size])
 		DNA = DNA[group_size:]
 
 	if (len(DNA) > 0):
 
-		last = group_number + 1
-		mixing_cluster[str(last)] = DNA.copy()
+		mixing_cluster.append(DNA.copy())
 
 	return mixing_cluster
 
 
 def sequentialMatching(dna, group_size = 2):
 
-	mixing_cluster = {}
-	group_number = len(dna) // group_size
+	mixing_cluster = []
 	remainder = len(dna) % group_size
+	DNA = dna.copy()
 
-	for index in range(group_number):
+	while (len(DNA) >= group_size):
 
-		start = group_size*index
-		end = group_size*(index + 1)
-		mixing_cluster[str(index + 1)] = dna[start:end]
+		mixing_cluster.append(DNA[0:group_size])
+		DNA = DNA[group_size:]
 
 	if (remainder > 0):
 
-		last = group_number + 1
-		mixing_cluster[str(last)] = dna[-remainder:]
+		mixing_cluster.append(dna[-remainder:])
 
 	return mixing_cluster
 
 
+def pointCrossOver(cluster):
+
+	population = []
+
+	for group in cluster:
+
+		point = random.randint(0, len(group[0]) - 1)
+
+		if (len(group) == 1):
+
+			clone = forcedMutation(group[0])
+			population.append(clone)
+
+		else:
+
+			clones = swapAllele(group, point)
+			population.extend(clones)
+
+	return population
+
+
+def swapAllele(parents, point):
+
+	clones = []
+	section = parents[-1][(point + 1):]
+
+	for parent in parents:
+
+		block = parent[0:(point + 1)]
+		allele = parent[(point + 1):]
+		clone = block + section
+		clones.append(clone)
+		section = allele
+
+	return clones
+
+
+def forcedMutation(member):
+
+	return swapMutation(member)
+
+
+def swapMutation(chromosome):
+
+	point_a = random.randint(0, len(chromosome) - 1)
+	gene_a = chromosome[point_a]
+	point_b = random.randint(0, len(chromosome) - 1)
+	while (point_b == point_a): point_b = random.randint(0, len(chromosome) - 1)
+	gene_b = chromosome[point_b]
+	buffer = list(chromosome)
+	buffer[point_a] = gene_b
+	buffer[point_b] = gene_a
+	chromosome = type(chromosome)(buffer)
+	return chromosome
+
+
 def wordAssertion(chromosome, target):
 
-	allowed = ("str", "list", "tuple")
+	allowed = (str, list, tuple)
 
-	assert ((type(chromosome).__name__ in allowed) and
-			(type(target).__name__ in allowed)), \
+	assert ((type(chromosome) in allowed) and
+			(type(target) in allowed)), \
 			f"Both the input string and the target word must be of type 'str', 'list' or 'tuple', but got '{type(chromosome).__name__}' and '{type(target).__name__}'."

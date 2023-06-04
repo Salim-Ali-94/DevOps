@@ -77,4 +77,5 @@ jobs:
         run: |
 
           python "./genetic algorithm/utility.py"
+          python "./tic tac toe/utility.py"
           echo "SUCCESSFULLY BUILT PROJECT"
