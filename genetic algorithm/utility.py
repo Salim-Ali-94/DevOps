@@ -352,7 +352,13 @@ def randomMutation(chromosome, mutation_number = 1):
 
 			for index in defects:
 
-				buffer[index] += random.uniform(-2, 2)
+				if all(isinstance(value, int) for value in chromosome):
+
+					buffer[index] += random.randint(-2, 2)
+
+				else:
+
+					buffer[index] += random.uniform(-2, 2)
 
 			if (type(chromosome) != list):
 
