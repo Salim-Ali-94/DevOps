@@ -3,27 +3,41 @@ import utility
 
 if __name__ == "__main__":
 
-	target = "Let none ignorant of calculus enter here."
-	population_size = 100
+	target = "cat"
+	population_size = 10*len(target)
 	fitness_function = utility.wordScore
 	category = "character"
 	genotype = "base"
-	episodes = 1000
-	mutation_rate = 0.5 / 100
-	natural_selection = utility.randomSelection
-	pairing = utility.sequentialMatching
-	combination = utility.pointCrossOver
-	mutation = utility.randomMutation
-	group_size = 2
-	member = utility.evolve(target,
-				   			population_size,
-						    fitness_function,
-						    category,
-						    genotype,
-						    episodes,
-						    mutation_rate,
-						    natural_selection,
-						    pairing,
-						    combination,
-						    mutation,
-						    group_size)
+	mutation_rate = 1 / 100
+	loop = True
+	display = False
+
+	natural_selection = { "function": utility.tournamentSelection,
+						  "arguments": { "size": len(target) } }
+
+	pairing = { "function": utility.symbolMatching,
+				"arguments": { "group_size": 2,
+				 			   "strategy": "random",
+				 			   "chaos": False } }
+
+	combination = { "function": utility.pointCrossOver,
+					"arguments": None }
+
+	mutation = { "function": utility.randomMutation,
+				 "arguments": { "mutation_number": 1 } }
+
+	parameters = { "population_size": population_size,
+				   "function": fitness_function,
+				   "category": category,
+				   "genotype": genotype,
+				   "mutation_rate": mutation_rate,
+				   "funnel": natural_selection,
+				   "pairing": pairing,
+				   "combination": combination,
+				   "mutator": mutation,
+				   "loop": loop,
+				   "display": display }
+
+	alpha, iterations, initial = utility.evolve(target, parameters)
+	if (alpha["chromosome"] == target): print(f"\nEvolved '{ initial['chromosome'] }' to '{ alpha['chromosome'] }' in { iterations } generation(s) with a fitness score of { alpha['fitness'] }\n")
+	else: print("ALGORITHM FAILED TO CONVERGE TO A SOLUTION")

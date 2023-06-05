@@ -3,41 +3,128 @@ import os
 from constants import CHARACTERS
 
 
-# def evolve(target,
-# 		   population_size = 100,
-# 		   fitnessFunction = wordScore,
-# 		   category = "number",
-# 		   genotype = "base",
-# 		   generations = 1000,
-# 		   mutation_rate = 0.1,
-# 		   dominanceFilter = randomSelection,
-# 		   matchingProcedure = randomMatching,
-# 		   memberEvolution = linearAverage,
-# 		   mutation = randomMutation,
-# 		   group_size = 2):
+def evolve(target, parameters = None):
 
-# 	population = generatePopulation(chromosome_length = len(target),
-# 								    population_size = population_size,
-# 								    category = category,
-# 								    genotype = genotype)
+	population, \
+	generations, \
+	mutation_rate, \
+	display, \
+	loop, \
+	fitnessFunction, \
+	dominanceFilter, \
+	matchingProcedure, \
+	memberEvolution, \
+	mutation = extractParameters(target, parameters)
+	portfolio = evaluateFitness(population, fitnessFunction, target)
+	alpha = max(portfolio, key = lambda data: data["fitness"])
+	initial = alpha.copy()
+	generation = 0
 
-# 	alpha = random.choice(population)
-# 	# alpha, average_score = groupFitness(population, fitnessFunction)
+	if loop:
 
-# 	for generation in range(generations):
-# 	# while (x < generations):
+		check = (generation < generations)
 
-# 		DNA_pool = dominanceFilter(population, group_size = group_size)
-# 		cluster = matchingProcedure(DNA_pool, group_size = group_size)
-# 		replication = memberEvolution(cluster)
-# 		evolution = mutate(mutation, replication)
-# 		report = evaluateFitness(evolution, fitnessFunction)
-# 		alpha = max(report, key = lambda data: data["fitness"])
-# 		population = DNA_pool.copy()
-# 		os.system("cls")
-# 		print(f"\n{alpha}")
+	else:
 
-# 	return alpha
+		check = (alpha["chromosome"] != target)
+
+	os.system("cls")
+	print()
+
+	while check:
+
+		report = evaluateFitness(population, fitnessFunction, target)
+		DNA_pool = dominanceFilter(report)
+		cluster = matchingProcedure(DNA_pool)
+		replication = memberEvolution(cluster)
+		evolution = mutate(mutation, mutation_rate, replication)
+		portfolio = evaluateFitness(evolution, fitnessFunction, target)
+		alpha = max(portfolio, key = lambda data: data["fitness"])
+		population = evolution.copy()
+		generation += 1
+
+		if loop:
+
+			check = (generation < generations)
+
+		else:
+
+			check = (alpha["chromosome"] != target)
+
+		if (alpha["chromosome"] == target):
+
+			break
+		
+		if display:
+
+			print(f"\nGeneration: { generation }")
+			print(f"Best candidate: { alpha['chromosome'] }")
+			print(f"Fitness: { alpha['fitness'] }")
+			print(f"Population fitness: { sum([member['fitness'] for member in portfolio]) / len(portfolio) }")
+
+	return alpha, generation, initial
+
+
+def extractParameters(target, parameters):
+
+	hyperparameters = { "population_size": 100,
+					    "function": wordScore,
+					    "category": "number",
+					    "genotype": "base",
+					    "generations": 1000,
+					    "mutation_rate": 0.1,
+
+					    "funnel": { "function": randomSelection,
+					    			"arguments": { "duplication_indicator": True,
+								    			   "clone_flag": False,
+								    			   "group_size": 2 } },
+
+					    "pairing": { "function": symbolMatching,
+					    			 "arguments": { "group_size": 2,
+					    			 				"strategy": "random",
+					    			 				"chaos": False } },
+
+					    "mutator": { "function": randomMutation,
+					    			 "arguments": { "mutation_number": 1 } },
+
+					    "combination": { "function": linearAverage,
+					    				 "arguments": None },
+					    "loop": True,
+					    "display": False }
+
+	if parameters is None:
+
+		parameters = hyperparameters
+
+	else:
+
+		parameters = { **hyperparameters, **parameters }
+
+	population = generatePopulation(chromosome_length = len(target),
+								    population_size = parameters["population_size"],
+								    category = parameters["category"],
+								    genotype = parameters["genotype"])
+
+	fitnessFunction = parameters["function"]
+	if parameters["funnel"]["arguments"] is not None: dominanceFilter = lambda generation: parameters["funnel"]["function"](generation, **parameters["funnel"]["arguments"])
+	else: dominanceFilter = lambda generation: parameters["funnel"]["function"](generation)
+	if parameters["pairing"]["arguments"] is not None: matchingProcedure = lambda generation: parameters["pairing"]["function"](generation, **parameters["pairing"]["arguments"])
+	else: matchingProcedure = lambda generation: parameters["pairing"]["function"](generation, **parameters["pairing"]["arguments"])
+	if parameters["combination"]["arguments"] is not None: memberEvolution = lambda generation: parameters["combination"]["function"](generation, **parameters["combination"]["arguments"])
+	else: memberEvolution = lambda generation: parameters["combination"]["function"](generation)
+	if parameters["mutator"]["arguments"] is not None: mutation = lambda generation: parameters["mutator"]["function"](generation, **parameters["mutator"]["arguments"])
+	else: mutation = lambda generation: parameters["mutator"]["function"](generation, **parameters["mutator"]["arguments"])
+
+	return [population,
+		    parameters["generations"],
+		    parameters["mutation_rate"],
+		    parameters["display"],
+		    parameters["loop"],
+		    fitnessFunction,
+		    dominanceFilter,
+		    matchingProcedure,
+		    memberEvolution,
+		    mutation]
 
 
 def evaluateFitness(population, fitness, target = None):
@@ -47,8 +134,8 @@ def evaluateFitness(population, fitness, target = None):
 	for member in population:
 
 		score = fitness(member, target)
-		portfolio.append({ "member": member,
-							"fitness": score })
+		portfolio.append({ "chromosome": member,
+						   "fitness": score })
 
 	return portfolio
 
@@ -65,7 +152,7 @@ def mutate(mutationFunction, mutation_rate, population):
 
 		else:
 
-			mutant = member
+			mutant = member[:]
 
 		community.append(mutant)
 
@@ -213,50 +300,6 @@ def randomSelection(population,
 	return table
 
 
-def randomMatching(dna, group_size = 2, chaos = False):
-
-	mixing_cluster = []
-	group_number = len(dna) // group_size
-	DNA = dna.copy()
-
-	if not(chaos):
-
-		random.shuffle(DNA)
-
-	while (len(mixing_cluster) < group_number):
-
-		if chaos:
-
-			random.shuffle(DNA)
-
-		mixing_cluster.append(DNA[0:group_size])
-		DNA = DNA[group_size:]
-
-	if (len(DNA) > 0):
-
-		mixing_cluster.append(DNA.copy())
-
-	return mixing_cluster
-
-
-def sequentialMatching(dna, group_size = 2):
-
-	mixing_cluster = []
-	remainder = len(dna) % group_size
-	DNA = dna.copy()
-
-	while (len(DNA) >= group_size):
-
-		mixing_cluster.append(DNA[0:group_size])
-		DNA = DNA[group_size:]
-
-	if (remainder > 0):
-
-		mixing_cluster.append(dna[-remainder:])
-
-	return mixing_cluster
-
-
 def symbolMatching(dna,
 				   strategy = "random",
 				   group_size = 2,
@@ -360,7 +403,6 @@ def rotateMutation(chromosome):
 	buffer[point_b] = gene_a
 
 	if (type(chromosome) != list):
-
 
 		if (type(chromosome) == str):
 
@@ -502,6 +544,139 @@ def heuristicAverage(pool):
 	return population
 
 
+def tournamentSelection(generation, size = 2):
+
+	if all(item["chromosome"] == generation[0]["chromosome"] for item in generation[1:]):
+
+		table = [forcedMutation(candidate["chromosome"]) for candidate in generation]
+
+	else:
+
+		table = []
+		competition = filterDuplicates(generation)
+
+		if (size > len(competition)):
+
+			size = len(competition)
+
+		while (len(table) < len(generation)):
+
+			tournament = random.sample(competition, size)
+			candidate = max(tournament, key = lambda chromosome: chromosome["fitness"])
+			table.append(candidate["chromosome"])
+
+	return table
+
+
+def filterDuplicates(population):
+
+	unique = []
+
+	for member in population:
+
+		if member not in unique:
+
+			unique.append(member)
+
+	return unique
+
+
+def rouletteWheelSelection(generation):
+
+	if (all(item["fitness"] == 0 for item in generation) or
+		all(item["chromosome"] == generation[0]["chromosome"] for item in generation[1:])):
+
+		table = [forcedMutation(candidate["chromosome"]) for candidate in generation]
+
+	else:
+
+		habitat = filterDuplicates(generation)
+		habitat = [member for member in habitat if (member["fitness"] > 0)]
+		sections = splitLine(habitat)
+		table = []
+
+		while (len(table) < len(generation)):
+
+			point = random.random()
+
+			for index, member in enumerate(sections):
+
+				if (index == 0):
+
+					if ((point >= member["interval"][0]) and
+						(point < member["interval"][1])):
+
+						candidate = member["chromosome"]
+						break
+
+				elif (index == len(sections) - 1):
+
+					if ((point > member["interval"][0]) and
+						(point <= member["interval"][1])):
+
+						candidate = member["chromosome"]
+						break
+
+				else:
+
+					if ((point > member["interval"][0]) and
+						(point < member["interval"][1])):
+
+						candidate = member["chromosome"]
+						break
+
+			table.append(member["chromosome"])
+
+	return table
+
+
+def splitLine(population):
+
+	line = []
+	total = sum([chromosome["fitness"] for chromosome in population])
+	initial = 0
+
+	for member in population:
+
+		final = initial + member["fitness"] / total
+		line.append({ "chromosome": member["chromosome"],
+					  "interval": (initial, final) })
+		initial = final
+
+	return line
+
+
+def proportionalSelection(generation):
+
+	if (all(member["fitness"] == 0 for member in generation) or
+		all(member["chromosome"] == generation[0]["chromosome"] for member in generation[1:])):
+
+		table = [forcedMutation(candidate["chromosome"]) for candidate in generation]
+
+	else:
+
+		bag = []
+		table = []
+		ecosystem = filterDuplicates(generation)
+		ecosystem = [member for member in ecosystem if (member["fitness"] != 0)]
+		minimum = min(ecosystem, key = lambda data: data["fitness"])
+
+		for member in ecosystem:
+
+			factor = member["fitness"] // minimum["fitness"]
+
+			for index in range(factor):
+
+				bag.append(member["chromosome"])
+
+		while (len(table) < len(generation)):
+
+			candidate = random.choice(bag)
+			table.append(candidate)
+
+	return table
+
+
 def wordAssertion(chromosome, target):
 
 	allowed = (str, list, tuple)
@@ -509,41 +684,3 @@ def wordAssertion(chromosome, target):
 	assert ((type(chromosome) in allowed) and
 			(type(target) in allowed)), \
 			f"Both the input string and the target word must be of type 'str', 'list' or 'tuple', but got '{type(chromosome).__name__}' and '{type(target).__name__}'."
-
-
-def evolve(target,
-		   population_size = 100,
-		   fitnessFunction = wordScore,
-		   category = "number",
-		   genotype = "base",
-		   generations = 1000,
-		   mutation_rate = 0.1,
-		   dominanceFilter = randomSelection,
-		   matchingProcedure = randomMatching,
-		   memberEvolution = linearAverage,
-		   mutation = randomMutation,
-		   group_size = 2):
-
-	population = generatePopulation(chromosome_length = len(target),
-								    population_size = population_size,
-								    category = category,
-								    genotype = genotype)
-
-	alpha = random.choice(population)
-	# alpha, average_score = groupFitness(population, fitnessFunction)
-	os.system("cls")
-	print()
-
-	for generation in range(generations):
-	# while (x < generations):
-
-		DNA_pool = dominanceFilter(population, group_size = group_size)
-		cluster = matchingProcedure(DNA_pool, group_size = group_size)
-		replication = memberEvolution(cluster)
-		evolution = mutate(mutation, mutation_rate, replication)
-		report = evaluateFitness(evolution, fitnessFunction, target)
-		alpha = max(report, key = lambda data: data["fitness"])
-		population = DNA_pool.copy()
-		print(f"{alpha['member']} / {alpha['fitness']}")
-
-	return alpha
