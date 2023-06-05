@@ -54,7 +54,7 @@ def evolve(target, parameters = None):
 		if (alpha["chromosome"] == target):
 
 			break
-		
+
 		if display:
 
 			print(f"\nGeneration: { generation }")
@@ -440,7 +440,8 @@ def randomMutation(chromosome, mutation_number = 1):
 
 		for index in defects:
 
-			if (chromosome.isdigit()):
+			if (chromosome.isdigit() and
+				all(gene in ("0", "1") for gene in chromosome)):
 
 				bits = ["0", "1"]
 				bits.remove(buffer[index])
@@ -625,7 +626,7 @@ def rouletteWheelSelection(generation):
 						candidate = member["chromosome"]
 						break
 
-			table.append(member["chromosome"])
+			table.append(candidate)
 
 	return table
 
@@ -664,10 +665,7 @@ def proportionalSelection(generation):
 		for member in ecosystem:
 
 			factor = member["fitness"] // minimum["fitness"]
-
-			for index in range(factor):
-
-				bag.append(member["chromosome"])
+			bag.extend([member["chromosome"] for _ in range(factor)])
 
 		while (len(table) < len(generation)):
 

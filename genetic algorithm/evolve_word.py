@@ -10,6 +10,7 @@ if __name__ == "__main__":
 	genotype = "base"
 	mutation_rate = 1 / 100
 	loop = True
+	generations = 5
 	display = False
 
 	natural_selection = { "function": utility.tournamentSelection,
@@ -36,6 +37,7 @@ if __name__ == "__main__":
 				   "combination": combination,
 				   "mutator": mutation,
 				   "loop": loop,
+				   "generations": generations,
 				   "display": display }
 
 	alpha, iterations, initial = utility.evolve(target, parameters)
