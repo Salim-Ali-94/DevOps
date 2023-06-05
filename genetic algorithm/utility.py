@@ -100,20 +100,48 @@ def extractParameters(target, parameters):
 
 		parameters = { **hyperparameters, **parameters }
 
+	if (parameters["population_size"] <= 1):
+
+		parameters["population_size"] = 2
+
 	population = generatePopulation(chromosome_length = len(target),
 								    population_size = parameters["population_size"],
 								    category = parameters["category"],
 								    genotype = parameters["genotype"])
 
 	fitnessFunction = parameters["function"]
-	if parameters["funnel"]["arguments"] is not None: dominanceFilter = lambda generation: parameters["funnel"]["function"](generation, **parameters["funnel"]["arguments"])
-	else: dominanceFilter = lambda generation: parameters["funnel"]["function"](generation)
-	if parameters["pairing"]["arguments"] is not None: matchingProcedure = lambda generation: parameters["pairing"]["function"](generation, **parameters["pairing"]["arguments"])
-	else: matchingProcedure = lambda generation: parameters["pairing"]["function"](generation, **parameters["pairing"]["arguments"])
-	if parameters["combination"]["arguments"] is not None: memberEvolution = lambda generation: parameters["combination"]["function"](generation, **parameters["combination"]["arguments"])
-	else: memberEvolution = lambda generation: parameters["combination"]["function"](generation)
-	if parameters["mutator"]["arguments"] is not None: mutation = lambda generation: parameters["mutator"]["function"](generation, **parameters["mutator"]["arguments"])
-	else: mutation = lambda generation: parameters["mutator"]["function"](generation, **parameters["mutator"]["arguments"])
+
+	if parameters["funnel"]["arguments"] is not None:
+
+		dominanceFilter = lambda generation: parameters["funnel"]["function"](generation, **parameters["funnel"]["arguments"])
+
+	else:
+
+		dominanceFilter = lambda generation: parameters["funnel"]["function"](generation)
+
+	if parameters["pairing"]["arguments"] is not None:
+
+		matchingProcedure = lambda generation: parameters["pairing"]["function"](generation, **parameters["pairing"]["arguments"])
+
+	else:
+
+		matchingProcedure = lambda generation: parameters["pairing"]["function"](generation, **parameters["pairing"]["arguments"])
+
+	if parameters["combination"]["arguments"] is not None:
+
+		memberEvolution = lambda generation: parameters["combination"]["function"](generation, **parameters["combination"]["arguments"])
+
+	else:
+
+		memberEvolution = lambda generation: parameters["combination"]["function"](generation)
+
+	if parameters["mutator"]["arguments"] is not None:
+
+		mutation = lambda generation: parameters["mutator"]["function"](generation, **parameters["mutator"]["arguments"])
+
+	else:
+
+		mutation = lambda generation: parameters["mutator"]["function"](generation, **parameters["mutator"]["arguments"])
 
 	return [population,
 		    parameters["generations"],
@@ -142,7 +170,7 @@ def evaluateFitness(population, fitness, target = None):
 
 def mutate(mutationFunction, mutation_rate, population):
 
-	community = []
+	generation = []
 
 	for member in population:
 
@@ -154,9 +182,9 @@ def mutate(mutationFunction, mutation_rate, population):
 
 			mutant = member[:]
 
-		community.append(mutant)
+		generation.append(mutant)
 
-	return community
+	return generation
 
 
 def generatePopulation(chromosome_length = 2,
@@ -261,13 +289,13 @@ def wordScore(chromosome, target):
 	return score**2
 
 
-def randomSelection(population,
+def randomSelection(generation,
 					duplication_indicator = True,
 					clone_flag = False,
 					group_size = 2):
 
-	random.shuffle(population)
-	candidate_pool = population.copy()
+	random.shuffle(generation)
+	candidate_pool = generation.copy()
 	suspend = 0
 	table = []
 
@@ -277,16 +305,16 @@ def randomSelection(population,
 
 	else:
 
-		while (len(table) < len(population)):
+		while (len(table) < len(generation)):
 
-			candidate_member = random.choice(candidate_pool)
-			table.append(candidate_member)
+			candidate = random.choice(candidate_pool)
+			table.append(candidate)
 
 			if not(clone_flag):
 
 				if (suspend < group_size):
 
-					candidate_pool.remove(candidate_member)
+					candidate_pool.remove(candidate)
 					suspend += 1
 
 				else:
@@ -331,7 +359,7 @@ def symbolMatching(dna,
 
 def pointCrossOver(cluster):
 
-	population = []
+	generation = []
 
 	for group in cluster:
 
@@ -340,14 +368,14 @@ def pointCrossOver(cluster):
 		if (len(group) == 1):
 
 			clone = forcedMutation(group[0])
-			population.append(clone)
+			generation.append(clone)
 
 		else:
 
 			clones = swapAllele(group, point)
-			population.extend(clones)
+			generation.extend(clones)
 
-	return population
+	return generation
 
 
 def swapAllele(parents, point):
@@ -366,60 +394,73 @@ def swapAllele(parents, point):
 	return clones
 
 
-def forcedMutation(member):
+def forcedMutation(chromosome):
 
-	if (random.random() >= 0.5):
+	if (type(chromosome) not in (int, float)):
 
-		variant = rotateMutation(member)
+		if (random.random() >= 0.5):
+
+			variant = shuffleMutation(chromosome)
+
+		else:
+
+			variant = randomMutation(chromosome)
 
 	else:
 
-		variant = randomMutation(member)
+		variant = randomMutation(chromosome)
 
 	return variant
 
 
-def rotateMutation(chromosome):
+def shuffleMutation(chromosome):
 
-	point_a = random.randint(0, len(chromosome) - 1)
-	gene_a = chromosome[point_a]
-	point_b = random.randint(0, len(chromosome) - 1)
+	if (len(chromosome) > 1):
 
-	while (point_b == point_a):
-
+		point_a = random.randint(0, len(chromosome) - 1)
+		gene_a = chromosome[point_a]
 		point_b = random.randint(0, len(chromosome) - 1)
 
-	gene_b = chromosome[point_b]
+		while (point_b == point_a):
 
-	if (type(chromosome) != list):
+			point_b = random.randint(0, len(chromosome) - 1)
 
-		buffer = list(chromosome)
+		gene_b = chromosome[point_b]
 
-	else:
+		if (type(chromosome) != list):
 
-		buffer = chromosome.copy()
-
-	buffer[point_a] = gene_b
-	buffer[point_b] = gene_a
-
-	if (type(chromosome) != list):
-
-		if (type(chromosome) == str):
-
-			chromosome = "".join(buffer)
+			buffer = list(chromosome)
 
 		else:
 
-			chromosome = type(chromosome)(buffer)
+			buffer = chromosome.copy()
 
-	else:
+		buffer[point_a] = gene_b
+		buffer[point_b] = gene_a
 
-		chromosome = buffer.copy()
+		if (type(chromosome) != list):
+
+			if (type(chromosome) == str):
+
+				chromosome = "".join(buffer)
+
+			else:
+
+				chromosome = type(chromosome)(buffer)
+
+		else:
+
+			chromosome = buffer.copy()
 
 	return chromosome
 
 
-def randomMutation(chromosome, mutation_number = 1):
+def randomMutation(chromosome, mutation_number = 1, domain = None):
+
+	if domain is None:
+
+		domain = { "minimum": -1,
+				   "maximum": 1 }
 
 	if (mutation_number > len(chromosome)):
 
@@ -473,11 +514,11 @@ def randomMutation(chromosome, mutation_number = 1):
 
 		if (type(chromosome) == int):
 
-			chromosome += random.randint(-2, 2)
+			chromosome += random.randint(domain["minimum"], domain["maximum"])
 
 		elif (type(chromosome) == float):
 
-			chromosome += random.uniform(-2, 2)
+			chromosome += random.uniform(domain["minimum"], domain["maximum"])
 
 		else:
 
@@ -495,11 +536,11 @@ def randomMutation(chromosome, mutation_number = 1):
 
 				if all(isinstance(value, int) for value in chromosome):
 
-					buffer[index] += random.randint(-2, 2)
+					buffer[index] += random.randint(domain["minimum"], domain["maximum"])
 
 				else:
 
-					buffer[index] += random.uniform(-2, 2)
+					buffer[index] += random.uniform(domain["minimum"], domain["maximum"])
 
 			if (type(chromosome) != list):
 
@@ -514,40 +555,54 @@ def randomMutation(chromosome, mutation_number = 1):
 
 def linearAverage(cluster):
 
-	population = []
+	generation = []
 
 	for group in cluster:
 
-		gamma = random.random()
-		parent_a = group[0]
-		parent_b = group[1]
-		offspring_a = gamma*parent_a + (1 - gamma)*parent_b
-		offspring_b = gamma*parent_b + (1 - gamma)*parent_a
-		population.extend((offspring_a, offspring_b))
+		if (len(group) > 1):
 
-	return population
+			gamma = random.random()
+			parent_a = group[0]
+			parent_b = group[1]
+			offspring_a = gamma*parent_a + (1 - gamma)*parent_b
+			offspring_b = gamma*parent_b + (1 - gamma)*parent_a
+			generation.extend((offspring_a, offspring_b))
+
+		else:
+
+			offspring = randomMutation(group[0])
+			generation.append(offspring)
+
+	return generation
 
 
-def heuristicAverage(pool):
+def heuristicAverage(dna):
 
-	population = []
+	generation = []
 
-	while (len(population) < len(pool)):
+	while (len(generation) < len(dna)):
 
-		gamma = random.random()
-		parent_a = random.choice(pool)
-		pool.remove(parent_a)
-		parent_b = random.choice(pool)
-		pool.append(parent_a)
-		offspring = gamma*(parent_a - parent_b) + parent_b
-		population.append(offspring)
+		if (len(dna) > 1):
 
-	return population
+			gamma = random.random()
+			parent_a = random.choice(dna)
+			dna.remove(parent_a)
+			parent_b = random.choice(dna)
+			dna.append(parent_a)
+			offspring = gamma*(parent_a - parent_b) + parent_b
+			generation.append(offspring)
+
+		else:
+
+			offspring = randomMutation(dna[0])
+			generation.append(offspring)
+
+	return generation
 
 
 def tournamentSelection(generation, size = 2):
 
-	if all(item["chromosome"] == generation[0]["chromosome"] for item in generation[1:]):
+	if all((member["chromosome"] == generation[0]["chromosome"]) for member in generation[1:]):
 
 		table = [forcedMutation(candidate["chromosome"]) for candidate in generation]
 
@@ -584,23 +639,23 @@ def filterDuplicates(population):
 
 def rouletteWheelSelection(generation):
 
-	if (all(item["fitness"] == 0 for item in generation) or
-		all(item["chromosome"] == generation[0]["chromosome"] for item in generation[1:])):
+	if (all((member["fitness"] == 0) for member in generation) or
+		all((member["chromosome"] == generation[0]["chromosome"]) for member in generation[1:])):
 
 		table = [forcedMutation(candidate["chromosome"]) for candidate in generation]
 
 	else:
 
-		habitat = filterDuplicates(generation)
-		habitat = [member for member in habitat if (member["fitness"] > 0)]
-		sections = splitLine(habitat)
+		roulette = filterDuplicates(generation)
+		roulette = [member for member in roulette if (member["fitness"] > 0)]
+		wheel = splitLine(roulette)
 		table = []
 
 		while (len(table) < len(generation)):
 
 			point = random.random()
 
-			for index, member in enumerate(sections):
+			for index, member in enumerate(wheel):
 
 				if (index == 0):
 
@@ -610,7 +665,7 @@ def rouletteWheelSelection(generation):
 						candidate = member["chromosome"]
 						break
 
-				elif (index == len(sections) - 1):
+				elif (index == len(wheel) - 1):
 
 					if ((point > member["interval"][0]) and
 						(point <= member["interval"][1])):
@@ -634,7 +689,7 @@ def rouletteWheelSelection(generation):
 def splitLine(population):
 
 	line = []
-	total = sum([chromosome["fitness"] for chromosome in population])
+	total = sum([member["fitness"] for member in population])
 	initial = 0
 
 	for member in population:
@@ -649,20 +704,19 @@ def splitLine(population):
 
 def proportionalSelection(generation):
 
-	if (all(member["fitness"] == 0 for member in generation) or
-		all(member["chromosome"] == generation[0]["chromosome"] for member in generation[1:])):
+	if ((all(member["fitness"] == 0) for member in generation) or
+		(all(member["chromosome"] == generation[0]["chromosome"]) for member in generation[1:])):
 
 		table = [forcedMutation(candidate["chromosome"]) for candidate in generation]
 
 	else:
 
-		bag = []
-		table = []
-		ecosystem = filterDuplicates(generation)
-		ecosystem = [member for member in ecosystem if (member["fitness"] != 0)]
-		minimum = min(ecosystem, key = lambda data: data["fitness"])
+		bag, table = [], []
+		sections = filterDuplicates(generation)
+		sections = [member for member in sections if (member["fitness"] != 0)]
+		minimum = min(sections, key = lambda data: data["fitness"])
 
-		for member in ecosystem:
+		for member in sections:
 
 			factor = member["fitness"] // minimum["fitness"]
 			bag.extend([member["chromosome"] for _ in range(factor)])
