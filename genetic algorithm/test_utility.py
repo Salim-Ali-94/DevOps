@@ -60,10 +60,10 @@ class TestUtility(unittest.TestCase):
 		self.assertEqual(type(mutant[0]), type(population[0]))
 		self.assertEqual(mutant[3:], cluster[3:])
 
-	def test_rotateMutation(self):
+	def test_shuffleMutation(self):
 
 		population = utility.generatePopulation(5)
-		mutant = utility.rotateMutation(population[0])
+		mutant = utility.shuffleMutation(population[0])
 		self.assertEqual(len(mutant), len(population[0]))
 		self.assertEqual(type(mutant), type(population[0]))
 
