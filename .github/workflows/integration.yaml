@@ -35,6 +35,9 @@ jobs:
       - name: Run code lint checks for tic tac toe directory
         run: pylint "tic tac toe/**/*.py"
 
+      - name: Run code linter for slither.io bot folder
+        run: pylint "slither.io bot/**/*.py"
+
   testing:
 
     runs-on: ubuntu-latest
