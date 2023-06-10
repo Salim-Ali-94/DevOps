@@ -37,7 +37,7 @@ def evolve(parameters = None):
 
 	else:
 
-		if (target is not None):
+		if target is not None:
 
 			check = (alpha["chromosome"] != target)
 
@@ -80,7 +80,7 @@ def evolve(parameters = None):
 
 			check = (generation < generations)
 
-			if (target is not None):
+			if target is not None:
 
 				if (alpha["chromosome"] == target):
 
@@ -88,7 +88,7 @@ def evolve(parameters = None):
 
 		else:
 
-			if (target is not None):
+			if target is not None:
 
 				check = (alpha["chromosome"] != target)
 
@@ -244,7 +244,7 @@ def evaluateFitness(population, fitness, target = None):
 
 	for member in population:
 
-		if (target == None):
+		if target is None:
 
 			score = fitness(member)
 
