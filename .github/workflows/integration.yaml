@@ -77,5 +77,7 @@ jobs:
         run: |
 
           python "./genetic algorithm/evolve_word.py"
+          python "./genetic algorithm/optimize_function.py"
+          python "./genetic algorithm/search_manifold.py"
           python "./tic tac toe/utility.py"
           echo "SUCCESSFULLY BUILT PROJECT"

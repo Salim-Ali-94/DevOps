@@ -37,7 +37,7 @@ def evolve(parameters = None):
 
 	else:
 
-		if (target != None):
+		if (target is not None):
 
 			check = (alpha["chromosome"] != target)
 
@@ -80,7 +80,7 @@ def evolve(parameters = None):
 
 			check = (generation < generations)
 
-			if (target != None):
+			if (target is not None):
 
 				if (alpha["chromosome"] == target):
 
@@ -88,7 +88,7 @@ def evolve(parameters = None):
 
 		else:
 
-			if (target != None):
+			if (target is not None):
 
 				check = (alpha["chromosome"] != target)
 
@@ -175,7 +175,7 @@ def extractParameters(parameters):
 
 		parameters["population_size"] = 2
 
-	population = generatePopulation(chromosome_length = len(parameters["target"]) if (parameters["target"] != None) else parameters["chromosome_length"],
+	population = generatePopulation(chromosome_length = len(parameters["target"]) if (parameters["target"] is not None) else parameters["chromosome_length"],
 								    population_size = parameters["population_size"],
 								    category = parameters["category"],
 								    genotype = parameters["genotype"],
@@ -557,15 +557,11 @@ def randomMutation(chromosome, mutation_number = 1, domain = None, chromosome_le
 
 	if (type(chromosome) in (tuple, list, str)):
 
-		if (mutation_number > len(chromosome)):
-
-			mutation_number = len(chromosome)
+		mutation_number = min(mutation_number, len(chromosome))
 
 	else:
 
-		if (mutation_number > chromosome_length):
-
-			mutation_number = chromosome_length
+		mutation_number = min(mutation_number, chromosome_length)
 
 	if (type(chromosome) in (str, int, float)):
 
@@ -712,7 +708,7 @@ def linearAverage(cluster, chromosome_length = 1):
 	return generation
 
 
-def heuristicAverage(dna, objective = "maximize"):
+def heuristicAverage(dna, objective = "maximize", chromosome_length = 1):
 
 	generation = []
 
