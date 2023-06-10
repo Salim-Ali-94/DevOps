@@ -29,7 +29,7 @@ jobs:
       - name: Install dependencies required for GitHub checks
         run: |
 
-          pip install -r requirements.txt
+          pip install -r "slither.io bot/requirements.txt"
           pip install pylint
 
       - name: Run code lint checks for genetic algorithm directory
