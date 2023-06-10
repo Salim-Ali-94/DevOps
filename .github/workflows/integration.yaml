@@ -27,13 +27,19 @@ jobs:
           python-version: 3.10.9
 
       - name: Install dependencies required for GitHub checks
-        run: pip install pylint
+        run: |
+
+          pip install -r "slither.io bot/requirements.txt"
+          pip install pylint
 
       - name: Run code lint checks for genetic algorithm directory
         run: pylint "genetic algorithm/**/*.py"
 
       - name: Run code lint checks for tic tac toe directory
         run: pylint "tic tac toe/**/*.py"
+
+      - name: Run code linter for slither.io bot folder
+        run: pylint "slither.io bot/**/*.py"
 
   testing:
 
