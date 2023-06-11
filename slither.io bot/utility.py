@@ -50,7 +50,7 @@ async def checkReplay(page):
 
 			await button[0].click()
 
-	except Exception as error:
+	except:
 
 		pass
 
