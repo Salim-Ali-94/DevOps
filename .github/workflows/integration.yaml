@@ -83,9 +83,11 @@ jobs:
         run: |
 
           python "./genetic algorithm/evolve_word.py"
-          echo "SUCCESSFULLY ALL BUILT PROJECTS"
+          echo "passed word evolution test case"
           python "./genetic algorithm/optimize_function.py"
+          echo "passed function optimization test case"
           python "./genetic algorithm/search_manifold.py"
+          echo "passed manifold search test case"
           python "./tic tac toe/utility.py"
           python "./slither.io bot/bot.py"
           echo "SUCCESSFULLY ALL BUILT PROJECTS"
