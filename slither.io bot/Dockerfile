@@ -2,6 +2,10 @@ FROM python:3.10.9-slim-buster
 
 WORKDIR /bot
 
+COPY requirements.txt .
+
+RUN pip install -r requirements.txt
+
 RUN apt-get update && apt-get install -y \
     wget \
     gnupg \
@@ -27,7 +31,5 @@ RUN apt-get update && apt-get install -y \
 RUN pip install --no-cache-dir webdriver_manager
 
 COPY . .
-
-RUN pip install --no-cache-dir -r requirements.txt
 
 CMD ["python", "utility.py"]

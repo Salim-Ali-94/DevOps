@@ -61,7 +61,7 @@ jobs:
         run: |
 
           python "./genetic algorithm/test_utility.py"
-          echo "ALL TESTS HAVE PASSED SUCCESSFULLY"
+          echo "ALL UNIT TESTS HAVE PASSED SUCCESSFULLY"
 
   building:
 
