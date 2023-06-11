@@ -86,4 +86,5 @@ jobs:
           python "./genetic algorithm/optimize_function.py"
           python "./genetic algorithm/search_manifold.py"
           python "./tic tac toe/utility.py"
-          echo "SUCCESSFULLY BUILT PROJECT"
+          python "./slither.io bot/bot.py"
+          echo "SUCCESSFULLY ALL BUILT PROJECTS"

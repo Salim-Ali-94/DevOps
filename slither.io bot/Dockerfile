@@ -32,4 +32,4 @@ RUN pip install --no-cache-dir webdriver_manager
 
 COPY . .
 
-CMD ["python", "utility.py"]
+CMD ["python", "bot.py"]
