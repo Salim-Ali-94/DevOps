@@ -52,6 +52,6 @@ async def checkReplay(page):
 
 	except:
 
-		pass
+		button = None
 
 	return page
