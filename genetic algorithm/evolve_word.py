@@ -10,8 +10,8 @@ if __name__ == "__main__":
 	category = "character"
 	genotype = "base"
 	mutation_rate = 0.5 / 100
-	loop = True
 	generations = 5
+	loop = True
 	display = False
 	task = "evolve"
 	objective = "maximize"
