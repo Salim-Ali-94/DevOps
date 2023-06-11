@@ -10,8 +10,8 @@ if __name__ == "__main__":
 	category = "character"
 	genotype = "base"
 	mutation_rate = 0.5 / 100
-	loop = True
 	generations = 5
+	loop = True
 	display = False
 	task = "evolve"
 	objective = "maximize"
@@ -51,4 +51,4 @@ if __name__ == "__main__":
 
 	alpha, iterations, initial = utility.evolve(parameters)
 	if (alpha["chromosome"] == target): print(f"\nEvolved '{ initial['chromosome'] }' to '{ alpha['chromosome'] }' in { iterations } generation(s) with a fitness score of { alpha['fitness'] }\n")
-	else: print("ALGORITHM FAILED TO CONVERGE TO A SOLUTION")
+	else: print("ALGORITHM FAILED TO CONVERGE TO A SOLUTION\n")
