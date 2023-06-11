@@ -27,10 +27,7 @@ jobs:
           python-version: 3.10.9
 
       - name: Install dependencies required for GitHub checks
-        run: |
-
-          pip install -r "slither.io bot/requirements.txt"
-          pip install pylint
+        run: pip install pylint
 
       - name: Run code lint checks for genetic algorithm directory
         run: pylint "genetic algorithm/**/*.py"
@@ -78,6 +75,9 @@ jobs:
         with:
 
           python-version: 3.10.9
+
+      - name: Install all required dependencies for GitHub checks
+        run: pip install -r "slither.io bot/requirements.txt"
 
       - name: Run code to ensure it builds with no errors that linting can't pick up
         run: |
