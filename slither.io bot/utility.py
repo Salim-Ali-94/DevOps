@@ -31,6 +31,7 @@ async def bot():
 	await asyncio.sleep(5)
 	await page.keyboard.up("ArrowUp")
 	await asyncio.sleep(1)
+	await browser.close()
 
 
 
