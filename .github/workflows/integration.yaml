@@ -17,7 +17,7 @@ jobs:
     steps:
 
       - name: Checkout code to prepare for linting tasks
-        uses: actions/checkout@v4
+        uses: actions/checkout@v3
 
       - name: Set up Python for checking project on remote server
         uses: actions/setup-python@v4
@@ -58,7 +58,7 @@ jobs:
     steps:
 
       - name: Checkout code to prepare for testing
-        uses: actions/checkout@v4
+        uses: actions/checkout@v3
 
       - name: Configure python environment for running test cases
         uses: actions/setup-python@v4
@@ -80,7 +80,7 @@ jobs:
     steps:
 
       - name: Checkout code to host server for build checks
-        uses: actions/checkout@v4
+        uses: actions/checkout@v3
 
       - name: Set up Python on host machine
         uses: actions/setup-python@v4
