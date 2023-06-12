@@ -17,17 +17,17 @@ jobs:
     steps:
 
       - name: Checkout code to prepare for linting tasks
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
 
       - name: Set up Python for checking project on remote server
-        uses: actions/setup-python@v2
+        uses: actions/setup-python@v4
 
         with: 
 
           python-version: 3.10.9
 
       - name: Setup Go for checking project on remote server
-        uses: actions/setup-go@v2
+        uses: actions/setup-go@v4
 
         with:
 
@@ -58,10 +58,10 @@ jobs:
     steps:
 
       - name: Checkout code to prepare for testing
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
 
       - name: Configure python environment for running test cases
-        uses: actions/setup-python@v2
+        uses: actions/setup-python@v4
 
         with:
 
@@ -80,10 +80,10 @@ jobs:
     steps:
 
       - name: Checkout code to host server for build checks
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
 
       - name: Set up Python on host machine
-        uses: actions/setup-python@v2
+        uses: actions/setup-python@v4
 
         with:
 
