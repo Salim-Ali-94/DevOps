@@ -26,8 +26,18 @@ jobs:
 
           python-version: 3.10.9
 
+      - name: Setup Go for checking project on remote server
+        uses: actions/setup-go@v2
+
+        with:
+
+          go-version: 1.20.5
+
       - name: Install dependencies required for GitHub checks
         run: pip install pylint pyppeteer
+
+      - name: Install linter for Go files
+        run: go get -u golang.org/x/lint/golint
 
       - name: Run code lint checks for genetic algorithm directory
         run: pylint "genetic algorithm/**/*.py"
@@ -37,6 +47,9 @@ jobs:
 
       - name: Run code linter for slither.io bot folder
         run: pylint "slither.io bot/**/*.py"
+
+      - name: Run lint checks for Golang files
+        run: golint "go projects/base-n converter/*.go"
 
   testing:
 
