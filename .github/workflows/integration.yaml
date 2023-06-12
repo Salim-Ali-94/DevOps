@@ -37,7 +37,7 @@ jobs:
         run: pip install pylint pyppeteer
 
       - name: Install linter for Go files
-        run: go install golang.org/x/lint/golint
+        run: go install golang.org/x/lint/golint@latest
 
       - name: Run code lint checks for genetic algorithm directory
         run: pylint "genetic algorithm/**/*.py"
