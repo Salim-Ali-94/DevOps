@@ -1,10 +1,11 @@
 package main
 import ( "fmt"
 		 "math"
+		 "strings"
 		 "strconv" )
 
 
-func binaryToDecimal(number string) string {
+func binaryToDecimal(number string) int {
 
 	flag := binaryTest(number)
 
@@ -21,12 +22,12 @@ func binaryToDecimal(number string) string {
 
 		}
 
-		decimal := strconv.FormatFloat(accumulator, 'f', -1, 64)
+		decimal := int(accumulator)
 		return decimal
 
 	}
 
-	return fmt.Sprintf("%q is not a binary number", number)
+	return -1
 
 }
 
@@ -61,7 +62,7 @@ func decimalToBinary(number int) string {
 
 }
 
-func hexToDecimal(number string) string {
+func hexToDecimal(number string) int {
 
 	if ((number[:2] == "0x") ||
 		(number[:2] == "0X")) {
@@ -82,16 +83,16 @@ func hexToDecimal(number string) string {
 
 			}
 
-			decimal := strconv.FormatFloat(accumulator, 'f', -1, 64)
+			decimal := int(accumulator)
 			return decimal
 
 		}
 
-		return fmt.Sprintf("%q is not a hex value", number)
+		return -1
 
 	}
 
-	return fmt.Sprintf("%q is not a hex value", number)
+	return -1
 
 }
 
@@ -113,6 +114,37 @@ func decimalToHex(number int) string {
 
 	hex = fmt.Sprintf("0x%v", hex)
 	return hex
+
+}
+
+func hexToBinary(number string) string {
+
+	decimal := hexToDecimal(number)
+
+	if (decimal == -1) {
+
+		return fmt.Sprintf("%q is not a hex value", number)
+
+	}
+
+	binary := decimalToBinary(decimal)
+	return binary
+
+}
+
+func binaryToHex(number string) string {
+
+	decimal := binaryToDecimal(number)
+
+	if (decimal == -1) {
+
+		return fmt.Sprintf("%q is not a binary number", number)
+
+	}
+
+	hex := decimalToHex(decimal)
+	return hex
+
 }
 
 
@@ -137,7 +169,7 @@ func hexTest(number string) bool {
 
 	valid := true
 
-	for _, value := range number {
+	for _, value := range strings.ToLower(number) {
 
 		valid = false
 		allowed := array()

@@ -6,11 +6,20 @@ func main() {
 
 	binary := "111001"
 	fmt.Println(binaryToDecimal(binary))
-	number := 57
-	fmt.Println(decimalToBinary(number))
-	hex := "0x57"
+	decimal := 101
+	fmt.Println(decimalToBinary(decimal))
+	hex := "0x109D"
 	fmt.Println(hexToDecimal(hex))
-	value := 387
-	fmt.Println(decimalToHex(value))
+	number := 387
+	fmt.Println(decimalToHex(number))
+	bits := "1101"
+	fmt.Println(binaryToHex(bits))
+	digit := "0xE31A7"
+	fmt.Println(hexToBinary(digit))
+
+	mock := "0x1101"
+	fmt.Println(binaryToHex(mock))
+	test := "0xE31A7h"
+	fmt.Println(hexToBinary(test))
 
 }
