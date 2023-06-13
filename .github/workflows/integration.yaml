@@ -89,6 +89,13 @@ jobs:
 
           python-version: 3.10.9
 
+      - name: Set up Go on host server
+        uses: actions/setup-go@v4
+
+        with:
+
+          go-version: 1.20.5
+
       - name: Install all required dependencies for GitHub checks
         run: pip install -r "slither.io bot/requirements.txt"
 
@@ -103,4 +110,6 @@ jobs:
           echo "passed manifold search test case"
           python "./tic tac toe/utility.py"
           python "./slither.io bot/bot.py"
+          go run "./go projects/base-n converter/main.go" "./go projects/base-n converter/utility.go" "./go projects/base-n converter/constants.go"
+          # go build -o integration_test "./go projects/base-n converter"
           echo "SUCCESSFULLY ALL BUILT PROJECTS"
