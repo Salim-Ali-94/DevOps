@@ -6,7 +6,7 @@ func main() {
 
 	value := "111001"
 	fmt.Println(convertToDecimal(value))
-	value = "111"
-	fmt.Println(convertToDecimal(value))
+	number := 57
+	fmt.Println(convertToBinary(number))
 
 }
