@@ -95,6 +95,26 @@ func hexToDecimal(number string) string {
 
 }
 
+func decimalToHex(number int) string {
+
+	result := number / 16
+	remainder := number % 16
+	key := strconv.FormatInt(int64(remainder), 10)
+	hex := format[key]
+
+	for result >= 1 {
+
+		remainder = result % 16
+		result /= 16
+		key = strconv.FormatInt(int64(remainder), 10)
+		hex = fmt.Sprintf("%v%v", format[key], hex)
+
+	}
+
+	hex = fmt.Sprintf("0x%v", hex)
+	return hex
+}
+
 
 func binaryTest(number string) bool {
 
