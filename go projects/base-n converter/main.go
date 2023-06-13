@@ -12,7 +12,7 @@ func main() {
 	fmt.Println(hexToDecimal(hex))
 	number := 387
 	fmt.Println(decimalToHex(number))
-	bits := "1101"
+	bits := "0110111"
 	fmt.Println(binaryToHex(bits))
 	digit := "0xE31A7"
 	fmt.Println(hexToBinary(digit))
