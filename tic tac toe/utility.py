@@ -7,6 +7,10 @@ boardState = lambda board, player = " ": [key for key, value in board.items() if
 extractStates = lambda board: { "x": boardState(board, "x"),
 								"o": boardState(board, "o") }
 
+def minmax():
+
+	return 1
+
 def renderBoard(board):
 
 
@@ -57,7 +61,7 @@ def promptUser(board):
 def gameState(board):
 
 	if ((len(boardState(board)) == 0) or
-		(checkStates(board))):
+		checkStates(board)):
 
 		sys.exit()
 
