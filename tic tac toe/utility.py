@@ -7,9 +7,87 @@ boardState = lambda board, player = " ": [key for key, value in board.items() if
 extractStates = lambda board: { "x": boardState(board, "x"),
 								"o": boardState(board, "o") }
 
-def minmax():
+def action(board):
 
-	return 1
+	best = -10
+	positions = boardState(board)
+	position = positions[0]
+
+	for block in positions:
+
+		board[block] = "o"
+		score = minmax(board.copy(), "x")
+		board[block] = " "
+
+		if (score > best):
+
+			best = score
+			position = block
+
+	return position
+
+
+def minmax(board, player):
+
+	if checkTerminal(board):
+
+		return evaluateScore(board, player)
+
+	else:
+
+		positions = boardState(board)
+		score = -10 if (player == "o") else 10
+
+		for block in positions:
+
+			board[block] = player
+			reward = minmax(board.copy(), "x" if (player == "o") else "o")
+			board[block] = " "
+			score = max(score, reward) if (player == "o") else min(score, reward)
+
+		return score
+
+
+def checkTerminal(board):
+
+	if ((len(boardState(board)) == 0) or
+		checkStates(board)):
+
+		return True
+
+	return False
+
+
+def evaluateScore(board, player):
+
+	states = extractStates(board)
+	x = states["x"]
+	o = states["o"]
+
+	for state in WINNING_STATES:
+
+		X, O = 0, 0
+
+		for position in state:
+
+			if position in x:
+
+				X += 1
+
+			elif position in o:
+
+				O += 1
+
+			if (X >= 3):
+
+				return -1
+
+			elif (O >= 3):
+
+				return 1
+
+	return 0
+
 
 def renderBoard(board):
 
@@ -77,8 +155,13 @@ def checkStates(board):
 
 		for position in state:
 
-			if position in x: X += 1
-			elif position in o: O += 1
+			if position in x:
+
+				X += 1
+
+			elif position in o:
+
+				O += 1
 
 			if ((X >= 3) or
 				(O >= 3)):
