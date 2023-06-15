@@ -13,7 +13,6 @@ def minmax():
 
 def renderBoard(board):
 
-
 	os.system("cls")
 	print()
 	print("\t     |     |     ")
@@ -48,12 +47,12 @@ def initializeGame():
 def promptUser(board):
 
 	renderBoard(board)
-	position = input(f"\n\nPlease select an available space: {', '.join(boardState(board))}\n\n")
+	position = input()
 
 	while (position.lower().lstrip().rstrip() not in boardState(board)):
 
 		renderBoard(board)
-		position = input(f"\n\nPlease select an available space: {', '.join(boardState(board))}\n\n")
+		position = input()
 
 	return position
 
