@@ -16,7 +16,7 @@ def action(board):
 	for block in positions:
 
 		board[block] = "o"
-		score = minmax(board.copy(), "x")
+		score = minmax(board, "x")
 		board[block] = " "
 
 		if (score > best):
@@ -31,21 +31,19 @@ def minmax(board, player):
 
 	if checkTerminal(board):
 
-		return evaluateScore(board, player)
+		return evaluateScore(board)
 
-	else:
+	positions = boardState(board)
+	score = -10 if (player == "o") else 10
 
-		positions = boardState(board)
-		score = -10 if (player == "o") else 10
+	for cell in positions:
 
-		for block in positions:
+		board[cell] = player
+		reward = minmax(board, "x" if (player == "o") else "o")
+		board[cell] = " "
+		score = max(score, reward) if (player == "o") else min(score, reward)
 
-			board[block] = player
-			reward = minmax(board.copy(), "x" if (player == "o") else "o")
-			board[block] = " "
-			score = max(score, reward) if (player == "o") else min(score, reward)
-
-		return score
+	return score
 
 
 def checkTerminal(board):
@@ -58,7 +56,7 @@ def checkTerminal(board):
 	return False
 
 
-def evaluateScore(board, player):
+def evaluateScore(board):
 
 	states = extractStates(board)
 	x = states["x"]

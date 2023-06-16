@@ -13,10 +13,9 @@ func binaryToDecimal(number string) int {
 
 		accumulator := 0.0
 
-		for index, binary := range number {
+		for index, digit := range number {
 
-			digit := string(binary)
-			bit, _ := strconv.ParseFloat(digit, 64)
+			bit, _ := strconv.ParseFloat(string(digit), 64)
 			exponent := float64(len(number) - index)
 			accumulator += bit*math.Pow(2, exponent - 1)
 
@@ -41,8 +40,8 @@ func decimalToBinary(number int) string {
 
 	for index := width; index > 0; index-- {
 
-		exponent := float64(index)
-		position := math.Pow(2, exponent - 1)
+		exponent := float64(index) - 1
+		position := math.Pow(2, exponent)
 		check := int(position)
 
 		if (remainder >= check) {
@@ -75,8 +74,7 @@ func hexToDecimal(number string) int {
 
 			for index, digit := range number[2:] {
 
-				key := string(digit)
-				value := format[key]
+				value := format[string(digit)]
 				hex, _ := strconv.ParseFloat(value, 64)
 				exponent := float64(len(number[2:]) - index)
 				accumulator += hex*math.Pow(16, exponent - 1)
@@ -146,7 +144,6 @@ func binaryToHex(number string) string {
 	return hex
 
 }
-
 
 func binaryTest(number string) bool {
 
