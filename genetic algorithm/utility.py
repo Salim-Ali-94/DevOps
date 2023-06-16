@@ -45,14 +45,11 @@ def evolve(parameters = None):
 
 			check = (repeat < horizon["window"])
 
-	if (task == "evolve"):
-
-		initial = alpha.copy()
-
-	else:
+	if (task == "search"):
 
 		beta = alpha.copy()
 
+	initial = alpha.copy()
 	os.system("cls")
 	print()
 
@@ -112,15 +109,7 @@ def evolve(parameters = None):
 			print(f"Fitness: { alpha['fitness'] }")
 			print(f"Population fitness: { sum([member['fitness'] for member in portfolio]) / len(portfolio) }")
 
-	if (task == "evolve"):
-
-		data = [alpha, generation, initial]
-
-	else:
-
-		data = [alpha, generation]
-
-	return data
+	return alpha, generation, initial
 
 
 def extractParameters(parameters):

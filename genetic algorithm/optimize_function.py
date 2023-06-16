@@ -54,7 +54,7 @@ if __name__ == "__main__":
 				   "generations": generations,
 				   "display": display }
 
-	alpha, iterations = utility.evolve(parameters)
+	alpha, iterations, initial = utility.evolve(parameters)
 	if (not(loop) and (iterations < generations)): print(f"\nSUMMARY OF RESULTS:\nsolution: {alpha['chromosome']}\nnumber of iterations: {iterations}\noptimum fitness: {alpha['fitness']}\n")
 	elif (iterations < generations): print(f"\nSUMMARY OF RESULTS:\nsolution: {alpha['chromosome']}\nnumber of iterations: {iterations}\noptimum fitness: {alpha['fitness']}\n")
 	else: print(f"ALGORITHM TERMINATED EARLY WITH THE FOLLOWING SOLUTION:\nsolution: {alpha['chromosome']}\noptimum fitness: {alpha['fitness']}\n")

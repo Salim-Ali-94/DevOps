@@ -1,4 +1,3 @@
-import random
 import utility
 
 
@@ -10,7 +9,7 @@ def gameManager():
 		board[human] = "x"
 		utility.renderBoard(board)
 		utility.gameState(board)
-		computer = random.choice(utility.boardState(board))
+		computer = utility.action(board)
 		board[computer] = "o"
 		utility.renderBoard(board)
 		utility.gameState(board)

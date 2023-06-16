@@ -7,8 +7,87 @@ boardState = lambda board, player = " ": [key for key, value in board.items() if
 extractStates = lambda board: { "x": boardState(board, "x"),
 								"o": boardState(board, "o") }
 
-def renderBoard(board):
+def action(board):
 
+	best = -10
+	positions = boardState(board)
+	position = positions[0]
+
+	for block in positions:
+
+		board[block] = "o"
+		score = minmax(board, "x")
+		board[block] = " "
+
+		if (score > best):
+
+			best = score
+			position = block
+
+	return position
+
+
+def minmax(board, player):
+
+	if checkTerminal(board):
+
+		return evaluateScore(board)
+
+	positions = boardState(board)
+	score = -10 if (player == "o") else 10
+
+	for cell in positions:
+
+		board[cell] = player
+		reward = minmax(board, "x" if (player == "o") else "o")
+		board[cell] = " "
+		score = max(score, reward) if (player == "o") else min(score, reward)
+
+	return score
+
+
+def checkTerminal(board):
+
+	if ((len(boardState(board)) == 0) or
+		checkStates(board)):
+
+		return True
+
+	return False
+
+
+def evaluateScore(board):
+
+	states = extractStates(board)
+	x = states["x"]
+	o = states["o"]
+
+	for state in WINNING_STATES:
+
+		X, O = 0, 0
+
+		for position in state:
+
+			if position in x:
+
+				X += 1
+
+			elif position in o:
+
+				O += 1
+
+			if (X >= 3):
+
+				return -1
+
+			elif (O >= 3):
+
+				return 1
+
+	return 0
+
+
+def renderBoard(board):
 
 	os.system("cls")
 	print()
@@ -44,12 +123,12 @@ def initializeGame():
 def promptUser(board):
 
 	renderBoard(board)
-	position = input(f"\n\nPlease select an available space: {', '.join(boardState(board))}\n\n")
+	position = input()
 
 	while (position.lower().lstrip().rstrip() not in boardState(board)):
 
 		renderBoard(board)
-		position = input(f"\n\nPlease select an available space: {', '.join(boardState(board))}\n\n")
+		position = input()
 
 	return position
 
@@ -57,7 +136,7 @@ def promptUser(board):
 def gameState(board):
 
 	if ((len(boardState(board)) == 0) or
-		(checkStates(board))):
+		checkStates(board)):
 
 		sys.exit()
 
@@ -74,8 +153,13 @@ def checkStates(board):
 
 		for position in state:
 
-			if position in x: X += 1
-			elif position in o: O += 1
+			if position in x:
+
+				X += 1
+
+			elif position in o:
+
+				O += 1
 
 			if ((X >= 3) or
 				(O >= 3)):
