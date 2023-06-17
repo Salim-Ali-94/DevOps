@@ -13,16 +13,16 @@ def action(board):
 	positions = boardState(board)
 	position = positions[0]
 
-	for block in positions:
+	for cell in positions:
 
-		board[block] = "o"
+		board[cell] = "o"
 		score = minmax(board, "x")
-		board[block] = " "
+		board[cell] = " "
 
 		if (score > best):
 
 			best = score
-			position = block
+			position = cell
 
 	return position
 
