@@ -98,7 +98,22 @@ jobs:
 
           cd "kubernetes/todo list/ui"
           # npx eslint --init
-          cp node_modules/eslint/conf/eslint-recommended.js .eslintrc.js
+
+          # cp node_modules/eslint/conf/eslint-recommended.js .eslintrc.js
+
+          npx eslint --init --quiet
+          rm .eslintrc.json
+
+      - name: Customize ESLint configuration
+        run: |
+        
+          cd kubernetes/todo list/ui
+          echo "module.exports = {" >> .eslintrc.js
+          echo "  extends: 'eslint:recommended'," >> .eslintrc.js
+          echo "  rules: {" >> .eslintrc.js
+          echo "    // Customize your rules here" >> .eslintrc.js
+          echo "  }" >> .eslintrc.js
+          echo "};" >> .eslintrc.js
 
       - name: Run code lint checks for genetic algorithm directory
         run: pylint "genetic algorithm/**/*.py"
