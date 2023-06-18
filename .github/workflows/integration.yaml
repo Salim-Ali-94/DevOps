@@ -86,7 +86,8 @@ jobs:
 
       - name: Install dependencies required to run the project on another computer
         run: |
-          
+
+          cd "kubernetes/todo list/ui"          
           npm install
           npm install eslint --global
           npm install eslint-plugin-react --global
