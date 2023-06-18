@@ -9,5 +9,5 @@ small project applying the following technologies in practice;
 5. Go [server]
 6. Continuous deployment [github] (CD/CI) using vercel / render / railway (~linode / netlify) as a host for the api server
 7. Testing [jest] --> unit + integration + e2e (automated scenarios)
-8. Solid.js [ui]
+8. Solid.js [ui] / Next.js
 9. JWT [authentication/security] (check-in authentication + security)
