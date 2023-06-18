@@ -105,7 +105,14 @@ jobs:
         
           cd "kubernetes/todo list/ui"
           echo "module.exports = {" >> .eslintrc.js
-          echo "  extends: 'eslint:recommended'," >> .eslintrc.js
+          echo "  extends: ['eslint:recommended', 'plugin:react/recommended']," >> .eslintrc.js
+          echo "  parserOptions: {" >> .eslintrc.js
+          echo "    ecmaVersion: 2022," >> .eslintrc.js
+          echo "    sourceType: 'module'," >> .eslintrc.js
+          echo "    ecmaFeatures: {" >> .eslintrc.js
+          echo "      jsx: true" >> .eslintrc.js
+          echo "    }" >> .eslintrc.js
+          echo "  }," >> .eslintrc.js
           echo "  rules: {" >> .eslintrc.js
           echo "    // Customize your rules here" >> .eslintrc.js
           echo "  }" >> .eslintrc.js
