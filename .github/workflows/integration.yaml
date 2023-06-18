@@ -40,143 +40,7 @@
 
 
 
-# name: Python + Go + Next.js / Continuous Integartion Workflow Checks 
-
-# on:
-
-#   push:
-
-# jobs:
-
-#   linting:
-
-#     runs-on: ubuntu-latest
-
-#     steps:
-
-#       - name: Checkout code to prepare for linting tasks
-#         uses: actions/checkout@v3
-
-#       - name: Set up Python for checking project on remote server
-#         uses: actions/setup-python@v4
-
-#         with: 
-
-#           python-version: 3.10.9
-
-#       - name: Setup Go for checking project on remote server
-#         uses: actions/setup-go@v4
-
-#         with:
-
-#           go-version: 1.20.5
-
-#       - name: Setup Node.js for running react-based web apps on the remote machine
-#         uses: actions/setup-node@v3
-
-#         with:
-
-#           node-version: 18.15.0
-
-#       - name: Install dependencies required for GitHub checks
-#         run: pip install pylint pyppeteer
-
-#       - name: Install linter for Go files
-#         run: go install golang.org/x/lint/golint@latest
-
-#       - name: Install dependencies required to run the project on another computer
-#         run: |
-          
-#           npm ci
-#           npm install eslint --global
-#           npm install eslint-plugin-react --global
-#           npm install eslint-plugin-react-hooks -- global
-
-#       - name: Run code lint checks for genetic algorithm directory
-#         run: pylint "genetic algorithm/**/*.py"
-
-#       - name: Run code lint checks for tic tac toe directory
-#         run: pylint "tic tac toe/**/*.py"
-
-#       - name: Run code linter for slither.io bot folder
-#         run: pylint "slither.io bot/**/*.py"
-
-#       - name: Run lint checks for Golang files
-#         run: golint "go projects/base-n converter/*.go"
-
-#       - name: Run lint checks for all react.js files
-#         run: eslint --ext .js,.jsx "kubernetes/todo list/ui"
-
-#   testing:
-
-#     runs-on: ubuntu-latest
-
-#     steps:
-
-#       - name: Checkout code to prepare for testing
-#         uses: actions/checkout@v3
-
-#       - name: Configure python environment for running test cases
-#         uses: actions/setup-python@v4
-
-#         with:
-
-#           python-version: 3.10.9
-
-#       - name: Carry out unit testing
-#         run: |
-
-#           python "./genetic algorithm/test_utility.py"
-#           echo "ALL UNIT TESTS HAVE PASSED SUCCESSFULLY"
-
-#   building:
-
-#     runs-on: windows-latest
-
-#     steps:
-
-#       - name: Checkout code to host server for build checks
-#         uses: actions/checkout@v3
-
-#       - name: Set up Python on host machine
-#         uses: actions/setup-python@v4
-
-#         with:
-
-#           python-version: 3.10.9
-
-#       - name: Set up Go on host server
-#         uses: actions/setup-go@v4
-
-#         with:
-
-#           go-version: 1.20.5
-
-#       - name: Install all required dependencies for GitHub checks
-#         run: pip install -r "slither.io bot/requirements.txt"
-
-#       - name: Run code to ensure it builds with no errors that linting can't pick up
-#         run: |
-
-#           python "./genetic algorithm/evolve_word.py"
-#           echo "passed word evolution test case"
-#           python "./genetic algorithm/optimize_function.py"
-#           echo "passed function optimization test case"
-#           python "./genetic algorithm/search_manifold.py"
-#           echo "passed manifold search test case"
-#           python "./tic tac toe/utility.py"
-#           python "./slither.io bot/bot.py"
-#           go run "./go projects/base-n converter/main.go" "./go projects/base-n converter/utility.go" "./go projects/base-n converter/constants.go"
-#           # go build -o integration_test "./go projects/base-n converter"
-#           echo "SUCCESSFULLY ALL BUILT PROJECTS"
-
-
-
-
-
-
-
-name: Python + Go / Continuous Integartion Workflow Checks 
+name: Python + Go + Next.js / Continuous Integartion Workflow Checks 
 
 on:
 
@@ -207,11 +71,26 @@ jobs:
 
           go-version: 1.20.5
 
+      - name: Setup Node.js for running react-based web apps on the remote machine
+        uses: actions/setup-node@v3
+
+        with:
+
+          node-version: 18.15.0
+
       - name: Install dependencies required for GitHub checks
         run: pip install pylint pyppeteer
 
       - name: Install linter for Go files
         run: go install golang.org/x/lint/golint@latest
+
+      - name: Install dependencies required to run the project on another computer
+        run: |
+          
+          npm install
+          npm install eslint --global
+          npm install eslint-plugin-react --global
+          npm install eslint-plugin-react-hooks -- global
 
       - name: Run code lint checks for genetic algorithm directory
         run: pylint "genetic algorithm/**/*.py"
@@ -224,6 +103,9 @@ jobs:
 
       - name: Run lint checks for Golang files
         run: golint "go projects/base-n converter/*.go"
+
+      - name: Run lint checks for all react.js files
+        run: eslint --ext .js,.jsx "kubernetes/todo list/ui"
 
   testing:
 
@@ -287,3 +169,121 @@ jobs:
           go run "./go projects/base-n converter/main.go" "./go projects/base-n converter/utility.go" "./go projects/base-n converter/constants.go"
           # go build -o integration_test "./go projects/base-n converter"
           echo "SUCCESSFULLY ALL BUILT PROJECTS"
+
+
+
+
+
+
+
+# name: Python + Go / Continuous Integartion Workflow Checks 
+
+# on:
+
+#   push:
+
+# jobs:
+
+#   linting:
+
+#     runs-on: ubuntu-latest
+
+#     steps:
+
+#       - name: Checkout code to prepare for linting tasks
+#         uses: actions/checkout@v3
+
+#       - name: Set up Python for checking project on remote server
+#         uses: actions/setup-python@v4
+
+#         with: 
+
+#           python-version: 3.10.9
+
+#       - name: Setup Go for checking project on remote server
+#         uses: actions/setup-go@v4
+
+#         with:
+
+#           go-version: 1.20.5
+
+#       - name: Install dependencies required for GitHub checks
+#         run: pip install pylint pyppeteer
+
+#       - name: Install linter for Go files
+#         run: go install golang.org/x/lint/golint@latest
+
+#       - name: Run code lint checks for genetic algorithm directory
+#         run: pylint "genetic algorithm/**/*.py"
+
+#       - name: Run code lint checks for tic tac toe directory
+#         run: pylint "tic tac toe/**/*.py"
+
+#       - name: Run code linter for slither.io bot folder
+#         run: pylint "slither.io bot/**/*.py"
+
+#       - name: Run lint checks for Golang files
+#         run: golint "go projects/base-n converter/*.go"
+
+#   testing:
+
+#     runs-on: ubuntu-latest
+
+#     steps:
+
+#       - name: Checkout code to prepare for testing
+#         uses: actions/checkout@v3
+
+#       - name: Configure python environment for running test cases
+#         uses: actions/setup-python@v4
+
+#         with:
+
+#           python-version: 3.10.9
+
+#       - name: Carry out unit testing
+#         run: |
+
+#           python "./genetic algorithm/test_utility.py"
+#           echo "ALL UNIT TESTS HAVE PASSED SUCCESSFULLY"
+
+#   building:
+
+#     runs-on: windows-latest
+
+#     steps:
+
+#       - name: Checkout code to host server for build checks
+#         uses: actions/checkout@v3
+
+#       - name: Set up Python on host machine
+#         uses: actions/setup-python@v4
+
+#         with:
+
+#           python-version: 3.10.9
+
+#       - name: Set up Go on host server
+#         uses: actions/setup-go@v4
+
+#         with:
+
+#           go-version: 1.20.5
+
+#       - name: Install all required dependencies for GitHub checks
+#         run: pip install -r "slither.io bot/requirements.txt"
+
+#       - name: Run code to ensure it builds with no errors that linting can't pick up
+#         run: |
+
+#           python "./genetic algorithm/evolve_word.py"
+#           echo "passed word evolution test case"
+#           python "./genetic algorithm/optimize_function.py"
+#           echo "passed function optimization test case"
+#           python "./genetic algorithm/search_manifold.py"
+#           echo "passed manifold search test case"
+#           python "./tic tac toe/utility.py"
+#           python "./slither.io bot/bot.py"
+#           go run "./go projects/base-n converter/main.go" "./go projects/base-n converter/utility.go" "./go projects/base-n converter/constants.go"
+#           # go build -o integration_test "./go projects/base-n converter"
+#           echo "SUCCESSFULLY ALL BUILT PROJECTS"
