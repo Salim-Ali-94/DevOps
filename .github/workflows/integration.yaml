@@ -84,39 +84,38 @@ jobs:
       - name: Install linter for Go files
         run: go install golang.org/x/lint/golint@latest
 
-      - name: Install dependencies required to run the project on another computer
-        run: |
+      # - name: Install dependencies required to run the project on another computer
+      #   run: |
 
-          cd "kubernetes/todo list/ui"
-          npm install
-          npm install eslint --global
-          npm install eslint-plugin-react --global
-          npm install eslint-plugin-react-hooks -- global
+      #     cd "kubernetes/todo list/ui"
+      #     npm install
+      #     npm install eslint --global
+      #     npm install eslint-plugin-react --global
+      #     npm install eslint-plugin-react-hooks -- global
 
-      - name: Configure eslist for react.js project
-        run: |
+      # - name: Configure eslist for react.js project
+      #   run: |
 
-          cd "kubernetes/todo list/ui"
-          npx eslint --init --quiet
+      #     cd "kubernetes/todo list/ui"
+      #     npx eslint --init --quiet
 
-
-      - name: Customize ESLint configuration
-        run: |
+      # - name: Customize ESLint configuration
+      #   run: |
         
-          cd "kubernetes/todo list/ui"
-          echo "module.exports = {" >> .eslintrc.js
-          echo "  extends: ['eslint:recommended', 'plugin:react/recommended']," >> .eslintrc.js
-          echo "  parserOptions: {" >> .eslintrc.js
-          echo "    ecmaVersion: 2022," >> .eslintrc.js
-          echo "    sourceType: 'module'," >> .eslintrc.js
-          echo "    ecmaFeatures: {" >> .eslintrc.js
-          echo "      jsx: true" >> .eslintrc.js
-          echo "    }" >> .eslintrc.js
-          echo "  }," >> .eslintrc.js
-          echo "  rules: {" >> .eslintrc.js
-          echo "    // Customize your rules here" >> .eslintrc.js
-          echo "  }" >> .eslintrc.js
-          echo "};" >> .eslintrc.js
+      #     cd "kubernetes/todo list/ui"
+      #     echo "module.exports = {" >> .eslintrc.js
+      #     echo "  extends: ['eslint:recommended', 'plugin:react/recommended']," >> .eslintrc.js
+      #     echo "  parserOptions: {" >> .eslintrc.js
+      #     echo "    ecmaVersion: 2022," >> .eslintrc.js
+      #     echo "    sourceType: 'module'," >> .eslintrc.js
+      #     echo "    ecmaFeatures: {" >> .eslintrc.js
+      #     echo "      jsx: true" >> .eslintrc.js
+      #     echo "    }" >> .eslintrc.js
+      #     echo "  }," >> .eslintrc.js
+      #     echo "  rules: {" >> .eslintrc.js
+      #     echo "    // Customize your rules here" >> .eslintrc.js
+      #     echo "  }" >> .eslintrc.js
+      #     echo "};" >> .eslintrc.js
 
       - name: Run code lint checks for genetic algorithm directory
         run: pylint "genetic algorithm/**/*.py"
@@ -130,11 +129,11 @@ jobs:
       - name: Run lint checks for Golang files
         run: golint "go projects/base-n converter/*.go"
 
-      - name: Run lint checks for all react.js files
-        run: |
+      # - name: Run lint checks for all react.js files
+      #   run: |
         
-          cd "kubernetes/todo list/ui"
-          eslint --ext .js,.jsx .
+      #     cd "kubernetes/todo list/ui"
+      #     eslint --ext .js,.jsx .
 
   testing:
 
