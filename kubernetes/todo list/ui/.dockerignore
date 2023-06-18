@@ -3,4 +3,4 @@
 Dockerfile
 .gitignore
 .dockerignore
-.solid
+.next
