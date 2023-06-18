@@ -1,5 +1,5 @@
 import Head from "next/head";
-// import styles from "@/styles/Home.module.css";
+import styles from "@/styles/Home.module.css";
 
 
 export default function Home() {
@@ -19,7 +19,7 @@ export default function Home() {
 
       <main>
 
-        <h1>YOUR TODO LIST</h1>
+        <h1 className={styles.text}>YOUR TODO LIST</h1>
 
       </main>
 
