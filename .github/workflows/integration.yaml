@@ -109,6 +109,9 @@ jobs:
 
           python-version: 3.10.9
 
+      - name: Install depenedencies
+        run: pip install numpy
+
       - name: Carry out unit testing
         run: |
 
@@ -139,7 +142,10 @@ jobs:
           go-version: 1.20.5
 
       - name: Install all required dependencies for GitHub checks
-        run: pip install -r "slither.io bot/requirements.txt"
+        run: |
+
+          pip install -r "slither.io bot/requirements.txt"
+          pip install numpy
 
       - name: Run code to ensure it builds with no errors that linting can't pick up
         run: |
