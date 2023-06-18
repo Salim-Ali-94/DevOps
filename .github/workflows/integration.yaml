@@ -87,11 +87,17 @@ jobs:
       - name: Install dependencies required to run the project on another computer
         run: |
 
-          cd "kubernetes/todo list/ui"          
+          cd "kubernetes/todo list/ui"
           npm install
           npm install eslint --global
           npm install eslint-plugin-react --global
           npm install eslint-plugin-react-hooks -- global
+
+      - name: Configure eslist for react.js project
+        run: |
+
+          cd "kubernetes/todo list/ui"
+          npx eslint --init
 
       - name: Run code lint checks for genetic algorithm directory
         run: pylint "genetic algorithm/**/*.py"
@@ -106,7 +112,10 @@ jobs:
         run: golint "go projects/base-n converter/*.go"
 
       - name: Run lint checks for all react.js files
-        run: eslint --ext .js,.jsx "kubernetes/todo list/ui"
+        run: |
+        
+          cd "kubernetes/todo list/ui"
+          eslint --ext .js,.jsx .
 
   testing:
 
