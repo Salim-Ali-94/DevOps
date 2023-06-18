@@ -1,4 +1,4 @@
-name: Workflow Checks
+name: Python + Go + Next.js / Continuous Integartion Workflow Checks 
 
 on:
 
@@ -29,11 +29,51 @@ jobs:
 
           go-version: 1.20.5
 
+      # - name: Setup Node.js for running react-based web apps on the remote machine
+      #   uses: actions/setup-node@v3
+
+      #   with:
+
+      #     node-version: 18.15.0
+
       - name: Install dependencies required for GitHub checks
         run: pip install pylint pyppeteer
 
       - name: Install linter for Go files
         run: go install golang.org/x/lint/golint@latest
+
+      # - name: Install dependencies required to run the project on another computer
+      #   run: |
+
+      #     cd "kubernetes/todo list/ui"
+      #     npm install
+      #     npm install eslint --global
+      #     npm install eslint-plugin-react --global
+      #     npm install eslint-plugin-react-hooks -- global
+
+      # - name: Configure eslist for react.js project
+      #   run: |
+
+      #     cd "kubernetes/todo list/ui"
+      #     npx eslint --init --quiet
+
+      # - name: Customize ESLint configuration
+      #   run: |
+        
+      #     cd "kubernetes/todo list/ui"
+      #     echo "module.exports = {" >> .eslintrc.js
+      #     echo "  extends: ['eslint:recommended', 'plugin:react/recommended']," >> .eslintrc.js
+      #     echo "  parserOptions: {" >> .eslintrc.js
+      #     echo "    ecmaVersion: 2022," >> .eslintrc.js
+      #     echo "    sourceType: 'module'," >> .eslintrc.js
+      #     echo "    ecmaFeatures: {" >> .eslintrc.js
+      #     echo "      jsx: true" >> .eslintrc.js
+      #     echo "    }" >> .eslintrc.js
+      #     echo "  }," >> .eslintrc.js
+      #     echo "  rules: {" >> .eslintrc.js
+      #     echo "    // Customize your rules here" >> .eslintrc.js
+      #     echo "  }" >> .eslintrc.js
+      #     echo "};" >> .eslintrc.js
 
       - name: Run code lint checks for genetic algorithm directory
         run: pylint "genetic algorithm/**/*.py"
@@ -46,6 +86,12 @@ jobs:
 
       - name: Run lint checks for Golang files
         run: golint "go projects/base-n converter/*.go"
+
+      # - name: Run lint checks for all react.js files
+      #   run: |
+        
+      #     cd "kubernetes/todo list/ui"
+      #     eslint --ext .js,.jsx .
 
   testing:
 
