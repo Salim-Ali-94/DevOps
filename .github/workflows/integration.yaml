@@ -31,7 +31,7 @@ jobs:
           npm install eslint-plugin-react-hooks -- global
 
       - name: Run lint checks for all react.js files
-        run: eslint --ext .js, .jsx "kubernetes/todo list/ui"
+        run: eslint --ext .js,.jsx "kubernetes/todo list/ui"
 
 name: Python + Go / Continuous Integartion Workflow Checks 
 
