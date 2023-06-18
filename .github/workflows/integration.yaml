@@ -97,7 +97,8 @@ jobs:
         run: |
 
           cd "kubernetes/todo list/ui"
-          npx eslint --init
+          # npx eslint --init
+          cp node_modules/eslint/conf/eslint-recommended.js .eslintrc.js
 
       - name: Run code lint checks for genetic algorithm directory
         run: pylint "genetic algorithm/**/*.py"
