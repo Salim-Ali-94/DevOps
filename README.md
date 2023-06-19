@@ -2,7 +2,7 @@
 Learning the different aspects of the DevOps process by implementing practical projects
 
 
-TIC TAC TOE
+TIC TAC TOE (PYTHON)
 ------------------------------------------------------------------------------------------------------------------------------------------------------
 Future work:
 
@@ -15,3 +15,14 @@ The minimax algorithm takes a long time to iterate over each choice before findi
 References:
 
 [1] Spanning Tree / Minimax: How Computers Play Games (YouTube video); https://www.youtube.com/watch?v=SLgZhpDsrfc&t=484s
+
+
+------------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+NUMERICAL METHODS (GO)
+------------------------------------------------------------------------------------------------------------------------------------------------------
+
+References:
+
+[1] numericalmethodsguy / Bisection Method: Example (YouTube video); https://www.youtube.com/watch?v=DGmNbs5Cywo
