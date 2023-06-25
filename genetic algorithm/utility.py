@@ -356,29 +356,75 @@ def generatePopulation(chromosome_length = 2, population_size = 5, category = "n
 def neuralNetwork(architecture):
 
 	network = []
+
+	for layer in range(len(architecture) - 1):
+
+		flag = architecture[layer + 1]["bias"]
+		forward = architecture[layer + 1]["nodes"]
+
+		if (layer == 0):
+
+			current = architecture[layer]
+
+		else:
+
+			current = architecture[layer]["nodes"]
+
+		if flag:
+
+			current += 1
+
+		weights = np.random.rand(forward, current)
+		network.append(weights)
+
+	return network
+
+
+# def neuralNetwork(architecture):
+
+# 	network = []
+# 	topology = []
+
+# 	for layer in range(len(architecture)):
+
+# 		if (layer < len(architecture) - 1):
+
+# 			flag = architecture[layer + 1]["bias"]
+# 			forward = architecture[layer + 1]["nodes"]
+
+# 			if (layer == 0):
+
+# 				current = architecture[layer]
+
+# 			else:
+
+# 				current = architecture[layer]["nodes"]
+
+# 			if flag:
+
+# 				current += 1
+
+# 			weights = np.random.rand(forward, current)
+# 			network.append(weights)
+
+# 		if (len(topology) == 0):
+
+# 			nodes = tuple(node + 1 for node in range(architecture[layer]))
+
+# 		else:
+
+# 			nodes = tuple(topology[-1][-1] + node + 1 for node in range(architecture[layer]["nodes"]))
+
+# 		topology.append(nodes)
+
+# 	return network, topology
+
+
+def networkStructure(architecture):
+
 	topology = []
 
 	for layer in range(len(architecture)):
-
-		if (layer < len(architecture) - 1):
-
-			flag = architecture[layer + 1]["bias"]
-			forward = architecture[layer + 1]["nodes"]
-
-			if (layer == 0):
-
-				current = architecture[layer]
-
-			else:
-
-				current = architecture[layer]["nodes"]
-
-			if flag:
-
-				current += 1
-
-			weights = np.random.rand(forward, current)
-			network.append(weights)
 
 		if (len(topology) == 0):
 
@@ -390,7 +436,7 @@ def neuralNetwork(architecture):
 
 		topology.append(nodes)
 
-	return network, topology
+	return topology
 
 
 def feedForward(data, network, architecture):
