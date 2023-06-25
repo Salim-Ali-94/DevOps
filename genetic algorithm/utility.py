@@ -362,35 +362,48 @@ def neuralNetwork(architecture):
 		flag = architecture[layer + 1]["bias"]
 		forward = architecture[layer + 1]["nodes"]
 		current = architecture[layer]["nodes"]
-
-		if flag:
-
-			current += 1
-
+		if flag: current += 1
 		weights = np.random.rand(forward, current)
 		network.append(weights)
 
 	return network
 
 
-# def encodeNetwork(network, architecture, topology):
+# def encodeNetwork(network, topology, history = []):
 def encodeNetwork(network, topology):
 
+	# identifier = 0
+	identifier = 1
 	genome = []
-	collect = tuple()
-	# partition = []
+	branch = tuple()
 
 	for index, weight in enumerate(network):
-	# for weight in range(len(network)):
 
-		# for row in range(network[weight].shape[0]):
 		for row in range(weight.shape[0]):
 
-			# for column in range(len(network[weight][row])):
 			for column in range(len(weight[row])):
 
-				# current = topology[weight + 1][row]
-				# previous = topology[weight][column]
+				# if (len(history) > 0):
+
+				# 	_from = gene["from"]
+				# 	to = gene["to"]
+				# 	w = gene["weight"]
+
+				# 	for gene in history:
+
+				# 		if 
+
+				# 	if 
+
+				# 		identifier += 1
+
+				# 	else:
+
+				# 		identifier = gene["identifier"]
+
+				# else:
+
+				# 	identifier +=1
 
 				properties = { "fitness": 0,
 							   # "input": previous,
@@ -408,18 +421,17 @@ def encodeNetwork(network, topology):
 							   
 							   # "current": weight,
 							   # "next": weight + 1 }
+							   "innovation": identifier,
 							   "previous": index,
 							   "current": index + 1 }
 
-				# genome.append(properties)
-				collect += (properties,)
+				branch += (properties,)
+				identifier += 1
 
-		# partition.append(collect)
-		genome.append(collect)
-		collect = tuple()
+		genome.append(branch)
+		branch = tuple()
 
 	return genome
-	# return genome, partition
 
 
 # def buildNetwork(genome, architecture, topology):
@@ -427,31 +439,15 @@ def decodeGenome(genome, architecture):
 
 	network = []
 
-	# for gene in genome:
 	for index, layer in enumerate(genome):
 
-		# print(layer)
 		previous = architecture[index]["nodes"]
 		current = architecture[index + 1]["nodes"]
 		flag = architecture[index + 1]["bias"]
-		# current += 1 if flag else 0
-		# print("current")
-		# print(current)
-		if flag: previous += 1
-		# print("current")
-		# print(current)
-		# print("previous")
-		# print(previous)
-		# matrix = np.zeros((current, previous))
 		vector = [gene["weight"] for gene in layer]
-		# print("vector")
-		# print(vector)
+		if flag: previous += 1
 		matrix = np.reshape(vector, (current, previous))
-		# print("matrix")
-		# print(matrix)
 		network.append(matrix)
-
-		# for gene in layer:
 
 	return network
 
