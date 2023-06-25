@@ -52,8 +52,8 @@ spec:
 
             - configMapRef:
 
-              name: add-button-config-map
+                name: add-button-config-map
 
             - secretRef:
 
-              name: add-button-secret
+                name: add-button-secret
