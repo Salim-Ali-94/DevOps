@@ -358,14 +358,12 @@ def neuralNetwork(architecture):
 	network = []
 	topology = []
 
-	# for layer in range(len(architecture) - 1):
 	for layer in range(len(architecture)):
 
 		if (layer < len(architecture) - 1):
 
 			flag = architecture[layer + 1]["bias"]
 			forward = architecture[layer + 1]["nodes"]
-			# nodes = tuple()
 
 			if (layer == 0):
 
@@ -375,56 +373,23 @@ def neuralNetwork(architecture):
 
 				current = architecture[layer]["nodes"]
 
-			# for node in range(current):
-
-			# 	if (len(topology) == 0):
-
-			# 		nodes += (node + 1,)
-
-			# 	else:
-
-			# 		nodes += (topology[-1][-1] + node + 1,)
-
-			# if (len(topology) == 0):
-
-			# 	nodes = tuple(node + 1 for node in range(current))
-
-			# else:
-
-			# 	nodes = tuple(topology[-1][-1] + node + 1 for node in range(current))
-
 			if flag:
 
 				current += 1
 
 			weights = np.random.rand(forward, current)
-			# topology.append(nodes)
 			network.append(weights)
-
-		# if flag:
-
-		# 	current -= 1
 
 		if (len(topology) == 0):
 
-			# nodes = tuple(node + 1 for node in range(current))
 			nodes = tuple(node + 1 for node in range(architecture[layer]))
 
 		else:
 
-			# nodes = tuple(topology[-1][-1] + node + 1 for node in range(current))
 			nodes = tuple(topology[-1][-1] + node + 1 for node in range(architecture[layer]["nodes"]))
 
 		topology.append(nodes)
 
-	# nodes = tuple()
-
-	# for node in range(architecture[-1]["nodes"]):
-
-	# 	nodes += (topology[-1][-1] + node + 1,)
-
-	# topology.append(nodes)
-	# topology.append(tuple(topology[-1][-1] + node + 1 for node in range(architecture[-1]["nodes"])))
 	return network, topology
 
 
