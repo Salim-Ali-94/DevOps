@@ -1,0 +1,59 @@
+apiVersion: apps/v1
+
+kind: Deployment
+
+metadata:
+
+  name: add-button
+
+  labels:
+
+    app: add-button
+
+spec:
+
+  replicas: 2
+
+  selector:
+
+    matchLabels:
+
+      app: add-button
+
+  strategy: 
+
+    type: RollingUpdate
+
+    rollingUpdate:
+
+      maxSurge: 3
+
+  template:
+
+    metadata:
+
+      labels:
+
+        app: add-button
+
+    spec:
+
+      containers:
+
+        - name: add-button
+
+          image: salim1011/todo-microservices-ui-add-button:v0
+
+          ports:
+
+            - containerPort: 3000
+
+          envFrom:
+
+            - configMapRef:
+
+              name: add-button-config-map
+
+            - secretRef:
+
+              name: add-button-secret
