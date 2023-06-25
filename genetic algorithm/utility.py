@@ -363,14 +363,6 @@ def neuralNetwork(architecture):
 		forward = architecture[layer + 1]["nodes"]
 		current = architecture[layer]["nodes"]
 
-		# if (layer == 0):
-
-		# 	current = architecture[layer]
-
-		# else:
-
-		# 	current = architecture[layer]["nodes"]
-
 		if flag:
 
 			current += 1
@@ -381,20 +373,38 @@ def neuralNetwork(architecture):
 	return network
 
 
-def encodeNetwork(network, architecture):
+# def encodeNetwork(network, architecture, topology):
+def encodeNetwork(network, topology):
 
 	genome = []
 
-	# for index, weight in enumerate(network):
+	for index, weight in enumerate(network):
+	# for weight in range(len(network)):
 
-	# 	for row, column in weight:
+		# for row in range(network[weight].shape[0]):
+		for row in range(weight.shape[0]):
 
-	# 		properties = { "fitness": 0,
-	# 					   "input": ,
-	# 					   "output": ,
-	# 					   "layer": architecture[index]["layer"] }
+			# for column in range(len(network[weight][row])):
+			for column in range(len(weight[row])):
 
-	# 	genome.append(properties)
+				# current = topology[weight + 1][row]
+				# previous = topology[weight][column]
+
+				properties = { "fitness": 0,
+							   # "from": previous,
+							   # "to": current,
+							   "from": topology[index][column],
+							   "to": topology[index + 1][row],
+							   "weight": weight[row][column],
+							   "state": 1,
+							   # "active": True,
+							   "type": "standard",
+							   # "previous": weight,
+							   # "current": weight + 1 }
+							   "previous": index,
+							   "current": index + 1 }
+
+				genome.append(properties)
 
 	return genome
 
@@ -448,7 +458,6 @@ def networkStructure(architecture):
 
 		if (len(topology) == 0):
 
-			# nodes = tuple(node + 1 for node in range(architecture[layer]))
 			nodes = tuple(node + 1 for node in range(architecture[layer]["nodes"]))
 
 		else:
@@ -461,7 +470,6 @@ def networkStructure(architecture):
 
 				nodes += (nodes[-1] + 1,)
 
-		# nodes = tuple(topology[-1][-1] + node + 1 for node in range(architecture[layer]["nodes"]))
 		topology.append(nodes)
 
 	return topology

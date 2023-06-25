@@ -43,6 +43,8 @@ if __name__ == "__main__":
 	network = utility.neuralNetwork(architecture)
 	topology = utility.networkStructure(architecture)
 	output = utility.feedForward(x, network, architecture)
+	genome = utility.encodeNetwork(network, topology)
+	# ANN = utility.decodeGenome(genome, architecture, topology)
 	nodes = []
 
 	for layer in topology:
@@ -123,6 +125,10 @@ if __name__ == "__main__":
 
 
 
+	print()
+	print("genome")
+	print(genome)
+	print()
 	# print()
 	# print("network")
 	# print(network)
