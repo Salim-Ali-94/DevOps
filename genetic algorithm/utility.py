@@ -361,14 +361,15 @@ def neuralNetwork(architecture):
 
 		flag = architecture[layer + 1]["bias"]
 		forward = architecture[layer + 1]["nodes"]
+		current = architecture[layer]["nodes"]
 
-		if (layer == 0):
+		# if (layer == 0):
 
-			current = architecture[layer]
+		# 	current = architecture[layer]
 
-		else:
+		# else:
 
-			current = architecture[layer]["nodes"]
+		# 	current = architecture[layer]["nodes"]
 
 		if flag:
 
@@ -380,7 +381,26 @@ def neuralNetwork(architecture):
 	return network
 
 
-# def neuralNetwork(architecture):
+def encodeNetwork(network, architecture):
+
+	genome = []
+
+	# for index, weight in enumerate(network):
+
+	# 	for row, column in weight:
+
+	# 		properties = { "fitness": 0,
+	# 					   "input": ,
+	# 					   "output": ,
+	# 					   "layer": architecture[index]["layer"] }
+
+	# 	genome.append(properties)
+
+	return genome
+
+
+# def networkConfiguration(architecture):
+# def configureNetwork(architecture):
 
 # 	network = []
 # 	topology = []
@@ -428,18 +448,44 @@ def networkStructure(architecture):
 
 		if (len(topology) == 0):
 
-			nodes = tuple(node + 1 for node in range(architecture[layer]))
+			# nodes = tuple(node + 1 for node in range(architecture[layer]))
+			nodes = tuple(node + 1 for node in range(architecture[layer]["nodes"]))
 
 		else:
 
 			nodes = tuple(topology[-1][-1] + node + 1 for node in range(architecture[layer]["nodes"]))
 
+		if (layer < len(architecture) - 1):
+
+			if architecture[layer + 1]["bias"]:
+
+				nodes += (nodes[-1] + 1,)
+
+		# nodes = tuple(topology[-1][-1] + node + 1 for node in range(architecture[layer]["nodes"]))
 		topology.append(nodes)
 
 	return topology
 
 
 def feedForward(data, network, architecture):
+
+	activity = data.copy()
+
+	for layer, neuron in enumerate(network):
+
+		flag = architecture[layer + 1]["bias"]
+
+		if flag:
+
+			activity = np.vstack((activity, 1))
+
+		output = neuron.dot(activity)
+		activity = activation(output, architecture[layer + 1]["function"])
+
+	return activity
+
+
+def networkPropagation(data, network, architecture):
 
 	activity = data.copy()
 
