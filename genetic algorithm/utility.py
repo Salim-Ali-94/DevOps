@@ -377,6 +377,8 @@ def neuralNetwork(architecture):
 def encodeNetwork(network, topology):
 
 	genome = []
+	collect = tuple()
+	# partition = []
 
 	for index, weight in enumerate(network):
 	# for weight in range(len(network)):
@@ -391,22 +393,67 @@ def encodeNetwork(network, topology):
 				# previous = topology[weight][column]
 
 				properties = { "fitness": 0,
-							   # "from": previous,
-							   # "to": current,
-							   "from": topology[index][column],
+							   # "input": previous,
+							   # "output": current,
+							   "from": topology[index][column], 
 							   "to": topology[index + 1][row],
 							   "weight": weight[row][column],
 							   "state": 1,
 							   # "active": True,
 							   "type": "standard",
-							   # "previous": weight,
-							   # "current": weight + 1 }
+
+							   # "direction": "forward", # vs "recurrent"
+							   # "state": "active", # vs "inactive" / "detached" + "connected"
+							   # "type": "consecutive", # vs "cacade"
+							   
+							   # "current": weight,
+							   # "next": weight + 1 }
 							   "previous": index,
 							   "current": index + 1 }
 
-				genome.append(properties)
+				# genome.append(properties)
+				collect += (properties,)
+
+		# partition.append(collect)
+		genome.append(collect)
+		collect = tuple()
 
 	return genome
+	# return genome, partition
+
+
+# def buildNetwork(genome, architecture, topology):
+def decodeGenome(genome, architecture):
+
+	network = []
+
+	# for gene in genome:
+	for index, layer in enumerate(genome):
+
+		# print(layer)
+		previous = architecture[index]["nodes"]
+		current = architecture[index + 1]["nodes"]
+		flag = architecture[index + 1]["bias"]
+		# current += 1 if flag else 0
+		# print("current")
+		# print(current)
+		if flag: previous += 1
+		# print("current")
+		# print(current)
+		# print("previous")
+		# print(previous)
+		# matrix = np.zeros((current, previous))
+		vector = [gene["weight"] for gene in layer]
+		# print("vector")
+		# print(vector)
+		matrix = np.reshape(vector, (current, previous))
+		# print("matrix")
+		# print(matrix)
+		network.append(matrix)
+
+		# for gene in layer:
+
+	return network
 
 
 # def networkConfiguration(architecture):
