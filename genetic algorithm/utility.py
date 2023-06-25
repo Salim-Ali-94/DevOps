@@ -273,12 +273,7 @@ def mutate(mutationFunction, mutation_rate, population):
 	return generation
 
 
-def generatePopulation(chromosome_length = 2,
-					   population_size = 5,
-					   category = "number",
-					   genotype = "encoded",
-					   gene_width = 1,
-					   domain = None):
+def generatePopulation(chromosome_length = 2, population_size = 5, category = "number", genotype = "encoded", gene_width = 1, domain = None):
 
 	if (domain is None):
 
@@ -361,28 +356,76 @@ def generatePopulation(chromosome_length = 2,
 def neuralNetwork(architecture):
 
 	network = []
+	topology = []
 
-	for layer in range(len(architecture) - 1):
+	# for layer in range(len(architecture) - 1):
+	for layer in range(len(architecture)):
 
-		flag = architecture[layer + 1]["bias"]
-		forward = architecture[layer + 1]["nodes"]
+		if (layer < len(architecture) - 1):
 
-		if (layer == 0):
+			flag = architecture[layer + 1]["bias"]
+			forward = architecture[layer + 1]["nodes"]
+			# nodes = tuple()
 
-			current = architecture[layer]
+			if (layer == 0):
+
+				current = architecture[layer]
+
+			else:
+
+				current = architecture[layer]["nodes"]
+
+			# for node in range(current):
+
+			# 	if (len(topology) == 0):
+
+			# 		nodes += (node + 1,)
+
+			# 	else:
+
+			# 		nodes += (topology[-1][-1] + node + 1,)
+
+			# if (len(topology) == 0):
+
+			# 	nodes = tuple(node + 1 for node in range(current))
+
+			# else:
+
+			# 	nodes = tuple(topology[-1][-1] + node + 1 for node in range(current))
+
+			if flag:
+
+				current += 1
+
+			weights = np.random.rand(forward, current)
+			# topology.append(nodes)
+			network.append(weights)
+
+		# if flag:
+
+		# 	current -= 1
+
+		if (len(topology) == 0):
+
+			# nodes = tuple(node + 1 for node in range(current))
+			nodes = tuple(node + 1 for node in range(architecture[layer]))
 
 		else:
 
-			current = architecture[layer]["nodes"]
+			# nodes = tuple(topology[-1][-1] + node + 1 for node in range(current))
+			nodes = tuple(topology[-1][-1] + node + 1 for node in range(architecture[layer]["nodes"]))
 
-		if flag:
+		topology.append(nodes)
 
-			current += 1
+	# nodes = tuple()
 
-		weights = np.random.rand(forward, current)
-		network.append(weights)
+	# for node in range(architecture[-1]["nodes"]):
 
-	return network
+	# 	nodes += (topology[-1][-1] + node + 1,)
+
+	# topology.append(nodes)
+	# topology.append(tuple(topology[-1][-1] + node + 1 for node in range(architecture[-1]["nodes"])))
+	return network, topology
 
 
 def feedForward(data, network, architecture):
@@ -405,19 +448,19 @@ def feedForward(data, network, architecture):
 
 def activation(data, function = "sigmoid"):
 
-	if (function == "sigmoid"):
+	if (function.lower().lstrip().rstrip() == "sigmoid"):
 
 		return 1 / (1 + np.exp(-data))
 
-	elif (function == "tanh"):
+	elif (function.lower().lstrip().rstrip() == "tanh"):
 
 		return np.tanh(data)
 
-	elif (function == "relu"):
+	elif (function.lower().lstrip().rstrip() == "relu"):
 
 		return np.maximum(data, 0)
 
-	elif (function == "step"):
+	elif (function.lower().lstrip().rstrip() == "step"):
 
 		return np.sign(data)
 
