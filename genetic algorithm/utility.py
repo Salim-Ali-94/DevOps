@@ -538,16 +538,18 @@ def modifyWeight(genome, topology, history, threshold = 0.25):
 	return genome, history
 
 
-def modifyGenome(genome, topology, threshold = 0.25, recurrent = False):
+def modifyGenome(genome, topology, threshold = 0.5, recurrent = False):
 
 	if ((len(genome) > 1) and
 		(random.random() < threshold)):
 
 		matrix_a = random.choice(genome)
 		index_a = genome.index(matrix_a)
-		genome.remove(matrix_a)
-		matrix_b = random.choice(genome)
-		genome.insert(matrix_a, index_a)
+		# genome.remove(matrix_a)
+		clone = genome.copy()
+		clone.remove(matrix_a)
+		matrix_b = random.choice(clone)
+		# genome.insert(matrix_a, index_a)
 		branch_a = random.choice(matrix_a)
 		branch_b = random.choice(matrix_b)
 		input_node_a = branch_a["input_node"]
@@ -574,8 +576,8 @@ def modifyGenome(genome, topology, threshold = 0.25, recurrent = False):
 
 		output_layer_c = max(output_layer_a, output_layer_b)
 		input_layer_c = min(input_layer_a, input_layer_b)
-		output_node_c = output_node_a if (output_layer_c == output_layer_a) else output_layer_b
-		input_node_c = input_node_a if (input_layer_c == input_layer_a) else input_layer_b
+		output_node_c = output_node_a if (output_layer_c == output_layer_a) else output_node_b
+		input_node_c = input_node_a if (input_layer_c == input_layer_a) else input_node_b
 
 		if recurrent:
 

@@ -40,9 +40,17 @@ if __name__ == "__main__":
 	# consecutive / cascade --> determine from layer of each node ==> if (layer_to - layer_from == 1): type = consecutive else cascade
 
 	# network, topology = utility.neuralNetwork(architecture)
-	network = utility.artificialNeuralNetwork(architecture)
+
 	topology = utility.networkStructure(architecture)
+	# network = utility.artificialNeuralNetwork(architecture)
+	network = utility.neuralNetwork(architecture)
 	output = utility.feedForward(x, network, architecture)
+	genome = utility.encodeNetwork(network, topology)
+	ANN = utility.decodeGenome(genome, architecture)
+	ann = utility.modifyGenome(genome, topology)
+	history = utility.populateLUT(genome)
+
+
 	# genome = utility.encodeNetwork(network, topology)
 	# genome, partitioned = utility.encodeNetwork(network, topology)
 	# genome = utility.encodeNetwork(network, topology)
@@ -53,19 +61,23 @@ if __name__ == "__main__":
 																    # "state": 1,
 																    # "innovation": 999}])
 	# genome, history = utility.encodeNetwork(network, topology)
-	genome = utility.encodeNetwork(network, topology)
-	history = utility.populateLUT(network, topology)
-	History = utility.populateLUT(network, topology, [{ "from": 2,
-													    "to": 5,
-													    "weight": network[0][1, 1],
-													    "direction": "forward",
-													    "type": "consecutive",
-													    "state": 1,
-													    "innovation": 999}])
+
+	# genome = utility.encodeNetwork(network, topology)
+	# history = utility.populateLUT(network, topology)
+	# History = utility.populateLUT(network, topology, [{ "from": 2,
+	# 												    "to": 5,
+	# 												    "weight": network[0][1, 1],
+	# 												    "direction": "forward",
+	# 												    "type": "consecutive",
+	# 												    "state": 1,
+	# 												    "innovation": 999}])
+
 	# ANN = utility.decodeGenome(genome, architecture, topology)
 	# ANN = utility.decodeGenome(genome, architecture)
 	# ANN = utility.decodeGenome(partitioned, architecture)
-	ANN = utility.decodeGenome(genome, architecture)
+
+
+	# ANN = utility.decodeGenome(genome, architecture)
 	nodes = []
 
 	for layer in topology:
@@ -152,12 +164,16 @@ if __name__ == "__main__":
 	print()
 	print("history / ", len(history))
 	print(history)
-	print()
-	print("History / ", len(History))
-	print(History)
+	# print()
+	# print("History / ", len(History))
+	# print(History)
+
 	# print()
 	# print("partitioned")
 	# print(partitioned)
+	print()
+	print("ann")
+	print(ann)
 	print()
 	print("ANN")
 	print(ANN)
