@@ -4,18 +4,20 @@ kind: Service
 
 metadata:
 
-  name: store-item
+  name: add-button-service
 
 spec:
 
   selector:
 
-    app: store-item
-
-  type: ClusterIP
+    app: add-button
 
   ports:
 
-  - port: 3000
-    targetPort: 3000
-    protocol: TCP
+    - protocol: TCP
+
+      port: 80
+
+      targetPort: 3000
+
+  type: LoadBalancer

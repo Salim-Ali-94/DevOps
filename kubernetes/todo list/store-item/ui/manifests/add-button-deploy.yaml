@@ -6,10 +6,6 @@ metadata:
 
   name: add-button
 
-  labels:
-
-    app: add-button
-
 spec:
 
   replicas: 2
@@ -19,14 +15,6 @@ spec:
     matchLabels:
 
       app: add-button
-
-  strategy: 
-
-    type: RollingUpdate
-
-    rollingUpdate:
-
-      maxSurge: 3
 
   template:
 
@@ -42,18 +30,8 @@ spec:
 
         - name: add-button
 
-          image: salim1011/todo-microservices-ui-add-button:v0
+          image: add-button:latest
 
           ports:
 
             - containerPort: 3000
-
-          envFrom:
-
-            - configMapRef:
-
-                name: add-button-config-map
-
-            - secretRef:
-
-                name: add-button-secret

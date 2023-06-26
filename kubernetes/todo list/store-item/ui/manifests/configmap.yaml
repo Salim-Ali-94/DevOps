@@ -1,14 +1,11 @@
 apiVersion: v1
 
-kind: configMap
+kind: ConfigMap
 
 metadata:
 
-  name: add-button-config-map
+  name: add-button-config
 
 data:
 
-  MONGODB_HOST: host.minikube.internal
-  MONGODB_USER: add_todo_user
-  MONGODB_DB: items
-  MONGODB_PORT: "3001"
+  COLLECTION: todo-list
