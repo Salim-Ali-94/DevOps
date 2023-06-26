@@ -353,6 +353,39 @@ def generatePopulation(chromosome_length = 2, population_size = 5, category = "n
 	return population
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 def neuralNetwork(architecture):
 
 	network = []
@@ -363,70 +396,474 @@ def neuralNetwork(architecture):
 		forward = architecture[layer + 1]["nodes"]
 		current = architecture[layer]["nodes"]
 		if flag: current += 1
-		weights = np.random.rand(forward, current)
+		weights = np.random.uniform(-2, 2, (forward, current))
 		network.append(weights)
 
 	return network
 
 
+
+def artificialNeuralNetwork(architecture, topology, history = []):
+
+	network = []
+
+	for layer in range(len(architecture) - 1):
+
+		flag = architecture[layer + 1]["bias"]
+		forward = architecture[layer + 1]["nodes"]
+		current = architecture[layer]["nodes"]
+		if flag: current += 1
+		weights = np.random.uniform(-1, 1, (forward, current))
+
+		# history = getHistory(weights, layer, topology, history)
+		# genome = encodeBranch(weights, topology[layer], topology[layer + 1], layer, history)
+		# genome = modifyGenome(genome)
+		# weights = decodeDNA(genome, current, forward, flag)
+		# history = getHistory(weights, layer, topology, history)
+
+		history = getHistory(weights, layer, topology, history)
+		genome = encodeBranch(weights, topology[layer], topology[layer + 1], layer, history)
+		# genome = modifyGenome(genome)
+		genome = modifyWeight(genome)
+		weights = decodeDNA(genome, current, forward, flag)
+		history = getHistory(weights, layer, topology, history)
+
+		network.append(weights)
+
+	return network
+
+
+# def modifyGenome(genome, topology, history, threshold = 0.25):
+def modifyWeight(genome, topology, history, threshold = 0.25):
+
+	recurrent = False
+
+	if (type(genome) == tuple):
+
+		for dna in genome:
+
+			if (random.random() < threshold):
+
+				dna["state"] = 0
+				history[history.index(dna["innovation"])]["state"] = 0
+
+			if (recurrent & (random.random() < threshold)):
+
+				dna["direction"] = "inverse"
+				variable = dna["input_node"]
+				dna["input_node"] = dna["output_node"]
+				dna["output_node"] = variable
+				variable = dna["input_layer"]
+				dna["input_layer"] = dna["output_layer"]
+				dna["output_layer"] = variable
+				history[history.index(dna["innovation"])]["direction"] = "inverse"
+				history[history.index(dna["innovation"])]["input_node"] = dna["input_node"]
+				history[history.index(dna["innovation"])]["output_node"] = dna["output_node"]
+
+	elif (type(genome) == list):
+
+		if (len(genome) > 1):
+
+			if (random.random() < threshold):
+
+				# recurrent = False
+				matrix_a = random.choice(genome)
+				index_a = genome.index(matrix_a)
+				genome.remove(matrix_a)
+				matrix_b = random.choice(genome)
+				genome.insert(matrix_a, index_a)
+				branch_a = random.choice(matrix_a)
+				branch_b = random.choice(matrix_b)
+				input_node_a = branch_a["input_node"]
+				output_node_a = branch_a["output_node"]
+				input_node_b = branch_b["input_node"]
+				output_node_b = branch_b["output_node"]
+				input_layer_a = branch_a["input_layer"]
+				output_layer_a = branch_a["output_layer"]
+				input_layer_b = branch_b["input_layer"]
+				output_layer_b = branch_b["output_layer"]
+				index_b = genome.index(matrix_b)
+				link_a = genome[index_a].index(branch_a)
+				link_b = genome[index_b].index(branch_b)
+
+				if (random.random() < threshold):
+
+					weight_a = branch_a["weight"]
+					weight_b = branch_b["weight"]
+					weight_c = weight_a*weight_b + weight_a + weight_b
+
+				else:
+
+					weight_c = random.uniform(-2, 2)
+
+				output_layer_c = max(output_layer_a, output_layer_b)
+				input_layer_c = min(input_layer_a, input_layer_b)
+				output_node_c = output_node_a if (output_layer_c == output_layer_a) else output_layer_b
+				input_node_c = input_node_a if (input_layer_c == input_layer_a) else input_layer_b
+
+				if recurrent:
+
+					variable = output_layer_c
+					output_layer_c = input_layer_c
+					input_layer_c = variable
+					variable = output_node_c
+					output_node_c = input_node_c
+					input_node_c = variable
+
+				if (random.random() < threshold):
+
+					genome[index_a][link_a]["active"] = False
+					genome[index_b][link_b]["active"] = False
+
+				branch_c = ({ "input_node": input_node_c,
+							  "output_node": output_node_c,
+							  "input_layer": input_layer_c,
+							  "output_layer": output_layer_c,
+							  "weight": weight_c,
+							  "type": "skip" if (abs(output_layer_c - input_layer_c) > 1) else "consecutive",
+							  "direction": "inverse" if (output_layer_c < input_layer_c) else "forward",
+							  "active": True,
+							  "innovation": len(history) + 1 }, )
+
+				genome.append(branch_c)
+				history[history.index(genome[index_a][link_a]["innovation"])]["active"] = genome[index_a][link_a]["active"]
+				history[history.index(genome[index_b][link_b]["innovation"])]["active"] = genome[index_a][link_a]["active"]
+				history.append({ "innovation": len(history) + 1,
+							     "direction": "inverse" if (output_layer_c < input_layer_c) else "forward",
+							     "type": "skip" if (abs(output_layer_c - input_layer_c) > 1) else "consecutive",
+							     "input_node": input_node_c,
+							     "output_node": output_node_c,
+							     "active": True })
+
+	return genome, history
+
+
+def modifyGenome(genome, topology, threshold = 0.25, recurrent = False):
+
+	if ((len(genome) > 1) and
+		(random.random() < threshold)):
+
+		matrix_a = random.choice(genome)
+		index_a = genome.index(matrix_a)
+		genome.remove(matrix_a)
+		matrix_b = random.choice(genome)
+		genome.insert(matrix_a, index_a)
+		branch_a = random.choice(matrix_a)
+		branch_b = random.choice(matrix_b)
+		input_node_a = branch_a["input_node"]
+		output_node_a = branch_a["output_node"]
+		input_node_b = branch_b["input_node"]
+		output_node_b = branch_b["output_node"]
+		input_layer_a = branch_a["input_layer"]
+		output_layer_a = branch_a["output_layer"]
+		input_layer_b = branch_b["input_layer"]
+		output_layer_b = branch_b["output_layer"]
+		index_b = genome.index(matrix_b)
+		link_a = genome[index_a].index(branch_a)
+		link_b = genome[index_b].index(branch_b)
+
+		if (random.random() < threshold):
+
+			weight_a = branch_a["weight"]
+			weight_b = branch_b["weight"]
+			weight_c = weight_a*weight_b + weight_a + weight_b
+
+		else:
+
+			weight_c = random.uniform(-2, 2)
+
+		output_layer_c = max(output_layer_a, output_layer_b)
+		input_layer_c = min(input_layer_a, input_layer_b)
+		output_node_c = output_node_a if (output_layer_c == output_layer_a) else output_layer_b
+		input_node_c = input_node_a if (input_layer_c == input_layer_a) else input_layer_b
+
+		if recurrent:
+
+			variable = output_layer_c
+			output_layer_c = input_layer_c
+			input_layer_c = variable
+			variable = output_node_c
+			output_node_c = input_node_c
+			input_node_c = variable
+
+		if (random.random() < threshold):
+
+			genome[index_a][link_a]["active"] = False
+			genome[index_b][link_b]["active"] = False
+
+		branch_c = ({ "input_node": input_node_c,
+					  "output_node": output_node_c,
+					  "input_layer": input_layer_c,
+					  "output_layer": output_layer_c,
+					  "weight": weight_c,
+					  "type": "skip" if (abs(output_layer_c - input_layer_c) > 1) else "consecutive",
+					  "direction": "inverse" if (output_layer_c < input_layer_c) else "forward",
+					  "active": True}, )
+
+		genome.append(branch_c)
+
+	for matrix in genome:
+
+		for dna in matrix:
+
+			if (random.random() < threshold):
+
+				dna["active"] = False
+
+			if (recurrent & (random.random() < threshold)):
+
+				dna["direction"] = "inverse"
+				variable = dna["input_node"]
+				dna["input_node"] = dna["output_node"]
+				dna["output_node"] = variable
+				variable = dna["input_layer"]
+				dna["input_layer"] = dna["output_layer"]
+				dna["output_layer"] = variable
+
+	return genome
+
+
+
+
+
+def mutateGenome(genome, topology, history, threshold = 0.25):
+
+	recurrent = False
+
+	if (type(genome) == tuple):
+
+		for dna in genome:
+
+			if (random.random() < threshold):
+
+				dna["state"] = 0
+				history[history.index(dna["innovation"])]["state"] = 0
+
+			if (recurrent & (random.random() < threshold)):
+
+				dna["direction"] = "inverse"
+				variable = dna["input_node"]
+				dna["input_node"] = dna["output_node"]
+				dna["output_node"] = variable
+				variable = dna["input_layer"]
+				dna["input_layer"] = dna["output_layer"]
+				dna["output_layer"] = variable
+				history[history.index(dna["innovation"])]["direction"] = "inverse"
+				history[history.index(dna["innovation"])]["input_node"] = dna["input_node"]
+				history[history.index(dna["innovation"])]["output_node"] = dna["output_node"]
+
+	elif (type(genome) == list):
+
+		if (len(genome) > 1):
+
+			if (random.random() < threshold):
+
+				# recurrent = False
+				matrix_a = random.choice(genome)
+				index_a = genome.index(matrix_a)
+				genome.remove(matrix_a)
+				matrix_b = random.choice(genome)
+				genome.insert(matrix_a, index_a)
+				branch_a = random.choice(matrix_a)
+				branch_b = random.choice(matrix_b)
+				input_node_a = branch_a["input_node"]
+				output_node_a = branch_a["output_node"]
+				input_node_b = branch_b["input_node"]
+				output_node_b = branch_b["output_node"]
+				input_layer_a = branch_a["input_layer"]
+				output_layer_a = branch_a["output_layer"]
+				input_layer_b = branch_b["input_layer"]
+				output_layer_b = branch_b["output_layer"]
+				index_b = genome.index(matrix_b)
+				link_a = genome[index_a].index(branch_a)
+				link_b = genome[index_b].index(branch_b)
+
+				if (random.random() < threshold):
+
+					weight_a = branch_a["weight"]
+					weight_b = branch_b["weight"]
+					weight_c = weight_a*weight_b + weight_a + weight_b
+
+				else:
+
+					weight_c = random.uniform(-2, 2)
+
+				output_layer_c = max(output_layer_a, output_layer_b)
+				input_layer_c = min(input_layer_a, input_layer_b)
+				output_node_c = output_node_a if (output_layer_c == output_layer_a) else output_layer_b
+				input_node_c = input_node_a if (input_layer_c == input_layer_a) else input_layer_b
+
+				if recurrent:
+
+					variable = output_layer_c
+					output_layer_c = input_layer_c
+					input_layer_c = variable
+					variable = output_node_c
+					output_node_c = input_node_c
+					input_node_c = variable
+
+				if (random.random() < threshold):
+
+					genome[index_a][link_a]["active"] = False
+					genome[index_b][link_b]["active"] = False
+
+				branch_c = ({ "input_node": input_node_c,
+							  "output_node": output_node_c,
+							  "input_layer": input_layer_c,
+							  "output_layer": output_layer_c,
+							  "weight": weight_c,
+							  "type": "skip" if (abs(output_layer_c - input_layer_c) > 1) else "consecutive",
+							  "direction": "inverse" if (output_layer_c < input_layer_c) else "forward",
+							  "active": True,
+							  "innovation": len(history) + 1 }, )
+
+				genome.append(branch_c)
+				history[history.index(genome[index_a][link_a]["innovation"])]["active"] = genome[index_a][link_a]["active"]
+				history[history.index(genome[index_b][link_b]["innovation"])]["active"] = genome[index_a][link_a]["active"]
+				history.append({ "innovation": len(history) + 1,
+							     "direction": "inverse" if (output_layer_c < input_layer_c) else "forward",
+							     "type": "skip" if (abs(output_layer_c - input_layer_c) > 1) else "consecutive",
+							     "input_node": input_node_c,
+							     "output_node": output_node_c,
+							     "active": True })
+
+	return genome, history
+
+
+
 # def encodeNetwork(network, topology, history = []):
-def encodeNetwork(network, topology):
 
-	# identifier = 0
-	identifier = 1
-	genome = []
-	branch = tuple()
+# 	identifier = 0
+# 	genome = []
+# 	branch = tuple()
 
-	for index, weight in enumerate(network):
+# 	for index, weight in enumerate(network):
 
-		for row in range(weight.shape[0]):
+# 		for row in range(weight.shape[0]):
 
-			for column in range(len(weight[row])):
+# 			for column in range(len(weight[row])):
 
-				# if (len(history) > 0):
+# 				if (len(history) > 0):
 
-				# 	_from = gene["from"]
-				# 	to = gene["to"]
-				# 	w = gene["weight"]
+# 					start = topology[index][column]
+# 					end = topology[index + 1][row]
+# 					# w = weight[row][column]
+# 					exist = False
+# 					track = []
+# 					ID = identifier
 
-				# 	for gene in history:
+# 					for gene in history:
 
-				# 		if 
+# 						if ((gene["input_node"] == start) and
+# 							(gene["output_node"] == end) and
+# 							(gene["direction"] == "forward") and
+# 							(gene["type"] == "consecutive") and
+# 							(gene["state"] == 1)):
 
-				# 	if 
+# 							identifier = gene["innovation"]
+# 							exist = True
+# 							break
 
-				# 		identifier += 1
+# 						else:
 
-				# 	else:
+# 							if (len(track) == 0):
 
-				# 		identifier = gene["identifier"]
+# 								ID += 1
 
-				# else:
+# 								track.append({ "innovation": ID,
+# 											   "direction": "forward",
+# 											   "type": "consecutive",
+# 											   "input_node": start,
+# 											   "output_node": end,
+# 											   "state": 1 })
 
-				# 	identifier +=1
+# 							else:
 
-				properties = { "fitness": 0,
-							   # "input": previous,
-							   # "output": current,
-							   "from": topology[index][column], 
-							   "to": topology[index + 1][row],
-							   "weight": weight[row][column],
-							   "state": 1,
-							   # "active": True,
-							   "type": "standard",
+# 								for entry in track:
 
-							   # "direction": "forward", # vs "recurrent"
-							   # "state": "active", # vs "inactive" / "detached" + "connected"
-							   # "type": "consecutive", # vs "cacade"
+# 									if ((entry["input_node"] != start) and
+# 										(entry["output_node"] != end) and
+# 										(entry["direction"] != "forward") and
+# 										(entry["type"] != "consecutive") and
+# 										(entry["state"] != 1)):
+
+# 										ID += 1
+
+# 										track.append({ "innovation": ID,
+# 													   "direction": "forward",
+# 													   "type": "consecutive",
+# 													   "input_node": start,
+# 													   "output_node": end,
+# 													   "state": 1 })
+
+# 					if not exist:
+
+# 						identifier += 1
+
+# 					history.extend(track)
+
+# 				else:
+
+# 					identifier += 1
+# 					history.append({ "innovation": identifier,
+# 								   	 "direction": "forward",
+# 								     "type": "consecutive",
+# 								     "input_node": topology[index][column],
+# 								     "output_node": topology[index + 1][row],
+# 								     "state": 1 })
+
+# 				properties = { "fitness": 0,
+# 							   # "input": previous,
+# 							   # "output": current,
+# 							   "input_node": topology[index][column], 
+# 							   "output_node": topology[index + 1][row],
+# 							   "weight": weight[row][column],
+# 							   "state": 1,
+# 							   # "active": True,
+# 							   # "type": "standard",
+
+# 							   "direction": "forward", # vs "inverse"
+# 							   # "state": "active", # vs "inactive" / "detached" + "connected"
+# 							   "type": "consecutive", # vs "cacade"
 							   
-							   # "current": weight,
-							   # "next": weight + 1 }
-							   "innovation": identifier,
-							   "previous": index,
-							   "current": index + 1 }
+# 							   # "current": weight,
+# 							   # "next": weight + 1 }
+# 							   "innovation": identifier,
+# 							   "previous": index,
+# 							   "current": index + 1 }
 
-				branch += (properties,)
-				identifier += 1
+# 				branch += (properties,)
+
+# 		genome.append(branch)
+# 		branch = tuple()
+
+# 	# return genome
+# 	return genome, history
+
+
+def encodeDNN(network, topology, history = []):
+
+	branch = tuple()
+	genome = []
+
+	for index, matrix in enumerate(network):
+
+		for row in range(matrix.shape[0]):
+
+			for column in range(matrix.shape[1]):
+
+				weight = { "input_node": topology[index][column],
+						   "output_node": topology[index + 1][row],
+						   "weight": matrix[row, column],
+						   "active": True,
+						   "direction": "forward",
+						   "type": "consecutive",
+						   "input_layer": index,
+						   "output_layer": index + 1 }
+
+				history, identity = manageHistory(history, weight)
+				weight["innovation"] = identity
+				branch += (weight,)
 
 		genome.append(branch)
 		branch = tuple()
@@ -434,7 +871,458 @@ def encodeNetwork(network, topology):
 	return genome
 
 
-# def buildNetwork(genome, architecture, topology):
+def encodeANN(network, topology):
+
+	branch = tuple()
+	genome = []
+
+	for index, matrix in enumerate(network):
+
+		for row in range(matrix.shape[0]):
+
+			for column in range(matrix.shape[1]):
+
+				weight = { "input_node": topology[index][column],
+						   "output_node": topology[index + 1][row],
+						   "weight": matrix[row, column],
+						   "active": True,
+						   "direction": "forward",
+						   "type": "consecutive",
+						   "input_layer": index,
+						   "output_layer": index + 1 }
+
+				branch += (weight,)
+
+		genome.append(branch)
+		branch = tuple()
+
+	return genome
+
+
+def encodeNetwork(network, topology, history = [], initialize = False):
+
+	branch = tuple()
+	genome = []
+
+	for index, matrix in enumerate(network):
+
+		for row in range(matrix.shape[0]):
+
+			for column in range(matrix.shape[1]):
+
+				weight = { "input_node": topology[index][column],
+						   "output_node": topology[index + 1][row],
+						   "weight": matrix[row, column],
+						   "active": True,
+						   "direction": "forward",
+						   "type": "consecutive",
+						   "input_layer": index,
+						   "output_layer": index + 1 }
+
+				if initialize:
+
+					history, identity = manageHistory(history, weight)
+					weight["innovation"] = identity
+
+				branch += (weight,)
+
+		genome.append(branch)
+		branch = tuple()
+
+	return genome
+
+
+
+def encodeBranch(matrix, current_neuron, next_neuron, current_layer, history):
+
+	identity = len(history)
+	branch = tuple()
+
+	for row in range(matrix.shape[0]):
+
+		for column in range(len(matrix[row])):
+
+			# properties = { "fitness": 0,
+			properties = { "input_node": current_neuron[column], 
+						   "output_node": next_neuron[row],
+						   "weight": matrix[row, column],
+						   # "state": 1,
+						   "active": True,
+						   "direction": "forward",
+						   "type": "consecutive",
+						   "innovation": identity,
+						   "input_layer": current_layer,
+						   "output_layer": current_layer + 1 }
+
+			branch += (properties,)
+			identity += 1
+
+	return branch
+
+
+# def populateLUT(network, topology, history = []):
+def populateHistory(network, topology, history = []):
+
+	# identifier = 0
+	identifier = len(history)
+
+	for index, weight in enumerate(network):
+
+		for row in range(weight.shape[0]):
+
+			for column in range(len(weight[row])):
+
+				if (len(history) > 0):
+
+					start = topology[index][column]
+					end = topology[index + 1][row]
+					# w = weight[row][column]
+					exist = False
+					track = []
+					ID = identifier
+
+					for gene in history:
+
+						if ((gene["input_node"] == start) and
+							(gene["output_node"] == end) and
+							# (gene["weight"] == w) and
+							(gene["direction"] == "forward") and
+							(gene["type"] == "consecutive") and
+							(gene["state"] == 1)):
+
+							identifier = gene["innovation"]
+							exist = True
+							break
+
+						else:
+
+							if (len(track) == 0):
+
+								ID += 1
+
+								track.append({ "innovation": ID,
+											   "direction": "forward",
+											   "type": "consecutive",
+											   # "weight": w,
+											   "input_node": start,
+											   "output_node": end,
+											   # "state": 1 })
+											   "active": True })
+
+							else:
+
+								for entry in track:
+
+									if ((entry["input_node"] != start) and
+										(entry["output_node"] != end) and
+										# (entry["weight"] == w) and
+										(entry["direction"] != "forward") and
+										(entry["type"] != "consecutive") and
+										(entry["state"] != 1)):
+
+										ID += 1
+
+										track.append({ "innovation": ID,
+													   "direction": "forward",
+													   "type": "consecutive",
+													   # "weight": w,
+													   "input_node": start,
+													   "output_node": end,
+													   # "state": 1 })
+													   "active": True })
+
+					if not exist:
+
+						identifier += 1
+
+					history.extend(track)
+
+				else:
+
+					identifier += 1
+
+					history.append({ "innovation": identifier,
+								   	 "direction": "forward",
+								     "type": "consecutive",
+								     "input_node": topology[index][column],
+								     "output_node": topology[index + 1][row],
+								     "active": True })
+
+	history = sorted(history, key = lambda dna: dna["innovation"])
+	return history
+
+
+def populateLUT(genome):
+
+	history = []
+
+	for index, matrix in enumerate(genome):
+
+		for weight in matrix:
+
+			history, innovation = manageHistory(history, weight)
+
+	return history
+
+
+# def populateLUT(genome, topology):
+def populateRecord(genome, topology):
+
+	history = []
+	identifier = len(history)
+	# identifier = 0
+
+	for index, matrix in enumerate(genome):
+
+		for weight in matrix:
+
+			history = manageHistory(history, weight)
+			# history = manageHistory([], weight)
+
+			if (len(history) > 0):
+
+				start = topology[index][column]
+				end = topology[index + 1][row]
+				# w = genome[row, column]
+				exist = False
+				track = []
+				ID = identifier
+
+				for gene in history:
+
+					if ((gene["input_node"] == start) and
+						(gene["output_node"] == end) and
+						# (gene["weight"] == w) and
+						(gene["direction"] == "forward") and
+						(gene["type"] == "consecutive") and
+						(gene["state"] == 1)):
+
+						identifier = gene["innovation"]
+						exist = True
+						break
+
+					else:
+
+						if (len(track) == 0):
+
+							ID += 1
+
+							track.append({ "innovation": ID,
+										   "direction": "forward",
+										   "type": "consecutive",
+										   # "weight": w,
+										   "input_node": start,
+										   "output_node": end,
+										   # "state": 1 })			
+										   "active": True })
+
+
+						else:
+
+							for entry in track:
+
+								if ((entry["input_node"] != start) and
+									(entry["output_node"] != end) and
+									# (entry["weight"] == w) and
+									(entry["direction"] != "forward") and
+									(entry["type"] != "consecutive") and
+									(entry["state"] != 1)):
+
+									ID += 1
+
+									track.append({ "innovation": ID,
+												   "direction": "forward",
+												   "type": "consecutive",
+												   # "weight": w,
+												   "input_node": start,
+												   "output_node": end,
+												   # "state": 1 })
+										   		   "active": True })
+
+
+				if not exist:
+
+					identifier += 1
+
+				history.extend(track)
+
+			else:
+
+				identifier += 1
+
+				history.append({ "innovation": identifier,
+							   	 "direction": "forward",
+							     "type": "consecutive",
+							     # "weight": weight[row][column],
+							     "input_node": topology[index][column],
+							     "output_node": topology[index + 1][row],
+							     # "state": 1 })
+							     "active": True })
+
+	history = sorted(history, key = lambda dna: dna["innovation"])
+	return history
+
+
+# def getHistory(weight, index, row, column, topology, history = []):
+def getHistory(weight, index, topology, history = []):
+
+	# if (len(history) == 0):
+
+	# 	identifier = 0
+
+	# else:
+
+	# 	identifier = len(history)
+	identifier = len(history)
+
+	for row in range(weight.shape[0]):
+
+		for column in range(len(weight[row])):
+
+			if (len(history) > 0):
+
+				start = topology[index][column]
+				end = topology[index + 1][row]
+				# w = weight[row, column]
+				exist = False
+				track = []
+				ID = identifier
+
+				for gene in history:
+
+					if ((gene["input_node"] == start) and
+						(gene["output_node"] == end) and
+						# (gene["weight"] == w) and
+						(gene["direction"] == "forward") and
+						(gene["type"] == "consecutive") and
+						(gene["state"] == 1)):
+
+						identifier = gene["innovation"]
+						exist = True
+						break
+
+					else:
+
+						if (len(track) == 0):
+
+							ID += 1
+
+							track.append({ "innovation": ID,
+										   "direction": "forward",
+										   "type": "consecutive",
+										   # "weight": w,
+										   "input_node": start,
+										   "output_node": end,
+										   # "state": 1 })			
+										   "active": True })
+
+
+						else:
+
+							for entry in track:
+
+								if ((entry["input_node"] != start) and
+									(entry["output_node"] != end) and
+									# (entry["weight"] == w) and
+									(entry["direction"] != "forward") and
+									(entry["type"] != "consecutive") and
+									(entry["state"] != 1)):
+
+									ID += 1
+
+									track.append({ "innovation": ID,
+												   "direction": "forward",
+												   "type": "consecutive",
+												   # "weight": w,
+												   "input_node": start,
+												   "output_node": end,
+												   # "state": 1 })
+										   		   "active": True })
+
+
+				if not exist:
+
+					identifier += 1
+
+				history.extend(track)
+
+			else:
+
+				identifier += 1
+
+				history.append({ "innovation": identifier,
+							   	 "direction": "forward",
+							     "type": "consecutive",
+							     # "weight": weight[row][column],
+							     "input_node": topology[index][column],
+							     "output_node": topology[index + 1][row],
+							     # "state": 1 })
+							     "active": True })
+
+	history = sorted(history, key = lambda dna: dna["innovation"])
+	return history
+
+
+# def manageHistory(weight, history = []):
+def manageHistory(history, weight):
+
+	innovation = len(history)
+	# fields = ("input_node", "output_node", "type", "active", "direction")
+	fields = ("input_node", "output_node", "type", "active", "direction", "innovation")
+
+	# candidate = { key: value for key, value in weight.items() if key in fields }
+
+	# if (len(history) < 1000):
+
+	# 	record = history.copy()
+
+	# 	for w in record:
+
+	# 		w.pop("innovation")
+
+	# else:
+
+	# 	record = [{ key: value for key, value in w.items() if key in fields } for w in history]
+
+	# if candidate not in record:
+
+	# 	candidate["innovation"] = len(history) + 1
+	# 	history.append(candidate)
+
+	if (len(history) > 0):
+
+		if "innovation" not in weight:
+
+			if not any(((w["input_node"] == weight["input_node"]) and
+						(w["output_node"] == weight["output_node"]) and
+						(w["type"] == weight["type"]) and
+						(w["active"] == weight["active"]) and
+						(w["direction"] == weight["direction"])) for w in history):
+
+				candidate = { key: value for key, value in weight.items() if key in fields }
+				innovation = len(history) + 1
+				# innovation = max(history, key = lambda gene: gene["innovation"]) + 1
+				candidate["innovation"] = innovation
+				history.append(candidate)
+
+		else:
+
+			if not any((w["innovation"] == weight["innovation"]) for w in history):
+
+				candidate = { key: value for key, value in weight.items() if key in fields }
+				history.append(candidate)
+
+	else:
+
+		innovation = 1
+		candidate = { key: value for key, value in weight.items() if key in fields }
+		candidate["innovation"] = innovation
+		history.append(candidate)
+
+	# history = sorted(history, key = lambda dna: dna["innovation"])
+	return history, innovation
+
+
 def decodeGenome(genome, architecture):
 
 	network = []
@@ -450,6 +1338,14 @@ def decodeGenome(genome, architecture):
 		network.append(matrix)
 
 	return network
+
+
+def decodeDNA(DNA, previous, current, bias):
+
+	vector = [dna["weight"] for dna in DNA]
+	if bias: previous += 1
+	matrix = np.reshape(vector, (current, previous))
+	return matrix
 
 
 # def networkConfiguration(architecture):
@@ -518,6 +1414,19 @@ def networkStructure(architecture):
 	return topology
 
 
+# def getStructure(size, layer, bias, previous = 0):
+
+# 	nodes = tuple(previous + node + 1 for node in range(size))
+
+# 	if (layer < size - 1):
+
+# 		if bias:
+
+# 			nodes += (nodes[-1] + 1,)
+
+# 	return nodes
+
+
 def feedForward(data, network, architecture):
 
 	activity = data.copy()
@@ -536,7 +1445,10 @@ def feedForward(data, network, architecture):
 	return activity
 
 
-def networkPropagation(data, network, architecture):
+def processor(data, network, architecture):
+# def networkPropagator(data, network, architecture):
+# def propagator(data, network, architecture):
+# def networkPropagation(data, network, architecture):
 
 	activity = data.copy()
 
@@ -573,6 +1485,22 @@ def activation(data, function = "sigmoid"):
 		return np.sign(data)
 
 	return data
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 def wordScore(chromosome, target):
