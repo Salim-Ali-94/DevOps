@@ -44,11 +44,18 @@ if __name__ == "__main__":
 	topology = utility.networkStructure(architecture)
 	# network = utility.artificialNeuralNetwork(architecture)
 	network = utility.neuralNetwork(architecture)
-	output = utility.feedForward(x, network, architecture)
-	genome = utility.encodeNetwork(network, topology)
-	ANN = utility.decodeGenome(genome, architecture)
-	ann = utility.modifyGenome(genome, topology)
-	history = utility.populateLUT(genome)
+
+	# output = utility.feedForward(x, network, architecture)
+
+	# genome = utility.encodeNetwork(network, topology)
+	encoding = utility.encodeNetwork(network, topology)
+	# ann = utility.modifyGenome(genome, topology, 0.3)
+	ann = utility.modifyGenome(encoding, topology, 0.3)
+	# ANN = utility.decodeGenome(genome, architecture)
+	# history = utility.populateLUT(genome)
+	history, genome = utility.populateLUT(ann)
+	# ANN = utility.decodeGenome(genome, architecture)
+	ANN = utility.decodeGenome(genome, architecture, topology)
 
 
 	# genome = utility.encodeNetwork(network, topology)
@@ -85,17 +92,19 @@ if __name__ == "__main__":
 		nodes += [node for node in layer]
 
 	print()
-	print("network")
+	print("network /", len(network))
 	print(network)
 	print()
-	print("topology")
+	print("topology /", len(topology))
 	print(topology)
 	print()
-	print("nodes")
+	print("nodes /", len(nodes))
 	print(nodes)
-	print()
-	print("output")
-	print(output)
+	# print()
+	# print("output")
+	# print(output)
+
+
 
 	# for matrix in network:
 
@@ -159,7 +168,7 @@ if __name__ == "__main__":
 
 
 	print()
-	print("genome")
+	print("genome /", len(genome))
 	print(genome)
 	print()
 	print("history / ", len(history))
@@ -172,7 +181,7 @@ if __name__ == "__main__":
 	# print("partitioned")
 	# print(partitioned)
 	print()
-	print("ann")
+	print("ann /", len(ann))
 	print(ann)
 	print()
 	print("ANN")

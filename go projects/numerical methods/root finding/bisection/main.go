@@ -12,5 +12,5 @@ func main() {
 
 	d := [2]float64{-2, 2}
 	brackets := findInterval(f, d)
-
+	fmt.Println(brackets)
 }

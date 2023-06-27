@@ -538,71 +538,111 @@ def modifyWeight(genome, topology, history, threshold = 0.25):
 	return genome, history
 
 
-def modifyGenome(genome, topology, threshold = 0.5, recurrent = False):
+def matchNodes(genome, cascade, threshold = 0.25):
 
-	if ((len(genome) > 1) and
-		(random.random() < threshold)):
+	matrix_a = random.choice(genome)
+	clone = genome.copy()
+	clone.remove(matrix_a)
+	matrix_b = random.choice(clone)
+	branch_a = random.choice(matrix_a)
+	branch_b = random.choice(matrix_b)
+	input_node_a = branch_a["input_node"]
+	output_node_a = branch_a["output_node"]
+	input_node_b = branch_b["input_node"]
+	output_node_b = branch_b["output_node"]
+	input_layer_a = branch_a["input_layer"]
+	output_layer_a = branch_a["output_layer"]
+	input_layer_b = branch_b["input_layer"]
+	output_layer_b = branch_b["output_layer"]
 
-		matrix_a = random.choice(genome)
-		index_a = genome.index(matrix_a)
-		# genome.remove(matrix_a)
-		clone = genome.copy()
-		clone.remove(matrix_a)
-		matrix_b = random.choice(clone)
-		# genome.insert(matrix_a, index_a)
-		branch_a = random.choice(matrix_a)
-		branch_b = random.choice(matrix_b)
-		input_node_a = branch_a["input_node"]
-		output_node_a = branch_a["output_node"]
-		input_node_b = branch_b["input_node"]
-		output_node_b = branch_b["output_node"]
-		input_layer_a = branch_a["input_layer"]
-		output_layer_a = branch_a["output_layer"]
-		input_layer_b = branch_b["input_layer"]
-		output_layer_b = branch_b["output_layer"]
-		index_b = genome.index(matrix_b)
-		link_a = genome[index_a].index(branch_a)
-		link_b = genome[index_b].index(branch_b)
+	if (len(cascade) > 0):
 
-		if (random.random() < threshold):
+		while any((((synapse["input_node"] == input_node_a) and (synapse["output_node"] == output_node_b)) or
+				   ((synapse["input_node"] == input_node_b) and (synapse["output_node"] == output_node_a)) or
+				   ((synapse["input_node"] == output_node_a) and (synapse["output_node"] == input_node_b)) or
+				   ((synapse["input_node"] == output_node_b) and (synapse["output_node"] == input_node_a))) for synapse in cascade):
 
-			weight_a = branch_a["weight"]
-			weight_b = branch_b["weight"]
-			weight_c = weight_a*weight_b + weight_a + weight_b
+			matrix_a = random.choice(genome)
+			clone = genome.copy()
+			clone.remove(matrix_a)
+			matrix_b = random.choice(clone)
+			branch_a = random.choice(matrix_a)
+			branch_b = random.choice(matrix_b)
+			input_node_a = branch_a["input_node"]
+			output_node_a = branch_a["output_node"]
+			input_node_b = branch_b["input_node"]
+			output_node_b = branch_b["output_node"]
+			input_layer_a = branch_a["input_layer"]
+			output_layer_a = branch_a["output_layer"]
+			input_layer_b = branch_b["input_layer"]
+			output_layer_b = branch_b["output_layer"]
 
-		else:
+	output_layer = max(output_layer_a, output_layer_b)
+	input_layer = min(input_layer_a, input_layer_b)
+	output_node = output_node_a if (output_layer == output_layer_a) else output_node_b
+	input_node = input_node_a if (input_layer == input_layer_a) else input_node_b
 
-			weight_c = random.uniform(-2, 2)
+	if (random.random() < threshold):
 
-		output_layer_c = max(output_layer_a, output_layer_b)
-		input_layer_c = min(input_layer_a, input_layer_b)
-		output_node_c = output_node_a if (output_layer_c == output_layer_a) else output_node_b
-		input_node_c = input_node_a if (input_layer_c == input_layer_a) else input_node_b
+		weight_a = branch_a["weight"]
+		weight_b = branch_b["weight"]
+		weight = weight_a*weight_b + weight_a + weight_b
 
-		if recurrent:
+	else:
 
-			variable = output_layer_c
-			output_layer_c = input_layer_c
-			input_layer_c = variable
-			variable = output_node_c
-			output_node_c = input_node_c
-			input_node_c = variable
+		weight = random.uniform(-2, 2)
 
-		if (random.random() < threshold):
+	layer_a = genome.index(matrix_a)
+	link_a = genome[layer_a].index(branch_a)
+	layer_b = genome.index(matrix_b)
+	link_b = genome[layer_b].index(branch_b)
+	info = { "layer_a": layer_a,
+			 "layer_b": layer_b,
+			 "link_a": link_a,
+			 "link_b": link_b, }
 
-			genome[index_a][link_a]["active"] = False
-			genome[index_b][link_b]["active"] = False
+	return input_node, input_layer, output_node, output_layer, weight, info
 
-		branch_c = ({ "input_node": input_node_c,
-					  "output_node": output_node_c,
-					  "input_layer": input_layer_c,
-					  "output_layer": output_layer_c,
-					  "weight": weight_c,
-					  "type": "skip" if (abs(output_layer_c - input_layer_c) > 1) else "consecutive",
-					  "direction": "inverse" if (output_layer_c < input_layer_c) else "forward",
-					  "active": True}, )
 
-		genome.append(branch_c)
+def modifyGenome(genome, topology, threshold = 0.25, recurrent = False):
+
+	if (len(genome) > 1):
+
+		size = sum(len(gene) for gene in genome)
+		cascade = tuple()
+
+		for index in range(size):
+
+			if (random.random() < threshold):
+
+				input_node, input_layer, output_node, output_layer, weight, info = matchNodes(genome, cascade, threshold)
+
+				if (recurrent & (random.random() < threshold)):
+
+					variable = output_layer
+					output_layer = input_layer
+					input_layer = variable
+					variable = output_node
+					output_node = input_node
+					input_node = variable
+
+				if (random.random() < threshold):
+
+					genome[info["layer_a"]][info["link_a"]]["active"] = False
+					genome[info["layer_b"]][info["link_b"]]["active"] = False
+
+				branch = ({ "input_node": input_node,
+						    "output_node": output_node,
+						    "input_layer": input_layer,
+						    "output_layer": output_layer,
+						    "weight": weight,
+						    "type": "skip" if (abs(output_layer - input_layer) > 1) else "consecutive",
+						    "direction": "inverse" if (output_layer < input_layer) else "forward",
+						    "active": True}, )
+
+				cascade += branch
+
+		genome.append(cascade)
 
 	for matrix in genome:
 
@@ -1063,8 +1103,10 @@ def populateLUT(genome):
 		for weight in matrix:
 
 			history, innovation = manageHistory(history, weight)
+			weight["innovation"] = innovation
 
-	return history
+	# return history
+	return history, genome
 
 
 # def populateLUT(genome, topology):
@@ -1295,11 +1337,11 @@ def manageHistory(history, weight):
 
 		if "innovation" not in weight:
 
-			if not any(((w["input_node"] == weight["input_node"]) and
-						(w["output_node"] == weight["output_node"]) and
-						(w["type"] == weight["type"]) and
-						(w["active"] == weight["active"]) and
-						(w["direction"] == weight["direction"])) for w in history):
+			if not any(((synapse["input_node"] == weight["input_node"]) and
+						(synapse["output_node"] == weight["output_node"]) and
+						(synapse["type"] == weight["type"]) and
+						(synapse["active"] == weight["active"]) and
+						(synapse["direction"] == weight["direction"])) for synapse in history):
 
 				candidate = { key: value for key, value in weight.items() if key in fields }
 				innovation = len(history) + 1
@@ -1309,7 +1351,7 @@ def manageHistory(history, weight):
 
 		else:
 
-			if not any((w["innovation"] == weight["innovation"]) for w in history):
+			if not any((synapse["innovation"] == weight["innovation"]) for synapse in history):
 
 				candidate = { key: value for key, value in weight.items() if key in fields }
 				history.append(candidate)
@@ -1325,19 +1367,100 @@ def manageHistory(history, weight):
 	return history, innovation
 
 
-def decodeGenome(genome, architecture):
+# def decodeGenome(genome, architecture):
+
+# 	network = []
+
+# 	# for index, layer in enumerate(genome):
+# 	for index in range(len(architecture) - 1):
+
+# 		previous = architecture[index]["nodes"]
+# 		current = architecture[index + 1]["nodes"]
+# 		flag = architecture[index + 1]["bias"]
+# 		# vector = [gene["weight"] for gene in layer]
+# 		vector = [gene["weight"] for gene in genome[index]]
+# 		if flag: previous += 1
+# 		matrix = np.reshape(vector, (current, previous))
+# 		network.append(matrix)
+
+# 	return network
+def decodeGenome(genome, architecture, topology):
 
 	network = []
+	# consecutive = [gene for gene in genome if gene[0]["type"] != "skip"]
 
-	for index, layer in enumerate(genome):
+	if (len(genome) == len(architecture) - 1):
+	
+		for index, layer in enumerate(genome):
 
-		previous = architecture[index]["nodes"]
-		current = architecture[index + 1]["nodes"]
-		flag = architecture[index + 1]["bias"]
-		vector = [gene["weight"] for gene in layer]
-		if flag: previous += 1
-		matrix = np.reshape(vector, (current, previous))
-		network.append(matrix)
+			previous = architecture[index]["nodes"]
+			current = architecture[index + 1]["nodes"]
+			flag = architecture[index + 1]["bias"]
+			vector = [gene["weight"] for gene in layer]
+			if flag: previous += 1
+			matrix = np.reshape(vector, (current, previous))
+			network.append(matrix)
+
+	else:
+
+		groups = []
+		consecutive = genome[:-1]
+		skip = genome[-1]
+
+		for index, layer in enumerate(consecutive):
+
+			previous = architecture[index]["nodes"]
+			current = architecture[index + 1]["nodes"]
+			flag = architecture[index + 1]["bias"]
+			vector = [gene["weight"] for gene in layer]
+			if flag: previous += 1
+			matrix = np.reshape(vector, (current, previous))
+			network.append(matrix)
+
+		for synapse in skip:
+
+			if (len(groups) > 0):
+
+				if any(((synapse["input_layer"] == weight["input_layer"]) and
+						(synapse["output_layer"] == weight["output_layer"])) for weight in groups):
+
+					group = next((weight for weight in groups if ((weight["input_layer"] == synapse["input_layer"]) and (weight["output_layer"] == synapse["output_layer"]))), None)
+					group["weights"].append(synapse)
+
+				else:
+
+					branch = { "input_layer": synapse["input_layer"],
+							   "output_layer": synapse["output_layer"],
+							   "weights": [synapse] }
+
+					groups.append(branch)
+
+			else:
+
+				branch = { "input_layer": synapse["input_layer"],
+						   "output_layer": synapse["output_layer"],
+						   "weights": [synapse] }
+
+				groups.append(branch)
+
+
+		for index, group in enumerate(groups):
+
+			input_layer = group["input_layer"]
+			output_layer = group["output_layer"]
+			output_size = len(topology[output_layer])
+			input_size = len(topology[input_layer])
+			# input_size = architecture[input_layer]["nodes"]
+			# output_size = architecture[output_layer]["nodes"]
+			matrix = np.zeros((output_size, input_size))
+
+			for weight in group["weights"]:
+
+				row = topology[output_layer].index(weight["output_node"])
+				column = topology[input_layer].index(weight["input_node"])
+				matrix[row, column] = weight["weight"]
+
+			network.append(matrix)
 
 	return network
 
