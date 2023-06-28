@@ -48,9 +48,10 @@ if __name__ == "__main__":
 	# output = utility.feedForward(x, network, architecture)
 
 	# genome = utility.encodeNetwork(network, topology)
-	encoding = utility.encodeNetwork(network, topology)
+	# encoding = utility.encodeNetwork(network, topology)
+	encoding = utility.encodeNetwork(network, architecture, topology)
 	# ann = utility.modifyGenome(genome, topology, 0.3)
-	ann = utility.modifyGenome(encoding, topology, 0.3)
+	ann = utility.modifyGenome(encoding, topology, 0.25)
 	# ANN = utility.decodeGenome(genome, architecture)
 	# history = utility.populateLUT(genome)
 	history, genome = utility.populateLUT(ann)
@@ -161,7 +162,8 @@ if __name__ == "__main__":
 				# print(f"N{column + 1} (L{weight}) --> N{row + 1} (L{weight + 1})")
 				# print(f"N{topology[weight][row]} (L{weight}) --> N{topology[weight + 1][column]} (L{weight + 1})")
 				# print(f"N{topology[weight][row]} (L{weight}) --> N{topology[weight + 1][row]} (L{weight + 1})")
-				print(f"N{previous} (L{weight}) --> N{current} (L{weight + 1})")
+				# print(f"N{previous} (L{weight}) --> N{current} (L{weight + 1})")
+				print(f"N{previous['node']} (L{weight}) --> N{current['node']} (L{weight + 1})")
 				print("-"*100)
 				print()
 
