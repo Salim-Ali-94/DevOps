@@ -31,7 +31,7 @@ if __name__ == "__main__":
 					 "layer": 3,
 					 # "state": 1,
 					 "bias": True,
-					 "function": "Sigmoid"}]
+					 "function": "sigmoid"}]
 
 	attatchType = lambda w, previous = 0: w + previous
 	attatchState = lambda w, state = 1: w*state

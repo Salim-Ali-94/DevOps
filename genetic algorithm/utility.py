@@ -1,4 +1,5 @@
 import random
+import uuid
 import os
 import numpy as np
 from constants import CHARACTERS
@@ -353,20 +354,453 @@ def generatePopulation(chromosome_length = 2, population_size = 5, category = "n
 	return population
 
 
-def neuralNetwork(architecture):
+# def neuralNetwork(architecture,
+# def neuralNetwork(structure,
+# 				  recurrent = False,
+# 				  skip = False,
+# 				  # connection_rate = 1,
+# 				  active_rate = 1,
+# 				  bias_rate = 1,
+# 				  history = []):
+# def networkStructure(structure, bias_rate = 1, data = []):
+def networkStructure(structure, bias_rate = 1):
 
-	network = []
+	nodes = []
+	# neurons = tuple()
+	length, structure = formatSize(structure)
 
-	for layer in range(len(architecture) - 1):
+	for layer in range(length):
 
-		flag = architecture[layer + 1]["bias"]
-		forward = architecture[layer + 1]["nodes"]
-		current = architecture[layer]["nodes"]
-		if flag: current += 1
-		weights = np.random.uniform(-2, 2, (forward, current))
-		network.append(weights)
+		if (layer == 0):
+
+			width = structure["input_neurons"]
+
+		elif (layer == length - 1):
+
+			width = structure["output_neurons"]
+
+		else:
+
+			width = random.randint(structure["minimum_neurons"], structure["maximum_neurons"])
+
+		# neurons = generateNodes(layer, width, length, structure["output_neurons"], bias_rate, nodes)
+		neurons = generateNodes(layer, width, length, structure["output_neurons"], bias_rate, nodes, structure["data"])
+		nodes.append(neurons)
+
+	return nodes
+
+
+# def neuralNetwork(topology, recurrent = False, skip = True, connection_rate = 1, active_rate = 1, recurrent_rate = 0, history = []):
+
+# 	branches = []
+# 	weights = tuple()
+
+# 	for layer, neurons in enumerate(topology[1:]):
+
+# 		for row, current_neuron in enumerate(neurons):
+
+# 			for previous, nodes in enumerate(topology[:layer + 1]):
+
+# 				if ((abs(layer + 1 - previous) == 1) or
+# 				    (skip and (abs(layer + 1 - previous) > 1))):
+
+# 					for column, previous_neuron in enumerate(nodes):
+
+# 						if (random.random() < connection_rate):
+
+# 							if (recurrent and (previous_neuron["type"] != "bias")): rate = random.random()
+
+# 							if (current_neuron["type"] != "bias"):
+
+# 								branch = { "type": "bias" if (previous_neuron["type"] == "bias") else "synapse",
+# 										   "weight": random.uniform(-2, 2),
+# 										   "category": current_neuron["type"],
+# 										   "function": current_neuron["function"],
+# 										   "input": previous_neuron["input"],
+# 										   "output": 0,
+# 										   "activity": 0,
+# 										   "input_layer": layer + 1 if (recurrent and (rate < recurrent_rate) and (previous_neuron["type"] != "bias")) else previous,
+# 										   "output_layer": previous if (recurrent and (rate < recurrent_rate) and (previous_neuron["type"] != "bias")) else layer + 1,
+# 										   "input_node": current_neuron["node"] if (recurrent and (rate < recurrent_rate) and (previous_neuron["type"] != "bias")) else previous_neuron["node"],
+# 										   "output_node": previous_neuron["node"] if (recurrent and (rate < recurrent_rate) and (previous_neuron["type"] != "bias")) else current_neuron["node"],
+# 										   "recurrent": True if (recurrent and (rate < recurrent_rate) and (previous_neuron["type"] != "bias")) else False,
+# 										   "skip": True if (abs(layer + 1 - previous) > 1) else False,
+# 										   "active": True if (random.random() < active_rate) else False }
+
+# 								history, innovation = manageHistory(history, branch)
+# 								branch["innovation"] = innovation
+# 								weights += (branch, )
+# 							# branch = { "type": "bias" if (previous_neuron["type"] == "bias") else "synapse",
+# 							# # branch = { "type": "bias" if (current_neuron["type"] == "bias") else "synapse",
+# 							# # branch = { "type": current_neuron["type"],
+# 							# # branch = { "type": previous_neuron["type"],
+# 							# 		   "weight": random.uniform(-2, 2),
+# 							# 		   "category": current_neuron["type"],
+# 							# 		   "function": current_neuron["function"],
+# 							# 		   "input": previous_neuron["input"],
+# 							# 		   "output": 0,
+# 							# 		   "activity": 0,
+# 							# 		   "input_layer": layer + 1 if (recurrent and (rate < recurrent_rate) and (previous_neuron["type"] != "bias")) else previous,
+# 							# 		   "output_layer": previous if (recurrent and (rate < recurrent_rate) and (previous_neuron["type"] != "bias")) else layer + 1,
+# 							# 		   "input_node": current_neuron["node"] if (recurrent and (rate < recurrent_rate) and (previous_neuron["type"] != "bias")) else previous_neuron["node"],
+# 							# 		   "output_node": previous_neuron["node"] if (recurrent and (rate < recurrent_rate) and (previous_neuron["type"] != "bias")) else current_neuron["node"],
+# 							# 		   "recurrent": True if (recurrent and (rate < recurrent_rate) and (previous_neuron["type"] != "bias")) else False,
+# 							# 		   "skip": True if (abs(layer + 1 - previous) > 1) else False,
+# 							# 		   "active": True if (random.random() < active_rate) else False }
+
+# 							# history, innovation = manageHistory(history, branch)
+# 							# branch["innovation"] = innovation
+# 							# weights += (branch, )
+
+# 		# print("weights")
+# 		# print(weights)
+# 		synapse = groupData(weights)
+# 		# print("synapse")
+# 		# print(synapse)
+# 		# branches.append(weights)
+# 		branches.append(synapse)
+# 		weights = tuple()
+
+# 	return branches, history
+
+def neuralNetwork(topology, recurrent = False, skip = True, connection_rate = 1, active_rate = 1, recurrent_rate = 0, history = []):
+
+	branches = []
+	weights = tuple()
+
+	for layer, neurons in enumerate(topology[1:]):
+
+		for row, current_neuron in enumerate(neurons):
+
+			if (current_neuron["type"] != "bias"):
+
+				for previous, nodes in enumerate(topology[:layer + 1]):
+
+					if ((abs(layer + 1 - previous) == 1) or
+					    (skip and (abs(layer + 1 - previous) > 1))):
+
+						for column, previous_neuron in enumerate(nodes):
+
+							if (random.random() < connection_rate):
+
+								if (recurrent and (previous_neuron["type"] != "bias")): rate = random.random()
+
+								branch = { "type": "bias" if (previous_neuron["type"] == "bias") else "synapse",
+										   "weight": random.uniform(-2, 2),
+										   "category": current_neuron["type"],
+										   "function": current_neuron["function"],
+										   "input": previous_neuron["input"],
+										   "output": 0,
+										   "activity": 0,
+										   "input_layer": layer + 1 if (recurrent and (rate < recurrent_rate) and (previous_neuron["type"] != "bias")) else previous,
+										   "output_layer": previous if (recurrent and (rate < recurrent_rate) and (previous_neuron["type"] != "bias")) else layer + 1,
+										   "input_node": current_neuron["node"] if (recurrent and (rate < recurrent_rate) and (previous_neuron["type"] != "bias")) else previous_neuron["node"],
+										   "output_node": previous_neuron["node"] if (recurrent and (rate < recurrent_rate) and (previous_neuron["type"] != "bias")) else current_neuron["node"],
+										   "recurrent": True if (recurrent and (rate < recurrent_rate) and (previous_neuron["type"] != "bias")) else False,
+										   "skip": True if (abs(layer + 1 - previous) > 1) else False,
+										   "active": True if (random.random() < active_rate) else False }
+
+								history, innovation = manageHistory(history, branch)
+								branch["innovation"] = innovation
+								weights += (branch, )
+
+		if (len(weights) > 0):
+
+			synapse = groupData(weights)
+			branches.append(synapse)
+			weights = tuple()
+
+	return branches, history
+
+
+def generateNetwork(population_size, architecture, connection_rate = 0.5, active_rate = 0.5, bias_rate = 0.5, recurrent_rate = 0, recurrent = False, skip = True):
+
+	population = []
+	history = []
+
+	for member in range(population_size):
+
+		topology = networkStructure(architecture, bias_rate)
+		network, history = neuralNetwork(topology, recurrent, skip, connection_rate, active_rate, recurrent_rate, history)
+		while (len(network[0]) == 0): network, history = neuralNetwork(topology, recurrent, skip, connection_rate, active_rate, recurrent_rate, history)
+		population.append({ "network": network,
+							"topology": topology,
+							"id": str(uuid.uuid4()).replace("-", ""),
+							"fitness": 0 })
+
+	return population, history
+
+
+# # def propagate(network, data, topology):
+# def propagate(network, data):
+
+# 	nodes = []
+# 	weights = tuple()
+
+# 	for layer, weight in enumerate(network):
+
+# 		synapse = groupData(weight)
+
+# 		for w in synapse:
+
+# 			for branch in w["data"]:
+
+# 				branch["input"] += data*branch["weight"]
+
+# 			branch["output"] = activation(branch["input"], branch["function"])
+# 			weights += branch
+
+# 		nodes.append(weights)
+# 		weights = tuple()
+
+# 	# nodes = []
+
+# 	# for layer, weight in enumerate(network):
+
+# 	# 	# W = groupData(weight)
+
+# 	# 	for branch in weight:
+# 	# 	# for branch in W:
+
+# 	# 		# if (len(nodes) > 0):
+
+# 	# 		if any((node["node"] == branch["output_node"]) for node in nodes):
+
+# 	# 			synapse = next((w for w in nodes if w["node"] == branch["output_node"]), {})
+# 	# 			synapse["input"] += data*branch["weight"]
+
+# 	# 		else:
+
+# 	# 			if (layer == 0):
+
+# 	# 				neuron = { "node": branch["output_node"],
+# 	# 						   "input": data*branch["weight"],
+# 	# 						   "function": branch["function"],
+# 	# 						   "output": 0 }
+
+# 	# 				nodes.append(neuron)
+
+# 	# 	neurons = [node for node in nodes if (node["output"] == 0)]
+
+# 	# 	for neuron in neurons:
+
+# 	# 		# position = next((position for position, node in topology if (node["node"] == neuron["node"])), None)
+# 	# 		# neuron["output"] = activation(neuron["input"], topology[position]["function"])
+# 	# 		# topology[position]["output"] = neuron["output"]
+# 	# 		neuron["output"] = activation(neuron["input"], neuron["function"])
+def propagate(network):
+
+	for layer, weight in enumerate(network):
+
+		for index, node in enumerate(weight):
+
+			# if ((node["type"] != "bias") and
+			# 	(node["active"] == True)):
+
+			for branch in node["data"]:
+
+				if ((branch["type"] != "bias") and
+					(branch["active"] == True)):
+
+					node["input"] += branch["input"]*branch["weight"]
+
+			# print("node")
+			# print(node)
+			# print(node["function"])
+			# node["output"] = activation(node["input"], node["function"])
+			# node["activity"] = node["output"]
+
+			if (node["type"] != "bias"):
+
+				print("node")
+				print(node)
+				print(node["function"])
+				node["output"] = activation(node["input"], node["function"])
+				node["activity"] = node["output"]
 
 	return network
+
+
+def groupData(data):
+
+	# group = []
+	group = tuple()
+
+	for weight in data:
+
+		# if (len(group) > 0):
+
+		# 	synapse = weight
+
+		# else:
+
+		if any((branch["node"] == weight["output_node"]) for branch in group):
+
+			synapse = next((branch for branch in group if (branch["node"] == weight["output_node"])), {})
+			synapse["data"].append(weight)
+
+		else:
+
+			# group.append({ "node": weight["output_node"],
+			# 			   "input": 0,
+			# 			   "output": 0,
+			# 			   "function": weight["function"],
+			# 			   # "type": weight["type"],
+			# 			   "layer": weight["output_layer"],
+			# 			   "data": [weight] })
+			group += ({ "node": weight["output_node"],
+					    "input": 0,
+					    "output": 0,
+					    "function": weight["function"],
+					    # "type": "bias" if (weight["type"]) else "node",
+					    "type": weight["category"],
+					    "layer": weight["output_layer"],
+					    "data": [weight] }, )
+
+	return group
+# def groupData(data):
+
+# 	group = {}
+
+# 	for weight in data:
+
+# 		# if any((branch["node"] == weight["output_node"]) for branch in group):
+# 		if any((branch == weight["output_node"]) for branch in group):
+
+# 			# synapse = next((branch for branch in group if (branch["output_node"] == weight["output_node"])), {})
+# 			synapse = next((branch for branch in group if (branch == weight["output_node"])), {})
+# 			# synapse["data"].append(weight)
+# 			synapse["data"] += (weight, )
+
+# 		else:
+
+# 			group["node"] = weight["output_node"]
+# 			group["input"] = weight["input"]
+# 			group["output"] = weight["output"]
+# 			group["layer"] = weight["output_layer"]
+# 			group["function"] = weight["function"]
+# 			group["type"] = weight["type"]
+# 			group["data"] = (weight, )
+
+# 	return group
+
+
+def formatSize(structure):
+
+	if (type(structure["minimum_layers"]) != int):
+
+		structure["minimum_layers"] = int(structure["minimum_layers"])
+
+	if (type(structure["maximum_layers"]) != int):
+
+		structure["maximum_layers"] = int(structure["maximum_layers"])
+
+	if (type(structure["minimum_neurons"]) != int):
+
+		structure["minimum_neurons"] = int(structure["minimum_neurons"])
+
+	if (type(structure["maximum_neurons"]) != int):
+
+		structure["maximum_neurons"] = int(structure["maximum_neurons"])
+
+	if (type(structure["input_neurons"]) != int):
+
+		structure["input_neurons"] = int(structure["input_neurons"])
+
+	if (type(structure["output_neurons"]) != int):
+
+		structure["output_neurons"] = int(structure["output_neurons"])
+
+	if (structure["minimum_layers"] < 0):
+
+		structure["minimum_layers"] = abs(structure["minimum_layers"])
+
+	if (structure["maximum_layers"] < 0):
+
+		structure["maximum_layers"] = abs(structure["maximum_layers"])
+
+	if (structure["minimum_neurons"] < 0):
+
+		structure["minimum_neurons"] = abs(structure["minimum_neurons"])
+
+	if (structure["maximum_neurons"] < 0):
+
+		structure["maximum_neurons"] = abs(structure["maximum_neurons"])
+
+	if (structure["minimum_neurons"] == 0):
+
+		structure["minimum_neurons"] = 1
+
+	if (structure["input_neurons"] == 0):
+
+		structure["input_neurons"] = 1
+
+	if (structure["output_neurons"] == 0):
+
+		structure["output_neurons"] = 1
+
+	if (structure["minimum_layers"] > structure["maximum_layers"]):
+
+		maximum = structure["minimum_layers"]
+		structure["minimum_layers"] = strcuture["maximum_layers"]
+		structure["maximum_layers"] = maximum
+
+	if (structure["maximum_neurons"] < structure["minimum_neurons"]):
+
+		minimum = structure["maximum_neurons"]
+		structure["minimum_neurons"] = structure["maximum_neurons"]
+		structure["maximum_neurons"] = minimum
+
+	layers = random.randint(structure["minimum_layers"], structure["maximum_layers"]) + 2
+	return layers, structure
+
+
+# def generateNodes(layer, size, bias = False):
+# def generateNodes(layer, height, start, bias_rate = 1, nodes = tuple()):
+# def generateNodes(layer, height, bias_rate = 1, nodes = tuple()):
+# def generateNodes(layer, height, length, output, bias_rate = 1, neurons = tuple()):
+# def generateNodes(layer, height, length, output, bias_rate = 1, neurons = []):
+def generateNodes(layer, height, length, output, bias_rate = 1, neurons = [], data = []):
+
+	nodes = tuple()
+
+	for index in range(height):
+
+		nodes += ({ "type": "neuron",
+					"node": 1 + index if (layer == 0) else neurons[-1][-1]["node"] + output + 1 + index if (layer == 1) else neurons[0][-1]["node"] + 1 + index if (layer == length - 1) else neurons[-1][-1]["node"] + 1 + index,
+					"layer": layer,
+					"function": None if (layer == 0) else random.choice(("sigmoid", "relu", "tanh")),
+					# "input": 0,
+					"input": data[index] if (layer == 0) else 0,
+					"output": 0 }, )
+
+	if (random.random() < bias_rate):
+
+		nodes += ({ "type": "bias",
+					"node": nodes[-1]["node"] + 1,
+					"layer": layer,
+					"function": None,
+					"input": 1,
+					"output": 0 }, )
+
+	return nodes
+
+
+
+# def neuralNetwork(architecture):
+
+# 	network = []
+
+# 	for layer in range(len(architecture) - 1):
+
+# 		flag = architecture[layer + 1]["bias"]
+# 		forward = architecture[layer + 1]["nodes"]
+# 		current = architecture[layer]["nodes"]
+# 		if flag: current += 1
+# 		weights = np.random.uniform(-2, 2, (forward, current))
+# 		network.append(weights)
+
+# 	return network
 
 
 def matchBranches(genome, threshold):
@@ -568,7 +1002,8 @@ def populateLUT(genome):
 def manageHistory(history, weight):
 
 	innovation = len(history)
-	fields = ("input_node", "output_node", "type", "active", "direction", "connection", "innovation")
+	# fields = ("input_node", "output_node", "type", "active", "direction", "connection", "innovation")
+	fields = ("input_node", "output_node", "type", "active", "recurrent", "skip", "innovation")
 
 	if (len(history) > 0):
 
@@ -576,10 +1011,12 @@ def manageHistory(history, weight):
 
 			if not any(((synapse["input_node"] == weight["input_node"]) and
 						(synapse["output_node"] == weight["output_node"]) and
-						(synapse["connection"] == weight["connection"]) and
+						# (synapse["connection"] == weight["connection"]) and
+						(synapse["skip"] == weight["skip"]) and
 						(synapse["type"] == weight["type"]) and
 						(synapse["active"] == weight["active"]) and
-						(synapse["direction"] == weight["direction"])) for synapse in history):
+						# (synapse["direction"] == weight["direction"])) for synapse in history):
+						(synapse["recurrent"] == weight["recurrent"])) for synapse in history):
 
 				candidate = { key: value for key, value in weight.items() if key in fields }
 				innovation = len(history) + 1
@@ -681,29 +1118,29 @@ def decodeGenome(genome, architecture, topology):
 	return network
 
 
-def networkStructure(architecture):
+# def networkStructure(architecture):
 
-	topology = []
+# 	topology = []
 
-	for layer in range(len(architecture)):
+# 	for layer in range(len(architecture)):
 
-		if (len(topology) == 0):
+# 		if (len(topology) == 0):
 
-			nodes = tuple({ "node": node + 1, "type": "neuron" } for node in range(architecture[layer]["nodes"]))
+# 			nodes = tuple({ "node": node + 1, "type": "neuron" } for node in range(architecture[layer]["nodes"]))
 
-		else:
+# 		else:
 
-			nodes = tuple({ "node": topology[-1][-1]["node"] + node + 1, "type": "neuron" } for node in range(architecture[layer]["nodes"]))
+# 			nodes = tuple({ "node": topology[-1][-1]["node"] + node + 1, "type": "neuron" } for node in range(architecture[layer]["nodes"]))
 
-		if (layer < len(architecture) - 1):
+# 		if (layer < len(architecture) - 1):
 
-			if architecture[layer + 1]["bias"]:
+# 			if architecture[layer + 1]["bias"]:
 
-				nodes += ({ "node": nodes[-1]["node"] + 1, "type": "bias" },)
+# 				nodes += ({ "node": nodes[-1]["node"] + 1, "type": "bias" },)
 
-		topology.append(nodes)
+# 		topology.append(nodes)
 
-	return topology
+# 	return topology
 
 
 def feedForward(data, network, architecture):
@@ -726,7 +1163,8 @@ def feedForward(data, network, architecture):
 
 def processor(data, network, architecture):
 
-	activity = data.copy()
+	# activity = data.copy()
+	outputs = [data]
 
 	for layer, neuron in enumerate(network):
 
@@ -738,6 +1176,8 @@ def processor(data, network, architecture):
 
 		output = neuron.dot(activity)
 		activity = activation(output, architecture[layer + 1]["function"])
+
+		outputs.append(activity)
 
 	return activity
 
