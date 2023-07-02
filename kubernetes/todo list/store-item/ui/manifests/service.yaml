@@ -1,23 +1,14 @@
 apiVersion: v1
-
 kind: Service
-
 metadata:
-
-  name: add-button-service
-
+  name: button-service
 spec:
-
   selector:
-
-    app: add-button
-
+    app: button-component
   ports:
-
     - protocol: TCP
-
       port: 80
-
       targetPort: 3000
-
-  type: LoadBalancer
+      nodePort: 30000
+  # type: ClusterIP
+  type: NodePort

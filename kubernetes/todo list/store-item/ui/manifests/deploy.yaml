@@ -1,37 +1,20 @@
 apiVersion: apps/v1
-
 kind: Deployment
-
 metadata:
-
-  name: add-button
-
+  name: button-component
 spec:
-
   replicas: 2
-
   selector:
-
     matchLabels:
-
-      app: add-button
-
+      app: button-component
   template:
-
     metadata:
-
       labels:
-
-        app: add-button
-
+        app: button-component
     spec:
-
       containers:
-
-        - name: add-button
-
-          image: add-button:latest
-
+        - name: button-component
+          image: add-button-ui:v0
+          imagePullPolicy: Always
           ports:
-
             - containerPort: 3000
