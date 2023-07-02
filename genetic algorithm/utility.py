@@ -613,17 +613,38 @@ def propagate(network):
 
 					else:
 
-						print("input layer")
-						print(branch["input_layer"])
-						print(f"net @{branch['input_layer']}")
-						print(network[branch['input_layer']])
-						print("position")
-						print(position)
+						# print("network")
+						# print(network)
+						# print("input layer")
+						# print(branch["input_layer"])
+						# print(f"net @{branch['input_layer']}")
+						# print(network[branch['input_layer']])
+						print(f"net @{branch['input_layer'] - 1}")
+						print(network[branch['input_layer'] - 1])
+						print()
+						# print("position")
+						# print(position)
+						# print("position - 1")
+						# print(position - 1)
 						# print(f"net @{position}")
 						# print(network[position])
-						print(f"w @net @{position}")
-						print(network[branch["input_layer"]][position])
-						node["input"] += branch["weight"]*network[branch["input_layer"]][position]["output"]
+						# print(f"w @net @{position}")
+						# print(network[branch["input_layer"]][position])
+						# print(f"w @net @{position}")
+						# print(network[branch["input_layer"] - 1][position])
+						# print(f"w @net @{position - 1}")
+						# print(network[branch["input_layer"]][position - 1])
+						# node["input"] += branch["weight"]*network[branch["input_layer"]][position]["output"]
+						# node["input"] += branch["weight"]*network[branch["input_layer"] - 1][position]["output"]
+
+						neuron = next((address for address, dot in enumerate(network[branch["input_layer"] - 1]) if (dot["node"] == branch["input_node"])), None)
+
+						if (neuron != None):
+
+							print(f"w @net @{neuron}")
+							print(network[branch["input_layer"] - 1][neuron])
+							node["input"] += branch["weight"]*network[branch["input_layer"] - 1][neuron]["output"]
+
 						# branch["output"] = branch["weight"]*weight[branch["input_layer"]]["output"]
 						# branch["activity"] = activation(branch["output"], branch["function"])
 
@@ -640,7 +661,7 @@ def propagate(network):
 			# 	print(node["function"])
 
 
-			if not all((neuron["active"] == False) for neuron in node):
+			if not all((neuron["active"] == False) for neuron in node["data"]):
 
 				node["output"] = activation(node["input"], node["function"])
 				node["activity"] = node["output"]
