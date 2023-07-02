@@ -1,5 +1,6 @@
 import Head from "next/head";
 import styles from "@/styles/Home.module.css";
+import AddButton from "../components/AddButton";
 
 
 export default function Home() {
@@ -17,9 +18,10 @@ export default function Home() {
 
       </Head>
 
-      <main>
+      <main className={styles.content}>
 
         <h1 className={styles.text}>YOUR TODO LIST</h1>
+        <AddButton />
 
       </main>
 
