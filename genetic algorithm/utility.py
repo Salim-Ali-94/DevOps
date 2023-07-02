@@ -597,12 +597,35 @@ def propagate(network):
 			# if ((node["type"] != "bias") and
 			# 	(node["active"] == True)):
 
-			for branch in node["data"]:
+			# for branch in node["data"]:
+			for position, branch in enumerate(node["data"]):
 
-				if ((branch["type"] != "bias") and
-					(branch["active"] == True)):
+				# if ((branch["type"] != "bias") and
+				# 	(branch["active"] == True)):
+				if (branch["active"] == True):
 
-					node["input"] += branch["input"]*branch["weight"]
+					# node["input"] += branch["input"]*branch["weight"]
+					if (branch["input_layer"] == 0):
+
+						node["input"] += branch["weight"]*branch["input"]
+						# branch["output"] = branch["weight"]*branch["input"]
+						# branch["activity"] = activation(branch["output"], branch["function"])
+
+					else:
+
+						print("input layer")
+						print(branch["input_layer"])
+						print(f"net @{branch['input_layer']}")
+						print(network[branch['input_layer']])
+						print("position")
+						print(position)
+						# print(f"net @{position}")
+						# print(network[position])
+						print(f"w @net @{position}")
+						print(network[branch["input_layer"]][position])
+						node["input"] += branch["weight"]*network[branch["input_layer"]][position]["output"]
+						# branch["output"] = branch["weight"]*weight[branch["input_layer"]]["output"]
+						# branch["activity"] = activation(branch["output"], branch["function"])
 
 			# print("node")
 			# print(node)
@@ -610,11 +633,15 @@ def propagate(network):
 			# node["output"] = activation(node["input"], node["function"])
 			# node["activity"] = node["output"]
 
-			if (node["type"] != "bias"):
+			# if (node["type"] != "bias"):
 
-				print("node")
-				print(node)
-				print(node["function"])
+			# 	print("node")
+			# 	print(node)
+			# 	print(node["function"])
+
+
+			if not all((neuron["active"] == False) for neuron in node):
+
 				node["output"] = activation(node["input"], node["function"])
 				node["activity"] = node["output"]
 
@@ -772,7 +799,8 @@ def generateNodes(layer, height, length, output, bias_rate = 1, neurons = [], da
 					"function": None if (layer == 0) else random.choice(("sigmoid", "relu", "tanh")),
 					# "input": 0,
 					"input": data[index] if (layer == 0) else 0,
-					"output": 0 }, )
+					# "output": 0 }, )
+					"output": data[index] if (layer == 0) else 0 }, )
 
 	if (random.random() < bias_rate):
 
@@ -781,7 +809,8 @@ def generateNodes(layer, height, length, output, bias_rate = 1, neurons = [], da
 					"layer": layer,
 					"function": None,
 					"input": 1,
-					"output": 0 }, )
+					# "output": 0 }, )
+					"output": 1 }, )
 
 	return nodes
 
@@ -922,7 +951,7 @@ def modifyGenome(genome, topology, threshold = 0.25, recurrent = False):
 						    "type": "synapse",
 						    "connection": "skip" if (abs(output_layer - input_layer) > 1) else "consecutive",
 						    "direction": "inverse" if (output_layer < input_layer) else "forward",
-						    "active": True},)
+						    "active": True },)
 
 				cascade += branch
 
