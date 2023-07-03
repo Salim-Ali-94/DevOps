@@ -622,6 +622,7 @@ def propagate(network):
 						print(f"net @{branch['input_layer'] - 1}")
 						print(network[branch['input_layer'] - 1])
 						print()
+						print()
 						# print("position")
 						# print(position)
 						# print("position - 1")
@@ -643,6 +644,8 @@ def propagate(network):
 
 							print(f"w @net @{neuron}")
 							print(network[branch["input_layer"] - 1][neuron])
+							print()
+							print()							
 							node["input"] += branch["weight"]*network[branch["input_layer"] - 1][neuron]["output"]
 
 						# branch["output"] = branch["weight"]*weight[branch["input_layer"]]["output"]
