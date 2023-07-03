@@ -44,7 +44,6 @@ func findInterval(function func(float64) float64, window [2]float64) []map[strin
 
 }
 
-
 func bisection(function func(float64) float64, interval []map[string]float64, precision float64) ([]float64, int) {
 
 	var roots []float64
