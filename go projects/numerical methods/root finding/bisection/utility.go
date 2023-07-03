@@ -5,7 +5,7 @@ func findInterval(function func(float64) float64, window [2]float64) []map[strin
 
 	initial := window[0]
 	length := window[1] - initial
-	step := 0.0
+	step := 1.0
 	delta := float64(length) / step
 	interval := []map[string]float64{}
 	x := initial
@@ -25,6 +25,12 @@ func findInterval(function func(float64) float64, window [2]float64) []map[strin
 
 		if (check < 0) {
 
+			if (initial == window[0]) {
+
+				initial = x - delta
+
+			}
+
 			interval = append(interval, map[string]float64{ "lower": initial,
 															"upper": x })
 			initial = x
@@ -36,3 +42,10 @@ func findInterval(function func(float64) float64, window [2]float64) []map[strin
 	return interval
 
 }
+
+
+// func bisection(function func(float64) float64, interval []map[string]float64, precision float64) []map[string]float64 {
+
+
+
+// }

@@ -10,7 +10,11 @@ func main() {
 		return math.Pow(x, 3) - math.Pow(x, 2) - 2*x + 1
 	}
 
-	d := [2]float64{-2, 2}
+	// d := [2]float64{-2, 2}
+	d := [2]float64{-10, 10}
 	brackets := findInterval(f, d)
+	fmt.Println(brackets)
+	// brackets := findInterval(f, d)
+	// fmt.Println(brackets)
 
 }
