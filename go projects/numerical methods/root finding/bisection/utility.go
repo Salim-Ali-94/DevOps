@@ -4,11 +4,11 @@ import "math"
 
 func findInterval(function func(float64) float64, window [2]float64) []map[string]float64 {
 
+	var interval []map[string]float64
 	initial := window[0]
 	length := window[1] - initial
 	step := 1.0
 	delta := float64(length) / step
-	interval := []map[string]float64{}
 	x := initial
 	check := 0.0
 
