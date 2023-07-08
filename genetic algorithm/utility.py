@@ -605,8 +605,11 @@ def propagate(network):
 				if (branch["active"] == True):
 
 					# node["input"] += branch["input"]*branch["weight"]
-					if (branch["input_layer"] == 0):
+					# if (branch["input_layer"] == 0):
+					if ((branch["input_layer"] == 0) or
+						(branch["type"] == "bias")):
 
+						print(branch["weight"], "*", branch["input"])
 						node["input"] += branch["weight"]*branch["input"]
 						# branch["output"] = branch["weight"]*branch["input"]
 						# branch["activity"] = activation(branch["output"], branch["function"])
@@ -639,6 +642,7 @@ def propagate(network):
 						# node["input"] += branch["weight"]*network[branch["input_layer"] - 1][position]["output"]
 
 						neuron = next((address for address, dot in enumerate(network[branch["input_layer"] - 1]) if (dot["node"] == branch["input_node"])), None)
+						print(neuron)
 
 						if (neuron != None):
 
@@ -647,6 +651,7 @@ def propagate(network):
 							print()
 							print()							
 							node["input"] += branch["weight"]*network[branch["input_layer"] - 1][neuron]["output"]
+							print(branch["weight"], "*", network[branch["input_layer"] - 1][neuron]["output"])
 
 						# branch["output"] = branch["weight"]*weight[branch["input_layer"]]["output"]
 						# branch["activity"] = activation(branch["output"], branch["function"])
