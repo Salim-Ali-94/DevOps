@@ -1,6 +1,5 @@
 import numpy as np
 import utility
-# testing out signal flow graph implementation and creating alternative oop approach to lists of nested dictionaries
 
 
 if __name__ == "__main__":
@@ -59,7 +58,8 @@ if __name__ == "__main__":
 									   recurrent_rate,
 									   recurrent,
 									   skip)
-
+	
+	# out = utility.propagate(ANN[0]["network"])
 	X = [({ 'node': 5,
 			'input': 0,
 			'output': 0,
