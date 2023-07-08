@@ -10,7 +10,16 @@ func main() {
 		return math.Pow(x, 3) - math.Pow(x, 2) - 2*x + 1
 	}
 
-	d := [2]float64{-2, 2}
-	brackets := findInterval(f, d)
-	fmt.Println(brackets)
+	domain := [2]float64{-10, 10}
+	intervals := findInterval(f, domain)
+	tolerance := 1e-3
+	solutions, iterations := bisection(f, intervals, tolerance)
+	fmt.Printf("\nFound %v root(s) with a precision of %v in %v iterations inside the window xE[%v, %v] for the given function\n", len(solutions), tolerance, iterations, domain[0], domain[1])
+
+	for _, root := range solutions {
+
+		fmt.Printf("\nf(%v) = %v", root, f(root))
+
+	}
+
 }
