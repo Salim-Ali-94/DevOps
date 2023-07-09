@@ -1,7 +1,6 @@
 package main
 import ( "net/http"
 		 "log"
-		 "fmt"
 		 "context"
 		 "encoding/json"
 		 "go.mongodb.org/mongo-driver/mongo/options"
@@ -61,7 +60,6 @@ func storeItem(writer http.ResponseWriter, request *http.Request, collection *mo
 
 		var todo Todo
 		error := json.NewDecoder(request.Body).Decode(&todo)
-		fmt.Fprint(writer, todo)
 
 		if (error != nil) {
 
