@@ -10,17 +10,13 @@ import ( "net/http"
 
 func main() {
 
-	// checklist := initializeDB()
-	// checklist, storeItemClosure := initializeDB()
 	storeItemClosure := initializeDB()
 	http.HandleFunc("/", entryPoint)
-	// http.HandleFunc("/todo-app/store", storeItem)
 	http.HandleFunc("/todo-app/store", storeItemClosure)
 	log.Fatal(http.ListenAndServe(":8081", nil))
 
 }
 
-// func initializeDB() *mongo.Collection {
 func initializeDB() func(http.ResponseWriter, *http.Request) {
 
 	clientOptions := options.Client().ApplyURI(dbHost)
@@ -32,7 +28,6 @@ func initializeDB() func(http.ResponseWriter, *http.Request) {
 
 	}
 
-	// error := client.Ping(context.Background(), nil)
 	error = client.Ping(context.Background(), nil)
 
 	if (error != nil) {
@@ -43,9 +38,7 @@ func initializeDB() func(http.ResponseWriter, *http.Request) {
 
 	database := client.Database("todo-app")
 	collection := database.Collection("checklist")
-	// return collection
 
-	// func storeItemClosure(writer http.ResponseWriter, request *http.Request) {
 	closure := func(writer http.ResponseWriter, request *http.Request) {
 
 		storeItem(writer, request, collection)
@@ -62,42 +55,28 @@ func entryPoint(writer http.ResponseWriter, request *http.Request) {
 
 }
 
-// func storeItem(writer http.ResponseWriter, request *http.Request) {
 func storeItem(writer http.ResponseWriter, request *http.Request, collection *mongo.Collection) {
 
 	if (request.Method == "POST") {
 
 		var todo Todo
 		error := json.NewDecoder(request.Body).Decode(&todo)
-
-		if (error != nil) {
-
-			log.Fatal(error)
-
-		}
-
-		// response, error := collection.InsertOne(context.Background(), todo)
-		// _, error := collection.InsertOne(context.Background(), todo)
-		// _, error = collection.InsertOne(context.Background(), todo)
-		// response, error = collection.InsertOne(context.Background(), todo)
-		response, error := collection.InsertOne(context.Background(), todo)
-
-		if (error != nil) {
-
-			log.Fatal(error)
-
-		}
-
-		// writer.Write(response)
-		fmt.Fprint(writer, response)
 		fmt.Fprint(writer, todo)
+
+		if (error != nil) {
+
+			log.Fatal(error)
+
+		}
+
+		_, error = collection.InsertOne(context.Background(), todo)
+
+		if (error != nil) {
+
+			log.Fatal(error)
+
+		}
 
 	}
 
 }
-
-// func storeItemClosure(writer http.ResponseWriter, request *http.Request) {
-
-// 	storeItem(writer, response, collection)
-
-// }
