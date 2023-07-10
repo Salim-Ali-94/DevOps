@@ -15,5 +15,5 @@ if __name__ == "__main__":
 				  "maximum_neurons": 3,
 				  "minimum_neurons": 1 }
 
-	ann = Network(structure, x)
+	ann = Network(structure, x, active_rate = 0.75, connection_rate = 0.5)
 	print(ann)
