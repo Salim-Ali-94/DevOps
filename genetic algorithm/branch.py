@@ -14,15 +14,3 @@ class Branch:
 		self.recurrent = recurrent
 		self.skip = skip
 		self.innovation = innovation
-
-	def __str__(self):
-
-		details = f"innovation: {self.innovation}\n"
-		details += f"type: {self.branch_type}\n"
-		details += f"weight: {self.weight}\n"
-		details += f"active: {self.active}\n"
-		details += f"connection: N{self.input_node} --> N{self.output_node}\n"
-		details += f"recurrent: {self.recurrent}\n"
-		details += f"path: L{self.input_layer} --> L{self.output_layer}\n"
-		details += f"skip: {self.skip}\n"
-		return details + "\n"
