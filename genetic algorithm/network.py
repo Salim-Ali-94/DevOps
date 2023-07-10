@@ -1,11 +1,10 @@
 import random
-import webbrowser
-from pyvis.network import Network as net
+import networkx as nx
+import matplotlib.pyplot as plt
 import utility
 from node import Node
 from branch import Branch
-import networkx as nx
-import matplotlib.pyplot as plt
+
 
 class Network:
 
@@ -248,144 +247,12 @@ class Network:
 
 		return output
 
-	# def __repr__(self):
-
-	# 	ann = net()
-	# 	step = 10
-	# 	height = 5
-
-	# 	for layer, neurons in enumerate(self.network):
-
-	# 		for row, neuron in enumerate(neurons):
-
-	# 			ann.add_node(neuron.node,
-	# 						 label = str(neuron.node),
-	# 						 x = step*layer,
-	# 						 y = height*row,
-	# 						 color = "#e50191" if (neuron.node_type == "bias") else "#ac05f7",
-	# 						 # size = 30 if (neuron.node_type == "bias") else 50)
-	# 						 size = 10 if (neuron.node_type == "bias") else 20)
-
-	# 			if (layer > 0):
-
-	# 				for link in neuron.branches:
-
-	# 					if link.active:
-
-	# 						ann.add_edge(link.input_node,
-	# 									 link.output_node,
-	# 									 color = "#000" if (link.branch_type == "bias") else "#9cf168",
-	# 									 physics = False,
-	# 									 # width = 4 if (link.branch_type == "bias") else 10)
-	# 									 width = 1 if (link.branch_type == "bias") else 3)
-
-	# 	# ann.barnes_hut()
-	# 	ann.show("ann.html", notebook = False)
-	# 	webbrowser.open_new_tab("ann.html")
-	# 	# return fr"{self.layers} layers\n{'\n'.join([str(len(nodes)) for layer, nodes in enumerate(self.network)])}"
-	# 	return f"{self.layers} layers"
-	# 	# return f"{self.layers} layers\n{'\n'.join([str(len(nodes)) for layer, nodes in enumerate(self.network)])}"
-
-
-	# def __repr__(self):
-
-	# 	ann = nx.Graph()
-	# 	step = 10
-	# 	height = 5
-	# 	dnn = []
-	# 	positions = {}
-	# 	node_styles = {}
-	# 	edge_styles = {}
-	# 	axis = plt.gca()
-	# 	maximum = max(abs(branch.weight) for layer in self.network for node in layer for branch in node.branches)
-
-	# 	for layer, neurons in enumerate(self.network):
-
-	# 		for row, neuron in enumerate(neurons):
-
-	# 			positions[neuron.node] = (layer, -row)
-	# 			node_styles[neuron.node] = { "color": "#e50191" if (neuron.node_type == "bias") else "#ac05f7",
-	# 										 "size": 500 if (neuron.node_type == "bias") else 800 }
-
-	# 			if (layer > 0):
-
-	# 				for link in neuron.branches:
-
-	# 					if link.active:
-
-	# 						dnn.append((link.input_node, link.output_node))
-	# 						# edge_styles[(link.input_node, link.output_node)] = { "color": "#000" if (link.branch_type == "bias") else "#9cf168",
-	# 						# 							 						 "width": 1 if (link.branch_type == "bias") else 2,
-	# 						# 							 						 "style": "--" if link.skip else "-" }
-
-	# 						lines = dict(arrowstyle = "-",
-	# 									 color = "#000" if (link.branch_type == "bias") else "#9cf168",
-	# 									 connectionstyle = f"arc3,rad={0.05 if link.skip else 0}",
-	# 									 linestyle = "--" if link.skip else "-",
-	# 									 alpha = 0.8 if link.skip else 1,
-	# 									 # linewidth = 1 if (link.branch_type == "bias") else 1.5,
-	# 									 linewidth = 0.5 if (abs(link.weight) < 0.5) else 2*abs(link.weight) / maximum,
-	# 									 zorder = -1)
-
-	# 						axis.annotate("",
-	# 									  xy = positions[link.input_node],
-	# 									  xytext = positions[link.output_node],
-	# 									  arrowprops = lines)
-
-	# 	ann.add_edges_from(dnn)
-	# 	# axis = plt.gca()
-
-	# 	# for edge in ann.edges():
-			
-	# 	# 	source, target = edge
-	# 	# 	radius = 0.2
-
-	# 	# 	lines = dict(arrowstyle = "-", 
-	# 	# 				 color = "black" if (source%2 == 0) else "blue",
-	# 	# 				 connectionstyle = f"arc3,rad={radius}",
-	# 	# 				 linestyle = "-" if (target%2 == 0) else "--",
-	# 	# 				 alpha = 0.6,
-	# 	# 				 linewidth = 5)
-
-	# 	# 	axis.annotate("",
-	# 	# 				  xy = positions[source],
-	# 	# 				  xytext = positions[target],
-	# 	# 				  arrowprops = lines)
-		
-	# 	# nx.draw_networkx_edges(ann,
-	# 	# 					   positions,
-	# 						   # edgelist = edge_styles.keys(),
-	# 						   # width = [edge_styles[e]["width"] for e in edge_styles],
-	# 						   # edge_color = [edge_styles[e]["color"] for e in edge_styles],
-	# 						   # style = [edge_styles[e]["style"] for e in edge_styles])
-
-	# 	nx.draw_networkx_nodes(ann,
-	# 						   positions,
-	# 						   nodelist = node_styles.keys(),
-	# 						   node_size = [node_styles[n]["size"] for n in node_styles],
-	# 						   node_color = [node_styles[n]["color"] for n in node_styles]).set_zorder(2)
-	# 						   # node_color = [node_styles[n]["color"] for n in node_styles],
-	# 						   # zorder = 2)
-
-	# 	nx.draw_networkx_labels(ann,
-	# 							positions,
-	# 							font_color = "white",
-	# 							font_weight = "bold",
-	# 							font_family = "arial")
-
-	# 	plt.axis("off")
-	# 	plt.show()
-	# 	return f"{self.layers} layers"
-
 	def __repr__(self):
 
 		ann = nx.Graph()
-		step = 10
-		height = 5
-		dnn = []
+		connections = []
 		positions = {}
-		node_styles = {}
-		edge_styles = {}
+		styling = {}
 		axis = plt.gca()
 		maximum = max(abs(branch.weight) for layer in self.network for node in layer for branch in node.branches)
 		height = max(len(layer) for layer in self.network)
@@ -394,11 +261,9 @@ class Network:
 
 			for row, neuron in enumerate(neurons):
 
-				# positions[neuron.node] = (layer, -row)
 				positions[neuron.node] = (layer, (-2*row - abs(len(neurons) - height)) / 2)
-				# node_styles[neuron.node] = { "color": "#e50191" if (neuron.node_type == "bias") else "#ac05f7",
-				node_styles[neuron.node] = { "color": "#9cf168" if (neuron.node_type == "bias") else "#ac05f7",
-											 "size": 500 if (neuron.node_type == "bias") else 800 }
+				styling[neuron.node] = { "color": "#9cf168" if (neuron.node_type == "bias") else "#ac05f7",
+										 "size": 500 if (neuron.node_type == "bias") else 800 }
 
 				if (layer > 0):
 
@@ -406,18 +271,13 @@ class Network:
 
 						if link.active:
 
-							dnn.append((link.input_node, link.output_node))
-							# edge_styles[(link.input_node, link.output_node)] = { "color": "#000" if (link.branch_type == "bias") else "#9cf168",
-							# 							 						 "width": 1 if (link.branch_type == "bias") else 2,
-							# 							 						 "style": "--" if link.skip else "-" }
+							connections.append((link.input_node, link.output_node))
 
 							lines = dict(arrowstyle = "-",
-										 # color = "#000" if (link.branch_type == "bias") else "#9cf168",
 										 color = "#9cf168" if (link.branch_type == "bias") else "#ac05f7",
 										 connectionstyle = f"arc3,rad={0.05 if link.skip else 0}",
 										 linestyle = "--" if link.skip else "-",
 										 alpha = 0.6 if link.skip else 1,
-										 # linewidth = 1 if (link.branch_type == "bias") else 1.5,
 										 linewidth = 0.5 if (abs(link.weight) < 0.5) else 2*abs(link.weight) / maximum,
 										 zorder = 1)
 
@@ -426,24 +286,13 @@ class Network:
 										  xytext = positions[link.output_node],
 										  arrowprops = lines)
 
-		ann.add_edges_from(dnn)
+		ann.add_edges_from(connections)
 
 		nx.draw_networkx_nodes(ann,
 							   positions,
-							   nodelist = node_styles.keys(),
-							   node_size = [node_styles[n]["size"] for n in node_styles],
-							   node_color = [node_styles[n]["color"] for n in node_styles]).set_zorder(10)
-
-		# offset = { key: (value[0], value[1] + 0.1) for key, value in positions.items() }
-
-		# nx.draw_networkx_labels(ann,
-		# 						positions,
-		# 						# offset,
-		# 						font_color = "white",
-		# 						# font_color = "black",
-		# 						font_weight = "bold",
-		# 						font_family = "arial",
-		# 						clip_on = False)
+							   nodelist = styling.keys(),
+							   node_size = [styling[n]["size"] for n in styling],
+							   node_color = [styling[n]["color"] for n in styling]).set_zorder(10)
 
 		for key, value in positions.items():
 
@@ -458,6 +307,5 @@ class Network:
 					 weight = "bold")
 
 		plt.axis("off")
-		# plt.savefig("graph.png", dpi = 1000)
 		plt.show()
 		return f"{self.layers} layers"
