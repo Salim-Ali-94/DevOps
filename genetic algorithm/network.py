@@ -256,6 +256,12 @@ class Network:
 		axis = plt.gca()
 		maximum = max(abs(branch.weight) for layer in self.network for node in layer for branch in node.branches)
 		height = max(len(layer) for layer in self.network)
+		info = "\n"
+		info += "-"*50
+		info += f"\n{self.layers} layers:\n"
+		for index, layer in enumerate(self.network): info += f"\nlayer {index} --> {len(layer)}"
+		info += "\n"
+		info += "-"*50
 
 		for layer, neurons in enumerate(self.network):
 
@@ -308,4 +314,4 @@ class Network:
 
 		plt.axis("off")
 		plt.show()
-		return f"{self.layers} layers"
+		return info + "\n"
