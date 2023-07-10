@@ -249,7 +249,7 @@ class Network:
 
 	def __repr__(self):
 
-		ann = nx.Graph()
+		canvas = nx.Graph()
 		connections = []
 		positions = {}
 		styling = {}
@@ -292,9 +292,9 @@ class Network:
 										  xytext = positions[link.output_node],
 										  arrowprops = lines)
 
-		ann.add_edges_from(connections)
+		canvas.add_edges_from(connections)
 
-		nx.draw_networkx_nodes(ann,
+		nx.draw_networkx_nodes(canvas,
 							   positions,
 							   nodelist = styling.keys(),
 							   node_size = [styling[n]["size"] for n in styling],
