@@ -111,43 +111,11 @@ class Network:
 		for layer in range(self.layers):
 
 			nodes = tuple()
-
-			if (layer == 0):
-
-				width = len(self.sensor)
-
-			elif (layer == self.layers - 1):
-
-				width = self.architecture["output_neurons"]
-
-			else:
-
-				width = random.randint(self.architecture["minimum_neurons"],
-									   self.architecture["maximum_neurons"])
+			width = self._length(layer)
 
 			for index in range(width):
 
-				if (layer > 0):
-
-					if ((index == 0) and (layer == self.layers - 1)):
-
-						identity = network[0][-1].node + 1
-
-					elif ((index == 0) and (layer > 1)):
-
-						identity = network[-1][-1].node + 1
-
-					elif ((index == 0) and (layer == 1)):
-
-						identity = network[-1][-1].node + self.architecture["output_neurons"] + 1
-
-					else:
-
-						identity = nodes[-1].node + 1
-
-				else:
-
-					identity = index + 1
+				identity = self._identify(network, nodes, layer, index)
 
 				node = Node(node = identity,
 							layer = layer,
@@ -158,26 +126,7 @@ class Network:
 
 				if (layer > 0):
 
-					for level, neurons in enumerate(network):
-
-						for neuron in neurons:
-
-							if (random.random() < self.connection_rate):
-
-								reverse = random.random()
-
-								branch = Branch(weight = random.uniform(self.architecture["minimum_weight"], self.architecture["maximum_weight"]),
-												input_node = node.node if (self.recurrent and (reverse < self.recurrent_rate)) else neuron.node,
-												output_node = neuron.node if (self.recurrent and (reverse < self.recurrent_rate)) else node.node,
-												input_layer = level,
-												output_layer = layer,
-												active = True if (random.random() < self.active_rate) else False,
-												branch_type = "bias" if (neuron.node_type == "bias") else "synapse",
-												recurrent = True if (self.recurrent and (reverse < self.recurrent_rate)) else False,
-												skip = True if (self.skip and (abs(layer - level) > 1)) else False)
-
-								self._auditLUT(branch)
-								node.branches.append(branch)
+					self._attachLinks(network, layer, node)
 
 				nodes += (node, )
 
@@ -196,6 +145,72 @@ class Network:
 			network.append(nodes)
 
 		return network
+
+	def _length(self, layer):
+
+		if (layer == 0):
+
+			width = len(self.sensor)
+
+		elif (layer == self.layers - 1):
+
+			width = self.architecture["output_neurons"]
+
+		else:
+
+			width = random.randint(self.architecture["minimum_neurons"],
+								   self.architecture["maximum_neurons"])
+
+		return width
+
+	def _identify(self, network, nodes, layer, index):
+
+		if (layer > 0):
+
+			if ((index == 0) and (layer == self.layers - 1)):
+
+				identity = network[0][-1].node + 1
+
+			elif ((index == 0) and (layer > 1)):
+
+				identity = network[-1][-1].node + 1
+
+			elif ((index == 0) and (layer == 1)):
+
+				identity = network[-1][-1].node + self.architecture["output_neurons"] + 1
+
+			else:
+
+				identity = nodes[-1].node + 1
+
+		else:
+
+			identity = index + 1
+
+		return identity
+
+	def _attachLinks(self, network, layer, node):
+
+		for level, neurons in enumerate(network):
+
+			for neuron in neurons:
+
+				if (random.random() < self.connection_rate):
+
+					reverse = random.random()
+
+					branch = Branch(weight = random.uniform(self.architecture["minimum_weight"], self.architecture["maximum_weight"]),
+									input_node = node.node if (self.recurrent and (reverse < self.recurrent_rate)) else neuron.node,
+									output_node = neuron.node if (self.recurrent and (reverse < self.recurrent_rate)) else node.node,
+									input_layer = level,
+									output_layer = layer,
+									active = True if (random.random() < self.active_rate) else False,
+									branch_type = "bias" if (neuron.node_type == "bias") else "synapse",
+									recurrent = True if (self.recurrent and (reverse < self.recurrent_rate)) else False,
+									skip = True if (self.skip and (abs(layer - level) > 1)) else False)
+
+					self._auditLUT(branch)
+					node.branches.append(branch)
 
 	def _auditLUT(self, branch):
 
@@ -261,7 +276,7 @@ class Network:
 		info = "\n"
 		info += "-"*50
 		info += f"\n{self.layers} layers:\n"
-		for index, layer in enumerate(self.network): info += f"\nlayer {index} --> {len(layer)}"
+		for index, layer in enumerate(self.network): info += f"\nlayer {index} --> {len(layer)} nodes"
 		info += "\n"
 		info += "-"*50
 
