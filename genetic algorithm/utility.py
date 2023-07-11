@@ -379,14 +379,15 @@ def networkStructure(structure, bias_rate = 1):
 	return nodes
 
 # delete
-def neuralNetwork(topology, recurrent = False, skip = True, connection_rate = 1, active_rate = 1, recurrent_rate = 0, history = []):
+def neuralNetwork(topology, recurrent = False, skip = True, connection_rate = 1, active_rate = 1, recurrent_rate = 0, history = None):
 
 	branches = []
 	weights = tuple()
+	if (history is None): history = []
 
 	for layer, neurons in enumerate(topology[1:]):
 
-		for row, current_neuron in enumerate(neurons):
+		for current_neuron in neurons:
 
 			if (current_neuron["type"] != "bias"):
 
@@ -395,7 +396,7 @@ def neuralNetwork(topology, recurrent = False, skip = True, connection_rate = 1,
 					if ((abs(layer + 1 - previous) == 1) or
 					    (skip and (abs(layer + 1 - previous) > 1))):
 
-						for column, previous_neuron in enumerate(nodes):
+						for previous_neuron in nodes:
 
 							if (random.random() < connection_rate):
 
@@ -434,7 +435,7 @@ def generateNetwork(population_size, architecture, connection_rate = 0.5, active
 	population = []
 	history = []
 
-	for member in range(population_size):
+	while (len(population) < population_size):
 
 		topology = networkStructure(architecture, bias_rate)
 		network, history = neuralNetwork(topology, recurrent, skip, connection_rate, active_rate, recurrent_rate, history)
@@ -449,13 +450,13 @@ def generateNetwork(population_size, architecture, connection_rate = 0.5, active
 # delete
 def propagate(network):
 
-	for layer, weight in enumerate(network):
+	for weight in network:
 
-		for index, node in enumerate(weight):
+		for node in weight:
 
-			for position, branch in enumerate(node["data"]):
+			for branch in node["data"]:
 
-				if (branch["active"] == True):
+				if branch["active"]:
 
 					if ((branch["input_layer"] == 0) or
 						(branch["type"] == "bias")):
@@ -466,11 +467,11 @@ def propagate(network):
 
 						neuron = next((address for address, dot in enumerate(network[branch["input_layer"] - 1]) if (dot["node"] == branch["input_node"])), None)
 
-						if (neuron != None):
+						if neuron is not None:
 
 							node["input"] += branch["weight"]*network[branch["input_layer"] - 1][neuron]["output"]
 
-			if not all((neuron["active"] == False) for neuron in node["data"]):
+			if not all(not neuron["active"] for neuron in node["data"]):
 
 				node["output"] = activation(node["input"], node["function"])
 				node["activity"] = node["output"]
@@ -559,7 +560,7 @@ def formatSize(structure):
 	if (structure["minimum_layers"] > structure["maximum_layers"]):
 
 		maximum = structure["minimum_layers"]
-		structure["minimum_layers"] = strcuture["maximum_layers"]
+		structure["minimum_layers"] = structure["maximum_layers"]
 		structure["maximum_layers"] = maximum
 
 	if (structure["maximum_neurons"] < structure["minimum_neurons"]):
@@ -572,8 +573,10 @@ def formatSize(structure):
 	return layers, structure
 
 # delete
-def generateNodes(layer, height, length, output, bias_rate = 1, neurons = [], data = []):
+def generateNodes(layer, height, length, output, bias_rate = 1, neurons = None, data = None):
 
+	if (data is None): data = []
+	if (neurons is None): neurons = []
 	nodes = tuple()
 
 	for index in range(height):
@@ -681,14 +684,14 @@ def matchNodes(genome, cascade, threshold = 0.25):
 	return genome, input_node, input_layer, output_node, output_layer, weight
 
 # remove
-def modifyGenome(genome, topology, threshold = 0.25, recurrent = False):
+def modifyGenome(genome, threshold = 0.25, recurrent = False):
 
 	if (len(genome) > 1):
 
 		size = sum(len(gene) for gene in genome)
 		cascade = tuple()
 
-		for index in range(size):
+		while (len(cacade) < size):
 
 			if (random.random() < threshold):
 
@@ -745,12 +748,13 @@ def modifyGenome(genome, topology, threshold = 0.25, recurrent = False):
 	return genome
 
 # remove
-def encodeNetwork(network, architecture, topology, history = [], initialize = False):
+def encodeNetwork(network, architecture, topology, history = None, initialize = False):
 
+	if (history is None): history = []
 	branch = tuple()
 	genome = []
 
-	for index, matrix in enumerate(network):
+	for matrix in network:
 
 		for row in range(matrix.shape[0]):
 

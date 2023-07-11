@@ -1,6 +1,7 @@
 import random
 import networkx as nx
 import matplotlib.pyplot as plt
+import uuid
 import utility
 from node import Node
 from branch import Branch
@@ -26,6 +27,7 @@ class Network:
 		self.layers = self._formatSize()
 		self.network = self._neuralNetwork()
 		self.output = self.propagate()
+		self.id = str(uuid.uuid4()).replace("-", "")
 
 	def _formatSize(self):
 
@@ -84,13 +86,13 @@ class Network:
 		if (self.architecture["minimum_weight"] > self.architecture["maximum_weight"]):
 
 			maximum = self.architecture["minimum_weight"]
-			self.architecture["minimum_weight"] = strcuture["maximum_weight"]
+			self.architecture["minimum_weight"] = architecture["maximum_weight"]
 			self.architecture["maximum_weight"] = maximum
 
 		if (self.architecture["minimum_layers"] > self.architecture["maximum_layers"]):
 
 			maximum = self.architecture["minimum_layers"]
-			self.architecture["minimum_layers"] = strcuture["maximum_layers"]
+			self.architecture["minimum_layers"] = architecture["maximum_layers"]
 			self.architecture["maximum_layers"] = maximum
 
 		if (self.architecture["maximum_neurons"] < self.architecture["minimum_neurons"]):
@@ -158,8 +160,8 @@ class Network:
 
 					for level, neurons in enumerate(network):
 
-						for row, neuron in enumerate(neurons):
-	
+						for neuron in neurons:
+
 							if (random.random() < self.connection_rate):
 
 								reverse = random.random()
@@ -171,7 +173,7 @@ class Network:
 												output_layer = layer,
 												active = True if (random.random() < self.active_rate) else False,
 												branch_type = "bias" if (neuron.node_type == "bias") else "synapse",
-												recurrent = True if (self.recurrent and (reverse < self.recurent_rate)) else False,
+												recurrent = True if (self.recurrent and (reverse < self.recurrent_rate)) else False,
 												skip = True if (self.skip and (abs(layer - level) > 1)) else False)
 
 								self._auditLUT(branch)
@@ -230,7 +232,7 @@ class Network:
 
 		for layer, nodes in enumerate(self.network[1:]):
 
-			for row, node in enumerate(nodes):
+			for node in nodes:
 
 				if (node.node_type != "bias"):
 
@@ -242,7 +244,7 @@ class Network:
 					node.output = utility.activation(node.activity, node.function)
 
 					if (layer == self.layers - 2):
-	
+
 						output.append(node.output)
 
 		return output
@@ -279,13 +281,13 @@ class Network:
 
 							connections.append((link.input_node, link.output_node))
 
-							lines = dict(arrowstyle = "-",
-										 color = "#9cf168" if (link.branch_type == "bias") else "#ac05f7",
-										 connectionstyle = f"arc3,rad={0.05 if link.skip else 0}",
-										 linestyle = "--" if link.skip else "-",
-										 alpha = 0.6 if link.skip else 1,
-										 linewidth = 0.5 if (2*abs(link.weight) / maximum < 0.5) else 2*abs(link.weight) / maximum,
-										 zorder = 1)
+							lines = { "arrowstyle": "-",
+									  "color": "#9cf168" if (link.branch_type == "bias") else "#ac05f7",
+									  "connectionstyle": f"arc3,rad={0.05 if link.skip else 0}",
+									  "linestyle": "--" if link.skip else "-",
+									  "alpha": 0.6 if link.skip else 1,
+									  "linewidth": 0.5 if ((2*abs(link.weight) / maximum) < 0.5) else 2*abs(link.weight) / maximum,
+									  "zorder": 1 }
 
 							axis.annotate("",
 										  xy = positions[link.input_node],
@@ -297,8 +299,8 @@ class Network:
 		nx.draw_networkx_nodes(canvas,
 							   positions,
 							   nodelist = styling.keys(),
-							   node_size = [styling[index]["size"] for index in styling],
-							   node_color = [styling[index]["color"] for index in styling]).set_zorder(10)
+							   node_size = [styling[key]["size"] for key, value in styling.items()],
+							   node_color = [styling[key]["color"] for key, value in styling.items()]).set_zorder(10)
 
 		for key, value in positions.items():
 

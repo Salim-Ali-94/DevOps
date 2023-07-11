@@ -1,4 +1,4 @@
-import numpy as np
+# import numpy as np
 import utility
 
 
@@ -58,7 +58,7 @@ if __name__ == "__main__":
 									   recurrent_rate,
 									   recurrent,
 									   skip)
-	
+
 	# out = utility.propagate(ANN[0]["network"])
 	X = [({ 'node': 5,
 			'input': 0,

@@ -90,7 +90,8 @@ if __name__ == "__main__":
 
 	for layer in topology:
 
-		nodes += [node for node in layer]
+		# nodes += [node for node in layer]
+		nodes += list(layer)
 
 	print()
 	print("network /", len(network))
@@ -116,7 +117,8 @@ if __name__ == "__main__":
 	# 			print(cell)
 
 	# for matrix in network:
-	for weight in range(len(network)):
+	for weight, _ in enumerate(network):
+	# for weight in range(len(network)):
 
 		# print(matrix.shape)
 		print(network[weight].shape)
@@ -125,7 +127,8 @@ if __name__ == "__main__":
 		for row in range(network[weight].shape[0]):
 
 			# for column in range(len(matrix[row])):
-			for column in range(len(network[weight][row])):
+			for column, _ in enumerate(network[weight][row]):
+			# for column in range(len(network[weight][row])):
 
 				print()
 				print("row", "\tcolumn")
