@@ -353,20 +353,10 @@ def generatePopulation(chromosome_length = 2, population_size = 5, category = "n
 
 	return population
 
-
-# def neuralNetwork(architecture,
-# def neuralNetwork(structure,
-# 				  recurrent = False,
-# 				  skip = False,
-# 				  # connection_rate = 1,
-# 				  active_rate = 1,
-# 				  bias_rate = 1,
-# 				  history = []):
-# def networkStructure(structure, bias_rate = 1, data = []):
+# delete
 def networkStructure(structure, bias_rate = 1):
 
 	nodes = []
-	# neurons = tuple()
 	length, structure = formatSize(structure)
 
 	for layer in range(length):
@@ -383,86 +373,12 @@ def networkStructure(structure, bias_rate = 1):
 
 			width = random.randint(structure["minimum_neurons"], structure["maximum_neurons"])
 
-		# neurons = generateNodes(layer, width, length, structure["output_neurons"], bias_rate, nodes)
 		neurons = generateNodes(layer, width, length, structure["output_neurons"], bias_rate, nodes, structure["data"])
 		nodes.append(neurons)
 
 	return nodes
 
-
-# def neuralNetwork(topology, recurrent = False, skip = True, connection_rate = 1, active_rate = 1, recurrent_rate = 0, history = []):
-
-# 	branches = []
-# 	weights = tuple()
-
-# 	for layer, neurons in enumerate(topology[1:]):
-
-# 		for row, current_neuron in enumerate(neurons):
-
-# 			for previous, nodes in enumerate(topology[:layer + 1]):
-
-# 				if ((abs(layer + 1 - previous) == 1) or
-# 				    (skip and (abs(layer + 1 - previous) > 1))):
-
-# 					for column, previous_neuron in enumerate(nodes):
-
-# 						if (random.random() < connection_rate):
-
-# 							if (recurrent and (previous_neuron["type"] != "bias")): rate = random.random()
-
-# 							if (current_neuron["type"] != "bias"):
-
-# 								branch = { "type": "bias" if (previous_neuron["type"] == "bias") else "synapse",
-# 										   "weight": random.uniform(-2, 2),
-# 										   "category": current_neuron["type"],
-# 										   "function": current_neuron["function"],
-# 										   "input": previous_neuron["input"],
-# 										   "output": 0,
-# 										   "activity": 0,
-# 										   "input_layer": layer + 1 if (recurrent and (rate < recurrent_rate) and (previous_neuron["type"] != "bias")) else previous,
-# 										   "output_layer": previous if (recurrent and (rate < recurrent_rate) and (previous_neuron["type"] != "bias")) else layer + 1,
-# 										   "input_node": current_neuron["node"] if (recurrent and (rate < recurrent_rate) and (previous_neuron["type"] != "bias")) else previous_neuron["node"],
-# 										   "output_node": previous_neuron["node"] if (recurrent and (rate < recurrent_rate) and (previous_neuron["type"] != "bias")) else current_neuron["node"],
-# 										   "recurrent": True if (recurrent and (rate < recurrent_rate) and (previous_neuron["type"] != "bias")) else False,
-# 										   "skip": True if (abs(layer + 1 - previous) > 1) else False,
-# 										   "active": True if (random.random() < active_rate) else False }
-
-# 								history, innovation = manageHistory(history, branch)
-# 								branch["innovation"] = innovation
-# 								weights += (branch, )
-# 							# branch = { "type": "bias" if (previous_neuron["type"] == "bias") else "synapse",
-# 							# # branch = { "type": "bias" if (current_neuron["type"] == "bias") else "synapse",
-# 							# # branch = { "type": current_neuron["type"],
-# 							# # branch = { "type": previous_neuron["type"],
-# 							# 		   "weight": random.uniform(-2, 2),
-# 							# 		   "category": current_neuron["type"],
-# 							# 		   "function": current_neuron["function"],
-# 							# 		   "input": previous_neuron["input"],
-# 							# 		   "output": 0,
-# 							# 		   "activity": 0,
-# 							# 		   "input_layer": layer + 1 if (recurrent and (rate < recurrent_rate) and (previous_neuron["type"] != "bias")) else previous,
-# 							# 		   "output_layer": previous if (recurrent and (rate < recurrent_rate) and (previous_neuron["type"] != "bias")) else layer + 1,
-# 							# 		   "input_node": current_neuron["node"] if (recurrent and (rate < recurrent_rate) and (previous_neuron["type"] != "bias")) else previous_neuron["node"],
-# 							# 		   "output_node": previous_neuron["node"] if (recurrent and (rate < recurrent_rate) and (previous_neuron["type"] != "bias")) else current_neuron["node"],
-# 							# 		   "recurrent": True if (recurrent and (rate < recurrent_rate) and (previous_neuron["type"] != "bias")) else False,
-# 							# 		   "skip": True if (abs(layer + 1 - previous) > 1) else False,
-# 							# 		   "active": True if (random.random() < active_rate) else False }
-
-# 							# history, innovation = manageHistory(history, branch)
-# 							# branch["innovation"] = innovation
-# 							# weights += (branch, )
-
-# 		# print("weights")
-# 		# print(weights)
-# 		synapse = groupData(weights)
-# 		# print("synapse")
-# 		# print(synapse)
-# 		# branches.append(weights)
-# 		branches.append(synapse)
-# 		weights = tuple()
-
-# 	return branches, history
-
+# delete
 def neuralNetwork(topology, recurrent = False, skip = True, connection_rate = 1, active_rate = 1, recurrent_rate = 0, history = []):
 
 	branches = []
@@ -512,7 +428,7 @@ def neuralNetwork(topology, recurrent = False, skip = True, connection_rate = 1,
 
 	return branches, history
 
-
+# delete
 def generateNetwork(population_size, architecture, connection_rate = 0.5, active_rate = 0.5, bias_rate = 0.5, recurrent_rate = 0, recurrent = False, skip = True):
 
 	population = []
@@ -530,144 +446,29 @@ def generateNetwork(population_size, architecture, connection_rate = 0.5, active
 
 	return population, history
 
-
-# # def propagate(network, data, topology):
-# def propagate(network, data):
-
-# 	nodes = []
-# 	weights = tuple()
-
-# 	for layer, weight in enumerate(network):
-
-# 		synapse = groupData(weight)
-
-# 		for w in synapse:
-
-# 			for branch in w["data"]:
-
-# 				branch["input"] += data*branch["weight"]
-
-# 			branch["output"] = activation(branch["input"], branch["function"])
-# 			weights += branch
-
-# 		nodes.append(weights)
-# 		weights = tuple()
-
-# 	# nodes = []
-
-# 	# for layer, weight in enumerate(network):
-
-# 	# 	# W = groupData(weight)
-
-# 	# 	for branch in weight:
-# 	# 	# for branch in W:
-
-# 	# 		# if (len(nodes) > 0):
-
-# 	# 		if any((node["node"] == branch["output_node"]) for node in nodes):
-
-# 	# 			synapse = next((w for w in nodes if w["node"] == branch["output_node"]), {})
-# 	# 			synapse["input"] += data*branch["weight"]
-
-# 	# 		else:
-
-# 	# 			if (layer == 0):
-
-# 	# 				neuron = { "node": branch["output_node"],
-# 	# 						   "input": data*branch["weight"],
-# 	# 						   "function": branch["function"],
-# 	# 						   "output": 0 }
-
-# 	# 				nodes.append(neuron)
-
-# 	# 	neurons = [node for node in nodes if (node["output"] == 0)]
-
-# 	# 	for neuron in neurons:
-
-# 	# 		# position = next((position for position, node in topology if (node["node"] == neuron["node"])), None)
-# 	# 		# neuron["output"] = activation(neuron["input"], topology[position]["function"])
-# 	# 		# topology[position]["output"] = neuron["output"]
-# 	# 		neuron["output"] = activation(neuron["input"], neuron["function"])
+# delete
 def propagate(network):
 
 	for layer, weight in enumerate(network):
 
 		for index, node in enumerate(weight):
 
-			# if ((node["type"] != "bias") and
-			# 	(node["active"] == True)):
-
-			# for branch in node["data"]:
 			for position, branch in enumerate(node["data"]):
 
-				# if ((branch["type"] != "bias") and
-				# 	(branch["active"] == True)):
 				if (branch["active"] == True):
 
-					# node["input"] += branch["input"]*branch["weight"]
-					# if (branch["input_layer"] == 0):
 					if ((branch["input_layer"] == 0) or
 						(branch["type"] == "bias")):
 
-						print(branch["weight"], "*", branch["input"])
 						node["input"] += branch["weight"]*branch["input"]
-						# branch["output"] = branch["weight"]*branch["input"]
-						# branch["activity"] = activation(branch["output"], branch["function"])
 
 					else:
 
-						# print("network")
-						# print(network)
-						# print("input layer")
-						# print(branch["input_layer"])
-						# print(f"net @{branch['input_layer']}")
-						# print(network[branch['input_layer']])
-						print(f"net @{branch['input_layer'] - 1}")
-						print(network[branch['input_layer'] - 1])
-						print()
-						print()
-						# print("position")
-						# print(position)
-						# print("position - 1")
-						# print(position - 1)
-						# print(f"net @{position}")
-						# print(network[position])
-						# print(f"w @net @{position}")
-						# print(network[branch["input_layer"]][position])
-						# print(f"w @net @{position}")
-						# print(network[branch["input_layer"] - 1][position])
-						# print(f"w @net @{position - 1}")
-						# print(network[branch["input_layer"]][position - 1])
-						# node["input"] += branch["weight"]*network[branch["input_layer"]][position]["output"]
-						# node["input"] += branch["weight"]*network[branch["input_layer"] - 1][position]["output"]
-
 						neuron = next((address for address, dot in enumerate(network[branch["input_layer"] - 1]) if (dot["node"] == branch["input_node"])), None)
-						print(neuron)
 
 						if (neuron != None):
 
-							print(f"w @net @{neuron}")
-							print(network[branch["input_layer"] - 1][neuron])
-							print()
-							print()							
 							node["input"] += branch["weight"]*network[branch["input_layer"] - 1][neuron]["output"]
-							print(branch["weight"], "*", network[branch["input_layer"] - 1][neuron]["output"])
-
-						# branch["output"] = branch["weight"]*weight[branch["input_layer"]]["output"]
-						# branch["activity"] = activation(branch["output"], branch["function"])
-
-			# print("node")
-			# print(node)
-			# print(node["function"])
-			# node["output"] = activation(node["input"], node["function"])
-			# node["activity"] = node["output"]
-
-			# if (node["type"] != "bias"):
-
-			# 	print("node")
-			# 	print(node)
-			# 	print(node["function"])
-
 
 			if not all((neuron["active"] == False) for neuron in node["data"]):
 
@@ -676,19 +477,12 @@ def propagate(network):
 
 	return network
 
-
+# delete
 def groupData(data):
 
-	# group = []
 	group = tuple()
 
 	for weight in data:
-
-		# if (len(group) > 0):
-
-		# 	synapse = weight
-
-		# else:
 
 		if any((branch["node"] == weight["output_node"]) for branch in group):
 
@@ -697,50 +491,17 @@ def groupData(data):
 
 		else:
 
-			# group.append({ "node": weight["output_node"],
-			# 			   "input": 0,
-			# 			   "output": 0,
-			# 			   "function": weight["function"],
-			# 			   # "type": weight["type"],
-			# 			   "layer": weight["output_layer"],
-			# 			   "data": [weight] })
 			group += ({ "node": weight["output_node"],
 					    "input": 0,
 					    "output": 0,
 					    "function": weight["function"],
-					    # "type": "bias" if (weight["type"]) else "node",
 					    "type": weight["category"],
 					    "layer": weight["output_layer"],
 					    "data": [weight] }, )
 
 	return group
-# def groupData(data):
 
-# 	group = {}
-
-# 	for weight in data:
-
-# 		# if any((branch["node"] == weight["output_node"]) for branch in group):
-# 		if any((branch == weight["output_node"]) for branch in group):
-
-# 			# synapse = next((branch for branch in group if (branch["output_node"] == weight["output_node"])), {})
-# 			synapse = next((branch for branch in group if (branch == weight["output_node"])), {})
-# 			# synapse["data"].append(weight)
-# 			synapse["data"] += (weight, )
-
-# 		else:
-
-# 			group["node"] = weight["output_node"]
-# 			group["input"] = weight["input"]
-# 			group["output"] = weight["output"]
-# 			group["layer"] = weight["output_layer"]
-# 			group["function"] = weight["function"]
-# 			group["type"] = weight["type"]
-# 			group["data"] = (weight, )
-
-# 	return group
-
-
+# delete
 def formatSize(structure):
 
 	if (type(structure["minimum_layers"]) != int):
@@ -810,12 +571,7 @@ def formatSize(structure):
 	layers = random.randint(structure["minimum_layers"], structure["maximum_layers"]) + 2
 	return layers, structure
 
-
-# def generateNodes(layer, size, bias = False):
-# def generateNodes(layer, height, start, bias_rate = 1, nodes = tuple()):
-# def generateNodes(layer, height, bias_rate = 1, nodes = tuple()):
-# def generateNodes(layer, height, length, output, bias_rate = 1, neurons = tuple()):
-# def generateNodes(layer, height, length, output, bias_rate = 1, neurons = []):
+# delete
 def generateNodes(layer, height, length, output, bias_rate = 1, neurons = [], data = []):
 
 	nodes = tuple()
@@ -826,9 +582,7 @@ def generateNodes(layer, height, length, output, bias_rate = 1, neurons = [], da
 					"node": 1 + index if (layer == 0) else neurons[-1][-1]["node"] + output + 1 + index if (layer == 1) else neurons[0][-1]["node"] + 1 + index if (layer == length - 1) else neurons[-1][-1]["node"] + 1 + index,
 					"layer": layer,
 					"function": None if (layer == 0) else random.choice(("sigmoid", "relu", "tanh")),
-					# "input": 0,
 					"input": data[index] if (layer == 0) else 0,
-					# "output": 0 }, )
 					"output": data[index] if (layer == 0) else 0 }, )
 
 	if (random.random() < bias_rate):
@@ -838,29 +592,11 @@ def generateNodes(layer, height, length, output, bias_rate = 1, neurons = [], da
 					"layer": layer,
 					"function": None,
 					"input": 1,
-					# "output": 0 }, )
 					"output": 1 }, )
 
 	return nodes
 
-
-
-# def neuralNetwork(architecture):
-
-# 	network = []
-
-# 	for layer in range(len(architecture) - 1):
-
-# 		flag = architecture[layer + 1]["bias"]
-# 		forward = architecture[layer + 1]["nodes"]
-# 		current = architecture[layer]["nodes"]
-# 		if flag: current += 1
-# 		weights = np.random.uniform(-2, 2, (forward, current))
-# 		network.append(weights)
-
-# 	return network
-
-
+# remove
 def matchBranches(genome, threshold):
 
 	matrix_a = random.choice(genome)
@@ -906,7 +642,7 @@ def matchBranches(genome, threshold):
 		    output_node_b,
 		    output_layer_b]
 
-
+# remove
 def matchNodes(genome, cascade, threshold = 0.25):
 
 	genome, \
@@ -944,7 +680,7 @@ def matchNodes(genome, cascade, threshold = 0.25):
 	input_node = input_node_a if (input_layer == input_layer_a) else input_node_b
 	return genome, input_node, input_layer, output_node, output_layer, weight
 
-
+# remove
 def modifyGenome(genome, topology, threshold = 0.25, recurrent = False):
 
 	if (len(genome) > 1):
@@ -1008,7 +744,7 @@ def modifyGenome(genome, topology, threshold = 0.25, recurrent = False):
 
 	return genome
 
-
+# remove
 def encodeNetwork(network, architecture, topology, history = [], initialize = False):
 
 	branch = tuple()
@@ -1042,7 +778,7 @@ def encodeNetwork(network, architecture, topology, history = [], initialize = Fa
 
 	return genome
 
-
+# delete
 def populateLUT(genome):
 
 	history = []
@@ -1057,10 +793,10 @@ def populateLUT(genome):
 	return history, genome
 
 
+# delete
 def manageHistory(history, weight):
 
 	innovation = len(history)
-	# fields = ("input_node", "output_node", "type", "active", "direction", "connection", "innovation")
 	fields = ("input_node", "output_node", "type", "active", "recurrent", "skip", "innovation")
 
 	if (len(history) > 0):
@@ -1069,16 +805,13 @@ def manageHistory(history, weight):
 
 			if not any(((synapse["input_node"] == weight["input_node"]) and
 						(synapse["output_node"] == weight["output_node"]) and
-						# (synapse["connection"] == weight["connection"]) and
 						(synapse["skip"] == weight["skip"]) and
 						(synapse["type"] == weight["type"]) and
 						(synapse["active"] == weight["active"]) and
-						# (synapse["direction"] == weight["direction"])) for synapse in history):
 						(synapse["recurrent"] == weight["recurrent"])) for synapse in history):
 
 				candidate = { key: value for key, value in weight.items() if key in fields }
 				innovation = len(history) + 1
-				# innovation = max(history, key = lambda gene: gene["innovation"]) + 1
 				candidate["innovation"] = innovation
 				history.append(candidate)
 
@@ -1096,10 +829,9 @@ def manageHistory(history, weight):
 		candidate["innovation"] = innovation
 		history.append(candidate)
 
-	# history = sorted(history, key = lambda dna: dna["innovation"])
 	return history, innovation
 
-
+# remove
 def decodeGenome(genome, architecture, topology):
 
 	network = []
@@ -1175,32 +907,7 @@ def decodeGenome(genome, architecture, topology):
 
 	return network
 
-
-# def networkStructure(architecture):
-
-# 	topology = []
-
-# 	for layer in range(len(architecture)):
-
-# 		if (len(topology) == 0):
-
-# 			nodes = tuple({ "node": node + 1, "type": "neuron" } for node in range(architecture[layer]["nodes"]))
-
-# 		else:
-
-# 			nodes = tuple({ "node": topology[-1][-1]["node"] + node + 1, "type": "neuron" } for node in range(architecture[layer]["nodes"]))
-
-# 		if (layer < len(architecture) - 1):
-
-# 			if architecture[layer + 1]["bias"]:
-
-# 				nodes += ({ "node": nodes[-1]["node"] + 1, "type": "bias" },)
-
-# 		topology.append(nodes)
-
-# 	return topology
-
-
+# remove
 def feedForward(data, network, architecture):
 
 	activity = data.copy()
@@ -1218,10 +925,9 @@ def feedForward(data, network, architecture):
 
 	return activity
 
-
+# delete
 def processor(data, network, architecture):
 
-	# activity = data.copy()
 	outputs = [data]
 
 	for layer, neuron in enumerate(network):
@@ -1724,6 +1430,7 @@ def filterDuplicates(population):
 	return unique
 
 
+# edit
 def rouletteWheelSelection(generation, chromosome_length = 1):
 
 	if (all((member["fitness"] == 0) for member in generation) or
@@ -1771,7 +1478,7 @@ def rouletteWheelSelection(generation, chromosome_length = 1):
 
 	return table
 
-
+# remove
 def splitLine(participants):
 
 	line, initial = [], 0
@@ -1792,7 +1499,7 @@ def splitLine(participants):
 
 	return line
 
-
+# remove
 def proportionalSelection(generation, chromosome_length = 1):
 
 	if (all((member["fitness"] == 0) for member in generation) or
@@ -1813,7 +1520,7 @@ def proportionalSelection(generation, chromosome_length = 1):
 
 	return table
 
-
+# remove
 def fillBag(participants):
 
 	if any((member["fitness"] < 0) for member in participants):
@@ -1841,7 +1548,7 @@ def fillBag(participants):
 	random.shuffle(bag)
 	return bag
 
-
+# remove
 def offsetFitness(participants):
 
 	minimum = min(participants, key = lambda data: data["fitness"])
@@ -1856,7 +1563,7 @@ def offsetFitness(participants):
 
 	return participants
 
-
+# remove
 def normalizeFitness(participants):
 
 	minimum = min(participants, key = lambda data: data["fitness"])
@@ -1872,7 +1579,7 @@ def normalizeFitness(participants):
 
 	return participants
 
-
+# remove
 def invertFitness(participants):
 
 	minimum = min(participants, key = lambda data: data["fitness"])
