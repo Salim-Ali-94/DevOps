@@ -1,7 +1,7 @@
 import random
-import networkx as nx
-import matplotlib.pyplot as plt
 import uuid
+import matplotlib.pyplot as plt
+import networkx as nx
 import utility
 from node import Node
 from branch import Branch
@@ -86,13 +86,13 @@ class Network:
 		if (self.architecture["minimum_weight"] > self.architecture["maximum_weight"]):
 
 			maximum = self.architecture["minimum_weight"]
-			self.architecture["minimum_weight"] = architecture["maximum_weight"]
+			self.architecture["minimum_weight"] = self.architecture["maximum_weight"]
 			self.architecture["maximum_weight"] = maximum
 
 		if (self.architecture["minimum_layers"] > self.architecture["maximum_layers"]):
 
 			maximum = self.architecture["minimum_layers"]
-			self.architecture["minimum_layers"] = architecture["maximum_layers"]
+			self.architecture["minimum_layers"] = self.architecture["maximum_layers"]
 			self.architecture["maximum_layers"] = maximum
 
 		if (self.architecture["maximum_neurons"] < self.architecture["minimum_neurons"]):
@@ -299,8 +299,8 @@ class Network:
 		nx.draw_networkx_nodes(canvas,
 							   positions,
 							   nodelist = styling.keys(),
-							   node_size = [styling[key]["size"] for key, value in styling.items()],
-							   node_color = [styling[key]["color"] for key, value in styling.items()]).set_zorder(10)
+							   node_size = [value["size"] for key, value in styling.items()],
+							   node_color = [value["color"] for key, value in styling.items()]).set_zorder(10)
 
 		for key, value in positions.items():
 

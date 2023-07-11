@@ -691,7 +691,7 @@ def modifyGenome(genome, threshold = 0.25, recurrent = False):
 		size = sum(len(gene) for gene in genome)
 		cascade = tuple()
 
-		while (len(cacade) < size):
+		while (len(cascade) < size):
 
 			if (random.random() < threshold):
 
@@ -754,7 +754,7 @@ def encodeNetwork(network, architecture, topology, history = None, initialize = 
 	branch = tuple()
 	genome = []
 
-	for matrix in network:
+	for index, matrix in enumerate(network):
 
 		for row in range(matrix.shape[0]):
 
@@ -787,7 +787,7 @@ def populateLUT(genome):
 
 	history = []
 
-	for index, matrix in enumerate(genome):
+	for matrix in genome:
 
 		for weight in matrix:
 

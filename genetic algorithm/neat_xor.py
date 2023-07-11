@@ -121,13 +121,20 @@ if __name__ == "__main__":
 	# for weight in range(len(network)):
 
 		# print(matrix.shape)
-		print(network[weight].shape)
+
+		# print(network[weight].shape)
+		print(_.shape)
 
 		# for row in range(matrix.shape[0]):
-		for row in range(network[weight].shape[0]):
+
+		# for row in range(network[weight].shape[0]):
+		for row in range(_.shape[0]):
 
 			# for column in range(len(matrix[row])):
-			for column, _ in enumerate(network[weight][row]):
+
+			# for column, _ in enumerate(network[weight][row]):
+			for column, _ in enumerate(_[row]):
+
 			# for column in range(len(network[weight][row])):
 
 				print()
