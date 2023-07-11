@@ -7,7 +7,7 @@ if __name__ == "__main__":
 
 	x = [0.2, -0.5, 0.8]
 
-	structure = { "output_neurons": 1,
+	structure = { "output_neurons": 2,
 				  "maximum_layers": 10,
 				  "minimum_layers": 1,
 				  "maximum_weight": 2,

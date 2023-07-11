@@ -298,9 +298,9 @@ class Network:
 
 							lines = { "arrowstyle": "-",
 									  "color": "#9cf168" if (link.branch_type == "bias") else "#ac05f7",
-									  "connectionstyle": f"arc3,rad={0.05 if link.skip else 0}",
+									  "connectionstyle": f"arc3,rad={ -0.08 if (link.skip and (positions[link.output_node][1] < -height / 2)) else 0.08 if (link.skip and (positions[link.output_node][1] >= -height / 2)) else 0 }",
 									  "linestyle": "--" if link.skip else "-",
-									  "alpha": 0.6 if link.skip else 1,
+									  "alpha": 0.4 if link.skip else 1,
 									  "linewidth": 0.5 if ((2*abs(link.weight) / maximum) < 0.5) else 2*abs(link.weight) / maximum,
 									  "zorder": 1 }
 
