@@ -16,7 +16,7 @@ pub fn aesKeyGenerator(mut key_length: i32) -> (String, i32) {
 		key_length = 192;
 		rounds = 12;
 
-	} else if key_length >= 256 {
+	} else if key_length > 192 {
 
 		key_length = 256;
 		rounds = 14;
