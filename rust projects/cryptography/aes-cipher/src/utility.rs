@@ -1,10 +1,8 @@
 #![allow(non_snake_case)]
 use rand::Rng;
-use num_bigint::BigUint;
-use std::str::FromStr;
 
 
-pub fn aesKeyGenerator(mut key_length: i32) -> (BigUint, i32) {
+pub fn aesKeyGenerator(mut key_length: i16) -> (String, Vec<String>, i8) {
 
 	let mut rng = rand::thread_rng();
 	let mut key = if rng.gen_range(0.0..1.0) < 0.5 { "1".to_owned() } else { "0".to_owned() };
@@ -41,7 +39,8 @@ pub fn aesKeyGenerator(mut key_length: i32) -> (BigUint, i32) {
         
 	}
 
-	return (BigUint::from_str(&shuffleBits(key)).unwrap(), rounds);
+	let hex = partitionBits(key.clone(), (key_length / 16).try_into().unwrap());
+	return (shuffleBits(key), hex, rounds);
 
 }
 
@@ -74,5 +73,27 @@ fn shuffleBits(bits: String) -> String {
 	}
 
 	return word;
+
+}
+
+fn partitionBits(bits: String, block: i8) -> Vec<String> {
+
+	let mut sections = vec![];
+	let mut buffer = String::new();
+
+	for bit in bits.chars() {
+
+		buffer.push_str(&bit.to_string());
+
+		if buffer.len() == block as usize {
+
+			sections.push(format!("{:0width$x}", u32::from_str_radix(&buffer, 2).unwrap(), width = block as usize / 4));
+			buffer.clear();
+
+		}
+
+	}
+
+	return sections;
 
 }

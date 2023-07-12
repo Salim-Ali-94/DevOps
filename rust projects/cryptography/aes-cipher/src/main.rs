@@ -3,10 +3,9 @@ mod utility;
 
 fn main() {
 
-    utility::aesKeyGenerator(-1);
-    utility::aesKeyGenerator(150);
-    let (x, y) = utility::aesKeyGenerator(999);
-    println!("the aes key is = {}", x);
-    println!("number of rounds = {}", y);
+    let (x, y, z) = utility::aesKeyGenerator(999);
+    println!("the aes key is = {} / {}", x, x.len());
+    println!("hex key is = {:?}", y);
+    println!("number of rounds = {}", z);
 
 }
