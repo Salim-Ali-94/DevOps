@@ -39,8 +39,9 @@ pub fn aesKeyGenerator(mut key_length: i16) -> (String, Vec<String>, i8) {
         
 	}
 
+	key = shuffleBits(key);
 	let hex = partitionBits(key.clone(), (key_length / 16).try_into().unwrap());
-	return (shuffleBits(key), hex, rounds);
+	return (key, hex, rounds);
 
 }
 
