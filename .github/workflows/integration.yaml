@@ -36,6 +36,20 @@ jobs:
 
       #     node-version: 18.15.0
 
+
+
+
+      # - name: Set up Rust for remote server
+      #   uses: actions-rs/toolchain@v1
+
+      #   with:
+
+      #     toolchain: stable
+      #     profile: minimal
+
+
+
+
       - name: Install dependencies required for GitHub checks
         run: pip install pylint pyppeteer numpy matplotlib networkx
 
@@ -75,6 +89,15 @@ jobs:
       #     echo "  }" >> .eslintrc.js
       #     echo "};" >> .eslintrc.js
 
+
+
+
+      # - name: Install Rust dependencies
+      #   run: cargo fetch
+
+
+
+
       - name: Run code lint checks for genetic algorithm directory
         run: pylint "genetic algorithm/**/*.py"
 
@@ -95,6 +118,15 @@ jobs:
         
       #     cd "kubernetes/todo list/ui"
       #     eslint --ext .js,.jsx .
+
+
+
+
+      # - name: Run Rust linter
+      #   run: cargo clippy --all --all-features -- -D warnings
+
+
+
 
   testing:
 
