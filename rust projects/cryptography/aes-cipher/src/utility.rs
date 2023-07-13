@@ -5,7 +5,7 @@ use rand::Rng;
 pub fn aesKeyGenerator(mut key_length: i16) -> (String, Vec<String>, i8) {
 
 	let mut rng = rand::thread_rng();
-	let mut key = if rng.gen_range(0.0..1.0) < 0.5 { "1".to_owned() } else { "0".to_owned() };
+	let mut key = if rng.gen_range(0.0..1.0) < 0.5 { "1".to_owned() } else { "0".to_string() };
 	let rounds;
 
 	if key_length <= 128 {
@@ -80,27 +80,11 @@ fn shuffleBits(bits: String) -> String {
 fn partitionBits(bits: String, block: i8) -> Vec<String> {
 
 	let mut sections = vec![];
-	// let mut buffer = String::new();
 
-	// for bit in bits.chars() {
-
-	// 	buffer.push_str(&bit.to_string());
-
-	// 	if buffer.len() == block as usize {
-
-	// 		sections.push(format!("{:0width$x}", u32::from_str_radix(&buffer, 2).unwrap(), width = block as usize / 4));
-	// 		buffer.clear();
-
-	// 	}
-
-	// }
-
-	// for word in (0..bits.len()).step_by(block as usize) {
-	for word in 0..16 {
+	for word in (0..bits.len()).step_by(block as usize) {
 
 		sections.push(format!("{:0width$x}",
-							  // u32::from_str_radix(&bits[word..word + block as usize], 2).unwrap(),
-							  u32::from_str_radix(&bits[word*block as usize..(word + 1)*block as usize], 2).unwrap(),
+							  u32::from_str_radix(&bits[word..word + block as usize], 2).unwrap(),
 							  width = block as usize / 4));
 
 	}
