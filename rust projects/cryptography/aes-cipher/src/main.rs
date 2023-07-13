@@ -1,4 +1,5 @@
 mod utility;
+mod constants;
 
 
 fn main() {
@@ -7,5 +8,6 @@ fn main() {
     println!("the aes key is = {} / {}", x, x.len());
     println!("hex key is = {:?}", y);
     println!("number of rounds = {}", z);
+    println!("s-box @(8, 9) = {:?}", constants::sBox("90", "08"));
 
 }

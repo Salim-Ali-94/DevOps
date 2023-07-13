@@ -93,7 +93,8 @@ jobs:
 
 
       - name: Install Rust dependencies
-        run: cargo "./rust projects/cryptography/aes-cipher" fetch
+        # run: cargo "./rust projects/cryptography/aes-cipher" fetch
+        run: cd "./rust projects/cryptography/aes-cipher" && cargo fetch
 
 
 
