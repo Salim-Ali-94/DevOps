@@ -80,18 +80,28 @@ fn shuffleBits(bits: String) -> String {
 fn partitionBits(bits: String, block: i8) -> Vec<String> {
 
 	let mut sections = vec![];
-	let mut buffer = String::new();
+	// let mut buffer = String::new();
 
-	for bit in bits.chars() {
+	// for bit in bits.chars() {
 
-		buffer.push_str(&bit.to_string());
+	// 	buffer.push_str(&bit.to_string());
 
-		if buffer.len() == block as usize {
+	// 	if buffer.len() == block as usize {
 
-			sections.push(format!("{:0width$x}", u32::from_str_radix(&buffer, 2).unwrap(), width = block as usize / 4));
-			buffer.clear();
+	// 		sections.push(format!("{:0width$x}", u32::from_str_radix(&buffer, 2).unwrap(), width = block as usize / 4));
+	// 		buffer.clear();
 
-		}
+	// 	}
+
+	// }
+
+	// for word in (0..bits.len()).step_by(block as usize) {
+	for word in 0..16 {
+
+		sections.push(format!("{:0width$x}",
+							  // u32::from_str_radix(&bits[word..word + block as usize], 2).unwrap(),
+							  u32::from_str_radix(&bits[word*block as usize..(word + 1)*block as usize], 2).unwrap(),
+							  width = block as usize / 4));
 
 	}
 
