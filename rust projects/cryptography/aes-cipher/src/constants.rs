@@ -48,24 +48,55 @@ pub fn inverseSubstitution<'a>(row: &'a str, column: &'a str) -> &'a str {
 
 }
 
-pub fn roundConstants() -> String {
+pub fn roundConstants(round: i8) -> Vec<String> {
 
+	let roundTable = HashMap::from([(1, vec!["01", "00", "00", "00"]),
+									(2, vec!["02", "00", "00", "00"]),
+									(3, vec!["04", "00", "00", "00"]),
+									(4, vec!["08", "00", "00", "00"]),
+									(5, vec!["10", "00", "00", "00"]),
+									(6, vec!["20", "00", "00", "00"]),
+									(7, vec!["40", "00", "00", "00"]),
+									(8, vec!["80", "00", "00", "00"]),
+									(9, vec!["1B", "00", "00", "00"]),
+									(10, vec!["36", "00", "00", "00"]),
+									(11, vec!["6C", "00", "00", "00"]),
+									(12, vec!["D8", "00", "00", "00"]),
+									(13, vec!["AB", "00", "00", "00"]),
+									(14, vec!["4D", "00", "00", "00"])]);
+
+	return roundTable.get(&round)
+					 .cloned()
+					 .unwrap_or_else(|| panic!("ERROR: INVALID INPUT VALUE"))
+					 .iter()
+					 .map(|&character| character.to_string())
+					 .collect();
 
 }
 
 // use lazy_static::lazy_static;
 
 // lazy_static! {
-//     static ref MAP: HashMap<(&'static str, &'static str), Vec<&'static str>> = {
-//         // let mut map = HashMap::new();
-//         // map.insert(("1", "0"), vec!["one"]);
-//         // map.insert(("2", "0"), vec!["two", "three"]);
-//         // map.insert(("3", "0"), vec!["four", "five", "six"]);
-//         // map
-//         HashMap::from([
-//             (("1", "0"), vec!["one"]),
-//             (("2", "0"), vec!["two", "three"]),
-//             (("3", "0"), vec!["four", "five", "six"]),
-//         ]);
+//     pub static ref inverseSubstitution: HashMap<(&'static str, &'static str), Vec<&'static str>> = {
+//         let mut map = HashMap::new();
+//         map.insert(("1", "0"), vec!["one"]);
+//         map.insert(("2", "0"), vec!["two", "three"]);
+//         map.insert(("3", "0"), vec!["four", "five", "six"]);
+//         map
+//         // HashMap::from([
+//         //     (("1", "0"), vec!["one"]),
+//         //     (("2", "0"), vec!["two", "three"]),
+//         //     (("3", "0"), vec!["four", "five", "six"]),
+//         // ]);
 //     };
 // }
+
+// // lazy_static! {
+// //     pub static ref inverseSubstitution: HashMap<(&'static str, &'static str), Vec<&'static str>> = {
+// //         HashMap::from([
+// //             (("1", "0"), vec!["one"]),
+// //             (("2", "0"), vec!["two", "three"]),
+// //             (("3", "0"), vec!["four", "five", "six"]),
+// //         ])
+// //     };
+// // }
