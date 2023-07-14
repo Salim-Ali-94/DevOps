@@ -92,3 +92,17 @@ fn partitionBits(bits: String) -> Vec<String> {
 	return sections;
 
 }
+
+pub fn stackBytes(blocks: Vec<String>) -> Vec<Vec<String>> {
+
+	let mut matrix = vec![];
+
+	for block in (0..blocks.len()).step_by(4) {
+
+		matrix.push(blocks[block..block + 4].to_vec());
+
+	}
+
+	return matrix;
+
+}

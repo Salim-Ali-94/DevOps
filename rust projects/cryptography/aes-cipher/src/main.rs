@@ -10,5 +10,6 @@ fn main() {
     println!("number of rounds = {}", z);
     println!("s-box @(8, 9) = {:?}", constants::sBox("90", "08"));
     println!("i-s_box @(8, 9) = {:?}", constants::inverseSBox("90", "08"));
+    println!("stacked hex key = {:?}", utility::stackBytes(y));
 
 }
