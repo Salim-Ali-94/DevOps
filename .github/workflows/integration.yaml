@@ -124,7 +124,8 @@ jobs:
 
 
       - name: Run Rust linter
-        run: cargo clippy --all --all-features -- -D warnings
+        # run: cargo clippy --all --all-features -- -D warnings
+        run: cd "./rust projects/cryptography/aes-cipher" && cargo clippy --all --all-features -- -D warnings
 
 
 

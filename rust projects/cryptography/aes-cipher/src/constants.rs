@@ -25,7 +25,7 @@ pub fn sBox<'a>(row: &'a str, column: &'a str) -> &'a str {
 
 }
 
-pub fn inverseSBox<'a>(row: &'a str, column: &'a str) -> &'a str {
+pub fn inverseSubstitution<'a>(row: &'a str, column: &'a str) -> &'a str {
 
 	let aes_substitution = HashMap::from([(("00", "00"), "52"), (("00", "01"), "09"), (("00", "02"), "6a"), (("00", "03"), "d5"), (("00", "04"), "30"), (("00", "05"), "36"), (("00", "06"), "a5"), (("00", "07"), "38"), (("00", "08"), "bf"), (("00", "09"), "40"), (("00", "0a"), "a3"), (("00", "0b"), "9e"), (("00", "0c"), "81"), (("00", "0d"), "f3"), (("00", "0e"), "d7"), (("00", "0f"), "fb"),
 										  (("10", "00"), "7c"), (("10", "01"), "e3"), (("10", "02"), "39"), (("10", "03"), "82"), (("10", "04"), "9b"), (("10", "05"), "2f"), (("10", "06"), "ff"), (("10", "07"), "87"), (("10", "08"), "34"), (("10", "09"), "8e"), (("10", "0a"), "43"), (("10", "0b"), "44"), (("10", "0c"), "c4"), (("10", "0d"), "de"), (("10", "0e"), "e9"), (("10", "0f"), "cb"),
@@ -47,3 +47,25 @@ pub fn inverseSBox<'a>(row: &'a str, column: &'a str) -> &'a str {
 	return aes_substitution.get(&(row, column)).unwrap();
 
 }
+
+pub fn roundConstants() -> String {
+
+
+}
+
+// use lazy_static::lazy_static;
+
+// lazy_static! {
+//     static ref MAP: HashMap<(&'static str, &'static str), Vec<&'static str>> = {
+//         // let mut map = HashMap::new();
+//         // map.insert(("1", "0"), vec!["one"]);
+//         // map.insert(("2", "0"), vec!["two", "three"]);
+//         // map.insert(("3", "0"), vec!["four", "five", "six"]);
+//         // map
+//         HashMap::from([
+//             (("1", "0"), vec!["one"]),
+//             (("2", "0"), vec!["two", "three"]),
+//             (("3", "0"), vec!["four", "five", "six"]),
+//         ]);
+//     };
+// }
