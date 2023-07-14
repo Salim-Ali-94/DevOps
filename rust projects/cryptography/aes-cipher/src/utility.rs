@@ -40,7 +40,7 @@ pub fn aesKeyGenerator(mut key_length: i16) -> (String, Vec<String>, i8) {
 	}
 
 	key = shuffleBits(key);
-	let hex = partitionBits(key.clone(), (key_length / 16).try_into().unwrap());
+	let hex = partitionBits(key.clone());
 	return (key, hex, rounds);
 
 }
@@ -77,15 +77,15 @@ fn shuffleBits(bits: String) -> String {
 
 }
 
-fn partitionBits(bits: String, block: i8) -> Vec<String> {
+fn partitionBits(bits: String) -> Vec<String> {
 
 	let mut sections = vec![];
 
-	for word in (0..bits.len()).step_by(block as usize) {
+	for byte in (0..bits.len()).step_by(8) {
 
 		sections.push(format!("{:0width$x}",
-							  u32::from_str_radix(&bits[word..word + block as usize], 2).unwrap(),
-							  width = block as usize / 4));
+							  u32::from_str_radix(&bits[byte..byte + 8], 2).unwrap(),
+							  width = 2));
 
 	}
 
