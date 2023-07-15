@@ -1,6 +1,6 @@
 #![allow(non_snake_case)]
 use rand::Rng;
-// mod constants;
+pub mod constants;
 
 
 pub fn aesKeyGenerator(mut key_length: i16) -> (String, Vec<String>, i8) {
@@ -205,6 +205,7 @@ pub fn partitionMessage(mut message: String, chunk: i16) -> Vec<Vec<Vec<String>>
 pub fn shuffleVector(mut word: Vec<String>) -> Vec<String> {
 
 	word = leftShift(word);
+	word = forwardSubstitution(word);
 	return word;
 
 }
@@ -213,6 +214,29 @@ pub fn leftShift(mut word: Vec<String>) -> Vec<String> {
 
 	let mut buffer = word.remove(0);
 	word.push(buffer);
+	return word;
+
+}
+
+pub fn formatIndex(character: String) -> (String, String) {
+
+	let mut row = character.chars().nth(0).unwrap().to_string();
+	let mut column = character.chars().nth(1).unwrap().to_string();
+	row.push_str("0");
+	column = "0".to_owned() + &column;
+	return (row, column);
+
+}
+
+pub fn forwardSubstitution(mut word: Vec<String>) -> Vec<String> {
+
+	for character in word.iter_mut() {
+
+		let (row, column) = formatIndex(character.clone());
+		*character = constants::sBox(&row, &column).to_string();
+
+	}
+
 	return word;
 
 }
