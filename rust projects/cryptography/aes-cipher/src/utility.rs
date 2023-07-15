@@ -97,12 +97,55 @@ pub fn stackBytes(blocks: Vec<String>) -> Vec<Vec<String>> {
 
 	let mut matrix = vec![];
 
-	for block in (0..blocks.len()).step_by(4) {
+	for block in blocks.chunks(4) {
 
-		matrix.push(blocks[block..block + 4].to_vec());
+		matrix.push(block.to_vec());
 
 	}
 
 	return matrix;
+
+}
+
+pub fn encodeDocument(message: String) -> (String, String) {
+
+	let mut binary = String::new();
+	let mut hex = String::new();
+
+	for character in message.chars() {
+
+		binary.push_str(&format!("{:08b}", character as u8));
+		hex.push_str(&format!("{:02x}", character as u32));
+
+	}
+
+	return (binary, hex);
+
+}
+
+pub fn partitionDocument(mut message: String, chunk: i16) -> Vec<Vec<String>> {
+
+	let mut document = vec![];
+	let mut block = String::new();
+
+	while message.len() % chunk as usize != 0 {
+
+		message.push_str(&format!("{:08b}", b'~'));
+
+	}
+
+	for word in (0..message.len()).step_by(chunk as usize) {
+
+		block = message[word..word + chunk as usize].to_string();
+
+		for character in (0..chunk as usize).step_by(8) {
+		
+			document.push(vec![block[character..character + 8].to_string()]);
+
+		}
+
+	}
+
+	return document;
 
 }
