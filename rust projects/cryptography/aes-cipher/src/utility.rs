@@ -233,7 +233,7 @@ pub fn forwardSubstitution(mut word: Vec<String>) -> Vec<String> {
 	for character in word.iter_mut() {
 
 		let (row, column) = formatIndex(character.clone());
-		*character = constants::sBox(&row, &column).to_string();
+		*character = constants::sBox.get(&(&row, &column)).unwrap().to_string();
 
 	}
 
