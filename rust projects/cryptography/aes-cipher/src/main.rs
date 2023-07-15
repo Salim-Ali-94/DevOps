@@ -16,8 +16,13 @@ fn main() {
     let (c, d) = utility::encodeDocument("Lift off! bro what, huh yeah, just beat it!????".to_string());
     println!("'{}' in binary = {} and in hex = {}", "hello ", a, b);
     println!("'{}' in binary = {} / {} and in hex = {}", "Lift off! bro what, huh yeah, just beat it!????", c, c.len(), d);
-    println!("grouped msg = {:?}", utility::partitionDocument(c, x.len().try_into().unwrap()));
+    let e = utility::partitionDocument(c, x.len().try_into().unwrap());
+    println!("grouped msg = {:?}", e);
+    // println!("grouped msg = {:?}", utility::partitionDocument(c, x.len().try_into().unwrap()));
     println!("grouped hex msg = {:?}", utility::partitionMessage(d, x.len().try_into().unwrap()));
-    // println!("shuffled first word = {:?}", utility::shuffleVector(c[0]));
+    // println!("shuffled first word = {:?}", utility::shuffleVector(utility::partitionDocument(c, x.len().try_into().unwrap())[0][0].clone()));
+    println!("shuffled first word = {:?}", utility::shuffleVector(e[0][0].clone()));
+    // println!("shuffled first word = {:?}", utility::partitionDocument(c, x.len().try_into().unwrap())[0]);
+    // println!("shuffled first word deeper = {:?}", utility::partitionDocument(c, x.len().try_into().unwrap())[0][0]);
 
 }
