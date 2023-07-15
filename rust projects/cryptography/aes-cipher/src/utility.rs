@@ -204,13 +204,19 @@ pub fn partitionMessage(mut message: String, chunk: i16) -> Vec<Vec<Vec<String>>
 
 pub fn shuffleVector(mut word: Vec<String>) -> Vec<String> {
 
-	let index = word.len() - 1;
-	let mut buffer = word[0].clone();
-	word[0] = word[index].clone();
-	word[index] = buffer;
+	word = leftShift(word);
 	return word;
 
 }
+
+pub fn leftShift(mut word: Vec<String>) -> Vec<String> {
+
+	let mut buffer = word.remove(0);
+	word.push(buffer);
+	return word;
+
+}
+
 
 // pub fn encryptDocument(document: Vec<Vec<String>>) -> String {
 
