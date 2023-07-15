@@ -1,5 +1,6 @@
 #![allow(non_snake_case)]
 use rand::Rng;
+// mod constants;
 
 
 pub fn aesKeyGenerator(mut key_length: i16) -> (String, Vec<String>, i8) {
@@ -123,9 +124,11 @@ pub fn encodeDocument(message: String) -> (String, String) {
 
 }
 
-pub fn partitionDocument(mut message: String, chunk: i16) -> Vec<Vec<String>> {
+pub fn partitionDocument(mut message: String, chunk: i16) -> Vec<Vec<Vec<String>>> {
 
 	let mut document = vec![];
+	let mut buffer = vec![];
+	let mut column = vec![];
 	let mut block = String::new();
 
 	while message.len() % chunk as usize != 0 {
@@ -139,13 +142,77 @@ pub fn partitionDocument(mut message: String, chunk: i16) -> Vec<Vec<String>> {
 		block = message[word..word + chunk as usize].to_string();
 
 		for character in (0..chunk as usize).step_by(8) {
-		
-			document.push(vec![block[character..character + 8].to_string()]);
+
+			column.push(block[character..character + 8].to_string());
+
+			if column.len() == 4 {
+
+				buffer.push(column.clone());
+				column.clear();
+
+			}
 
 		}
+
+		document.push(buffer.clone());
+		buffer.clear();
 
 	}
 
 	return document;
 
 }
+
+pub fn partitionMessage(mut message: String, chunk: i16) -> Vec<Vec<Vec<String>>> {
+
+	let mut document = vec![];
+	let mut buffer = vec![];
+	let mut column = vec![];
+	let mut block = String::new();
+
+	while message.len() % (chunk as usize) / 4 != 0 {
+
+		message.push_str(&format!("{:02x}", b'~'));
+
+	}
+
+	for word in (0..message.len()).step_by((chunk as usize) / 4) {
+
+		block = message[word..word + (chunk as usize) / 4].to_string();
+
+		for character in (0..(chunk as usize) / 4).step_by(8 / 4) {
+		
+			column.push(block[character..character + 8 / 4].to_string());
+
+			if column.len() == 4 {
+
+				buffer.push(column.clone());
+				column.clear();
+
+			}
+
+		}
+
+		document.push(buffer.clone());
+		buffer.clear();
+
+	}
+
+	return document;
+
+}
+
+// pub fn shuffleVector(mut word: Vec<String>) -> Vec<String> {
+
+// 	let mut buffer = word[0];
+// 	word[0] = word[word.len() - 1];
+// 	word[word.len() - 1] = buffer;
+// 	return word;
+
+// }
+
+// pub fn encryptDocument(document: Vec<Vec<String>>) -> String {
+
+// 	return "document";
+
+// }

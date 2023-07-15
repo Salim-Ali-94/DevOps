@@ -74,6 +74,10 @@ pub fn roundConstants(round: i8) -> Vec<String> {
 
 }
 
+
+    // let hex_string = hex.to_owned();
+    // let decimal = u8::from_str_radix(&hex_string, 16).unwrap();
+
 // use lazy_static::lazy_static;
 
 // lazy_static! {
