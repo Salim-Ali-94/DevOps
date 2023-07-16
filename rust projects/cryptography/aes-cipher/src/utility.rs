@@ -3,18 +3,19 @@ use rand::Rng;
 pub mod constants;
 
 
-pub fn aesKeyGenerator(mut key_length: i16) -> (String, Vec<String>, i8) {
+pub fn aesKeyGenerator(aes_standard: i16) -> (String, Vec<Vec<String>>, i8) {
 
 	let mut rng = rand::thread_rng();
 	let mut key = if rng.gen_range(0.0..1.0) < 0.5 { "1".to_owned() } else { "0".to_string() };
 	let rounds;
+	let key_length;
 
-	if key_length <= 128 {
+	if aes_standard <= 128 {
 
 		key_length = 128;
 		rounds = 10;
 
-	} else if key_length > 128 && key_length <= 192 {
+	} else if aes_standard > 128 && aes_standard <= 192 {
 
 		key_length = 192;
 		rounds = 12;
@@ -41,12 +42,72 @@ pub fn aesKeyGenerator(mut key_length: i16) -> (String, Vec<String>, i8) {
 	}
 
 	key = shuffleBits(key);
-	let hex = partitionBits(key.clone());
+	let hex = stackBytes(key.clone());
 	return (key, hex, rounds);
 
 }
 
-pub fn shuffleBits(bits: String) -> String {
+pub fn spliceDocument(file: String, chunk: i16) -> (String, Vec<Vec<Vec<String>>>) {
+
+	let mut message = encodeDocument(file);
+	let mut document = vec![];
+	let mut buffer = vec![];
+	let mut column = vec![];
+	let mut block;
+
+	while message.len() % (chunk as usize / 4) != 0 {
+
+		message.push_str(&format!("{:02x}", b'~'));
+
+	}
+
+	for word in (0..message.len()).step_by((chunk as usize) / 4) {
+
+		block = message[word..word + (chunk as usize) / 4].to_string();
+
+		for character in (0..(chunk as usize) / 4).step_by(8 / 4) {
+		
+			column.push(block[character..character + 8 / 4].to_string());
+
+			if column.len() == 4 {
+
+				buffer.push(column.clone());
+				column.clear();
+
+			}
+
+		}
+
+		document.push(buffer.clone());
+		buffer.clear();
+
+	}
+
+	return (message, document);
+
+}
+
+// pub fn scrambleDocument(document: Vec<Vec<Vec<String>>>, key: Vec<Vec<String>>) -> Vec<Vec<Vec<String>>> {
+pub fn scrambleDocument(mut document: Vec<Vec<Vec<String>>>, key: Vec<Vec<String>>, rounds: i8) {
+
+	let mut lock = key.clone();
+
+	for block in document.iter_mut() {
+
+		*block = XOR(block.to_vec(), key.clone());
+
+		for round in 1..=rounds {
+
+			// let mut lock = shuffleVector(key[0][0].clone());
+			lock = scheduleKey(lock, round);
+
+		}
+
+	}
+
+}
+
+fn shuffleBits(bits: String) -> String {
 
 	let mut rng = rand::thread_rng();
 	let mut word = String::from(&bits);
@@ -78,7 +139,7 @@ pub fn shuffleBits(bits: String) -> String {
 
 }
 
-pub fn partitionBits(bits: String) -> Vec<String> {
+fn partitionBits(bits: String) -> Vec<String> {
 
 	let mut sections = vec![];
 
@@ -94,8 +155,9 @@ pub fn partitionBits(bits: String) -> Vec<String> {
 
 }
 
-pub fn stackBytes(blocks: Vec<String>) -> Vec<Vec<String>> {
+fn stackBytes(bits: String) -> Vec<Vec<String>> {
 
+	let blocks = partitionBits(bits);
 	let mut matrix = vec![];
 
 	for block in blocks.chunks(4) {
@@ -108,103 +170,23 @@ pub fn stackBytes(blocks: Vec<String>) -> Vec<Vec<String>> {
 
 }
 
-pub fn encodeDocument(message: String) -> (String, String) {
+fn encodeDocument(message: String) -> String {
 
-	let mut binary = String::new();
 	let mut hex = String::new();
 
 	for character in message.chars() {
 
-		binary.push_str(&format!("{:08b}", character as u8));
 		hex.push_str(&format!("{:02x}", character as u32));
 
 	}
 
-	return (binary, hex);
+	return hex;
 
 }
 
-pub fn partitionDocument(mut message: String, chunk: i16) -> Vec<Vec<Vec<String>>> {
+fn shuffleVector(mut word: Vec<String>, round: i8) -> Vec<String> {
 
-	let mut document = vec![];
-	let mut buffer = vec![];
-	let mut column = vec![];
-	let mut block;
-
-	while message.len() % chunk as usize != 0 {
-
-		message.push_str(&format!("{:08b}", b'~'));
-
-	}
-
-	for word in (0..message.len()).step_by(chunk as usize) {
-
-		block = message[word..word + chunk as usize].to_string();
-
-		for character in (0..chunk as usize).step_by(8) {
-
-			column.push(block[character..character + 8].to_string());
-
-			if column.len() == 4 {
-
-				buffer.push(column.clone());
-				column.clear();
-
-			}
-
-		}
-
-		document.push(buffer.clone());
-		buffer.clear();
-
-	}
-
-	return document;
-
-}
-
-pub fn partitionMessage(mut message: String, chunk: i16) -> Vec<Vec<Vec<String>>> {
-
-	let mut document = vec![];
-	let mut buffer = vec![];
-	let mut column = vec![];
-	let mut block;
-
-	while message.len() % (chunk as usize) / 4 != 0 {
-
-		message.push_str(&format!("{:02x}", b'~'));
-
-	}
-
-	for word in (0..message.len()).step_by((chunk as usize) / 4) {
-
-		block = message[word..word + (chunk as usize) / 4].to_string();
-
-		for character in (0..(chunk as usize) / 4).step_by(8 / 4) {
-		
-			column.push(block[character..character + 8 / 4].to_string());
-
-			if column.len() == 4 {
-
-				buffer.push(column.clone());
-				column.clear();
-
-			}
-
-		}
-
-		document.push(buffer.clone());
-		buffer.clear();
-
-	}
-
-	return document;
-
-}
-
-pub fn shuffleVector(mut word: Vec<String>) -> Vec<String> {
-
-	let constant = constants::roundConstants.get(&2).unwrap();
+	let constant = constants::roundConstants.get(&round).unwrap();
 	word = leftShift(word);
 	word = forwardSubstitution(word);
 	word = xor(word, constant.clone());
@@ -243,7 +225,7 @@ pub fn forwardSubstitution(mut word: Vec<String>) -> Vec<String> {
 
 }
 
-pub fn xor(mut word: Vec<String>, constant: Vec<&str>) -> Vec<String> {
+fn xor(mut word: Vec<String>, constant: Vec<&str>) -> Vec<String> {
 
 	let binary = u8::from_str_radix(&word[0], 16).unwrap();
 	let vector = u8::from_str_radix(&constant[0], 16).unwrap();
@@ -253,24 +235,28 @@ pub fn xor(mut word: Vec<String>, constant: Vec<&str>) -> Vec<String> {
 
 }
 
+fn XOR(mut data: Vec<Vec<String>>, lock: Vec<Vec<String>>) -> Vec<Vec<String>> {
 
-// pub fn XOR(mut word: Vec<String>, constant: Vec<&str>) -> Vec<String> {
+	for (row, array) in data.iter_mut().enumerate() {
 
-// 	for (index, character) in word.iter_mut().enumerate() {
+		for (column, character) in array.iter_mut().enumerate() {
 
-// 		let binary = u8::from_str_radix(&character, 16).unwrap();
-// 		let vector = u8::from_str_radix(&constant[index], 16).unwrap();
-// 		let sum = binary ^ vector;
-// 		*character = format!("{:02x}", sum);
+			let binary = u8::from_str_radix(&character.to_string(), 16).unwrap();
+			let vector = u8::from_str_radix(&lock[row][column].to_owned(), 16).unwrap();
+			let sum = binary ^ vector;
+			*character = format!("{:02x}", sum).to_string();
 
-// 	}
+		}
 
-// 	return word;
+	}
 
-// }
+	return data;
 
-// pub fn encryptDocument(document: Vec<Vec<String>>) -> String {
+}
 
-// 	return "document";
+fn scheduleKey(mut key: Vec<Vec<String>>, round: i8) -> Vec<Vec<String>> {
 
-// }
+	*key.last_mut().unwrap() = shuffleVector(key.last().unwrap().clone(), round);
+	return key;
+
+}
