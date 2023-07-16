@@ -98,8 +98,13 @@ pub fn scrambleDocument(mut document: Vec<Vec<Vec<String>>>, key: Vec<Vec<String
 
 		for round in 1..=rounds {
 
-			// let mut lock = shuffleVector(key[0][0].clone());
 			lock = scheduleKey(lock, round);
+
+			// if round != rounds - 1 {
+
+			// 	// mix();
+
+			// }
 
 		}
 
@@ -235,14 +240,14 @@ fn xor(mut word: Vec<String>, constant: Vec<&str>) -> Vec<String> {
 
 }
 
-fn XOR(mut data: Vec<Vec<String>>, lock: Vec<Vec<String>>) -> Vec<Vec<String>> {
+fn XOR(mut data: Vec<Vec<String>>, matrix: Vec<Vec<String>>) -> Vec<Vec<String>> {
 
 	for (row, array) in data.iter_mut().enumerate() {
 
 		for (column, character) in array.iter_mut().enumerate() {
 
 			let binary = u8::from_str_radix(&character.to_string(), 16).unwrap();
-			let vector = u8::from_str_radix(&lock[row][column].to_owned(), 16).unwrap();
+			let vector = u8::from_str_radix(&matrix[row][column].to_owned(), 16).unwrap();
 			let sum = binary ^ vector;
 			*character = format!("{:02x}", sum).to_string();
 
@@ -257,6 +262,37 @@ fn XOR(mut data: Vec<Vec<String>>, lock: Vec<Vec<String>>) -> Vec<Vec<String>> {
 fn scheduleKey(mut key: Vec<Vec<String>>, round: i8) -> Vec<Vec<String>> {
 
 	*key.last_mut().unwrap() = shuffleVector(key.last().unwrap().clone(), round);
-	return key;
+	let mut buffer = vec![];
+	let mut matrix: Vec<Vec<String>> = vec![];
+	let word = key.last().unwrap().clone();
+	let mut vector;
+
+	for (row, array) in key.iter_mut().enumerate() {
+
+		for (column, character) in array.iter_mut().enumerate() {
+
+			let binary = u8::from_str_radix(&character.to_string(), 16).unwrap();
+	
+			if row == 0 {
+
+				vector = u8::from_str_radix(&word[column].to_owned(), 16).unwrap();
+
+			} else {
+
+				vector = u8::from_str_radix(&matrix.last().unwrap().clone()[column].to_owned(), 16).unwrap();
+ 
+			} 
+
+			let sum = binary ^ vector;
+			buffer.push(format!("{:02x}", sum).to_string());
+
+		}
+
+		matrix.push(buffer.clone());
+		buffer.clear();
+
+	}
+
+	return matrix;
 
 }
