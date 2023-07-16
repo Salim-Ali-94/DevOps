@@ -91,14 +91,25 @@ pub fn spliceDocument(file: String, chunk: i16) -> (String, Vec<Vec<Vec<String>>
 pub fn scrambleDocument(mut document: Vec<Vec<Vec<String>>>, key: Vec<Vec<String>>, rounds: i8) {
 
 	let mut lock = key.clone();
+	let mut memory = vec![];
 
-	for block in document.iter_mut() {
+	// for block in document.iter_mut() {
+	for (index, block) in document.iter_mut().enumerate() {
 
 		*block = XOR(block.to_vec(), key.clone());
 
 		for round in 1..=rounds {
 
-			lock = scheduleKey(lock, round);
+			if index == 0 {
+
+				lock = scheduleKey(lock, round);
+				memory.push(lock.clone());
+
+			} else {
+
+				lock = memory[round as usize].clone();
+
+			}
 
 			// if round != rounds - 1 {
 
@@ -260,14 +271,19 @@ fn XOR(mut data: Vec<Vec<String>>, matrix: Vec<Vec<String>>) -> Vec<Vec<String>>
 }
 
 fn scheduleKey(mut key: Vec<Vec<String>>, round: i8) -> Vec<Vec<String>> {
+// fn scheduleKey(key: Vec<Vec<String>>, round: i8) -> Vec<Vec<String>> {
 
 	*key.last_mut().unwrap() = shuffleVector(key.last().unwrap().clone(), round);
+	// let mut lock = key.clone();
+	// let word = shuffleVector(key.last().unwrap().clone(), round);
+	// *lock.last_mut().unwrap() = word;
 	let mut buffer = vec![];
 	let mut matrix: Vec<Vec<String>> = vec![];
 	let word = key.last().unwrap().clone();
 	let mut vector;
 
 	for (row, array) in key.iter_mut().enumerate() {
+	// for (row, array) in lock.iter_mut().enumerate() {
 
 		for (column, character) in array.iter_mut().enumerate() {
 
