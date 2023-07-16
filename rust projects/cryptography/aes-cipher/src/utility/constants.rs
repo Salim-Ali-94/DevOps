@@ -29,10 +29,6 @@ lazy_static! {
 
     };
 
-}
-
-lazy_static! {
-
 	pub static ref inverseSubstitution: HashMap<(&'static str, &'static str), &'static str> = {
 
 		let mut aes = HashMap::new();
@@ -57,10 +53,6 @@ lazy_static! {
 
 	};
 
-}
-
-lazy_static! {
-
 	pub static ref roundConstants: HashMap<i8, Vec<&'static str>> = {
 
 		let mut table = HashMap::new();
@@ -82,14 +74,14 @@ lazy_static! {
 
 	};
 
+	pub static ref mixingMatrix: Vec<Vec<&'static str>> = vec![vec!["02", "03", "01", "01"],
+															   vec!["01", "02", "03", "01"],
+															   vec!["01", "01", "02", "03"],
+															   vec!["03", "01", "01", "02"]];
+
+	pub static ref inverseMatrix: [[String; 4]; 4] = [["0e".to_owned(), "0b".to_string(), "0d".to_owned(), "09".to_string()],
+													  ["09".to_owned(), "0e".to_string(), "0b".to_owned(), "0d".to_string()],
+													  ["0d".to_owned(), "09".to_string(), "0e".to_owned(), "0b".to_string()],
+													  ["0b".to_owned(), "0d".to_string(), "09".to_owned(), "0e".to_string()]];
+
 }
-
-pub static mixingMatrix: [[String; 4]; 4] = vec![vec!["02", "03", "01", "01"],
-												 vec!["01", "02", "03", "01"]
-												 vec!["01", "01", "02", "03"]
-												 vec!["03", "01", "01", "02"]];
-
-pub static inverseMatrix: [[String; 4]; 4] = vec![vec!["0e", "0b", "0d", "09"],
-												  vec!["09", "0e", "0b", "0d"],
-												  vec!["0d", "09", "0e", "0b"],
-												  vec!["0b", "0d", "09", "0e"]];

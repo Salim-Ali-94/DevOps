@@ -23,4 +23,7 @@ fn main() {
     println!("from constant s(90, 08) = {}", utility::constants::sBox.get(&("90", "08")).unwrap());
     println!("from constant i-s(90, 08) = {}", utility::constants::inverseSubstitution.get(&("90", "08")).unwrap());
 
+    println!("from constant mix@2 = {:?}", utility::constants::mixingMatrix[2]);
+    println!("from constant i-mix@2 = {:?}", utility::constants::inverseMatrix[2]);
+
 }
