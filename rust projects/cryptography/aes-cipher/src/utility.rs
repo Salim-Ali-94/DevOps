@@ -105,17 +105,24 @@ pub fn scrambleDocument(mut document: Vec<Vec<Vec<String>>>, key: Vec<Vec<String
 				lock = scheduleKey(lock, round);
 				memory.push(lock.clone());
 
+
 			} else {
 
 				lock = memory[round as usize].clone();
 
 			}
 
+			*block = sTransform(block.to_vec());
+			// *block = shiftRows(block.to_vec(), lock.clone());
+
 			// if round != rounds - 1 {
 
 			// 	// mix();
+				// *block = mixColumns(block.to_vec(), lock.clone());
 
 			// }
+
+			// *block = XOR(block.to_vec(), lock.clone());
 
 		}
 
@@ -210,7 +217,7 @@ fn shuffleVector(mut word: Vec<String>, round: i8) -> Vec<String> {
 
 }
 
-pub fn leftShift(mut word: Vec<String>) -> Vec<String> {
+fn leftShift(mut word: Vec<String>) -> Vec<String> {
 
 	let buffer = word.remove(0);
 	word.push(buffer);
@@ -218,7 +225,7 @@ pub fn leftShift(mut word: Vec<String>) -> Vec<String> {
 
 }
 
-pub fn formatIndex(character: String) -> (String, String) {
+fn formatIndex(character: String) -> (String, String) {
 
 	let mut row = character.chars().nth(0).unwrap().to_string();
 	let mut column = character.chars().nth(1).unwrap().to_string();
@@ -228,7 +235,7 @@ pub fn formatIndex(character: String) -> (String, String) {
 
 }
 
-pub fn forwardSubstitution(mut word: Vec<String>) -> Vec<String> {
+fn forwardSubstitution(mut word: Vec<String>) -> Vec<String> {
 
 	for character in word.iter_mut() {
 
@@ -271,19 +278,14 @@ fn XOR(mut data: Vec<Vec<String>>, matrix: Vec<Vec<String>>) -> Vec<Vec<String>>
 }
 
 fn scheduleKey(mut key: Vec<Vec<String>>, round: i8) -> Vec<Vec<String>> {
-// fn scheduleKey(key: Vec<Vec<String>>, round: i8) -> Vec<Vec<String>> {
 
 	*key.last_mut().unwrap() = shuffleVector(key.last().unwrap().clone(), round);
-	// let mut lock = key.clone();
-	// let word = shuffleVector(key.last().unwrap().clone(), round);
-	// *lock.last_mut().unwrap() = word;
 	let mut buffer = vec![];
 	let mut matrix: Vec<Vec<String>> = vec![];
 	let word = key.last().unwrap().clone();
 	let mut vector;
 
 	for (row, array) in key.iter_mut().enumerate() {
-	// for (row, array) in lock.iter_mut().enumerate() {
 
 		for (column, character) in array.iter_mut().enumerate() {
 
@@ -310,5 +312,22 @@ fn scheduleKey(mut key: Vec<Vec<String>>, round: i8) -> Vec<Vec<String>> {
 	}
 
 	return matrix;
+
+}
+
+fn sTransform(mut block: Vec<Vec<String>>) -> Vec<Vec<String>> {
+
+	for vector in block.iter_mut() {
+
+		for character in vector.iter_mut() {
+
+			let (row, column) = formatIndex(character.clone());
+			*character = constants::sBox.get(&(&row, &column)).unwrap().to_string();
+
+		}
+
+	}
+
+	return block;
 
 }
