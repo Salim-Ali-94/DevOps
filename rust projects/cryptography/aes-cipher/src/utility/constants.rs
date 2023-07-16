@@ -1,4 +1,4 @@
-#![allow(non_snake_case)]
+#![allow(non_upper_case_globals)]
 use std::collections::HashMap;
 use lazy_static::lazy_static;
 
@@ -83,5 +83,13 @@ lazy_static! {
 	};
 
 }
-// let hex_string = hex.to_owned();
-// let decimal = u8::from_str_radix(&hex_string, 16).unwrap();
+
+pub static mixingMatrix: [[String; 4]; 4] = vec![vec!["02", "03", "01", "01"],
+												 vec!["01", "02", "03", "01"]
+												 vec!["01", "01", "02", "03"]
+												 vec!["03", "01", "01", "02"]];
+
+pub static inverseMatrix: [[String; 4]; 4] = vec![vec!["0e", "0b", "0d", "09"],
+												  vec!["09", "0e", "0b", "0d"],
+												  vec!["0d", "09", "0e", "0b"],
+												  vec!["0b", "0d", "09", "0e"]];

@@ -46,7 +46,7 @@ pub fn aesKeyGenerator(mut key_length: i16) -> (String, Vec<String>, i8) {
 
 }
 
-fn shuffleBits(bits: String) -> String {
+pub fn shuffleBits(bits: String) -> String {
 
 	let mut rng = rand::thread_rng();
 	let mut word = String::from(&bits);
@@ -78,7 +78,7 @@ fn shuffleBits(bits: String) -> String {
 
 }
 
-fn partitionBits(bits: String) -> Vec<String> {
+pub fn partitionBits(bits: String) -> Vec<String> {
 
 	let mut sections = vec![];
 
@@ -129,7 +129,7 @@ pub fn partitionDocument(mut message: String, chunk: i16) -> Vec<Vec<Vec<String>
 	let mut document = vec![];
 	let mut buffer = vec![];
 	let mut column = vec![];
-	let mut block = String::new();
+	let mut block;
 
 	while message.len() % chunk as usize != 0 {
 
@@ -168,7 +168,7 @@ pub fn partitionMessage(mut message: String, chunk: i16) -> Vec<Vec<Vec<String>>
 	let mut document = vec![];
 	let mut buffer = vec![];
 	let mut column = vec![];
-	let mut block = String::new();
+	let mut block;
 
 	while message.len() % (chunk as usize) / 4 != 0 {
 
@@ -204,15 +204,17 @@ pub fn partitionMessage(mut message: String, chunk: i16) -> Vec<Vec<Vec<String>>
 
 pub fn shuffleVector(mut word: Vec<String>) -> Vec<String> {
 
+	let constant = constants::roundConstants.get(&2).unwrap();
 	word = leftShift(word);
 	word = forwardSubstitution(word);
+	word = xor(word, constant.clone());
 	return word;
 
 }
 
 pub fn leftShift(mut word: Vec<String>) -> Vec<String> {
 
-	let mut buffer = word.remove(0);
+	let buffer = word.remove(0);
 	word.push(buffer);
 	return word;
 
@@ -241,6 +243,31 @@ pub fn forwardSubstitution(mut word: Vec<String>) -> Vec<String> {
 
 }
 
+pub fn xor(mut word: Vec<String>, constant: Vec<&str>) -> Vec<String> {
+
+	let binary = u8::from_str_radix(&word[0], 16).unwrap();
+	let vector = u8::from_str_radix(&constant[0], 16).unwrap();
+	let sum = binary ^ vector;
+	word[0] = format!("{:02x}", sum);
+	return word;
+
+}
+
+
+// pub fn XOR(mut word: Vec<String>, constant: Vec<&str>) -> Vec<String> {
+
+// 	for (index, character) in word.iter_mut().enumerate() {
+
+// 		let binary = u8::from_str_radix(&character, 16).unwrap();
+// 		let vector = u8::from_str_radix(&constant[index], 16).unwrap();
+// 		let sum = binary ^ vector;
+// 		*character = format!("{:02x}", sum);
+
+// 	}
+
+// 	return word;
+
+// }
 
 // pub fn encryptDocument(document: Vec<Vec<String>>) -> String {
 
