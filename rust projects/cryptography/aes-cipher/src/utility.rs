@@ -112,10 +112,11 @@ pub fn scrambleDocument(mut document: Vec<Vec<Vec<String>>>, key: Vec<Vec<String
 
 			}
 
+			println!("block before s-box = {:?}", block);
 			*block = sTransform(block.to_vec());
+			println!("block after s-box = {:?}", block);
 			println!("block before row-shift = {:?}", block);
 			*block = shiftRows(block.to_vec());
-			// shiftRows(block.to_vec());
 			println!("block after row-shift = {:?}", block);
 
 			// if round != rounds - 1 {
@@ -125,7 +126,8 @@ pub fn scrambleDocument(mut document: Vec<Vec<Vec<String>>>, key: Vec<Vec<String
 
 			// }
 
-			// *block = XOR(block.to_vec(), lock.clone());
+			*block = XOR(block.to_vec(), lock.clone());
+			println!("block after xor = {:?}", block);
 
 		}
 
