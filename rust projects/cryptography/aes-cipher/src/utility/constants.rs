@@ -29,7 +29,7 @@ lazy_static! {
 
     };
 
-	pub static ref inverseSubstitution: HashMap<(&'static str, &'static str), &'static str> = {
+	pub static ref reverseSubstitution: HashMap<(&'static str, &'static str), &'static str> = {
 
 		let mut aes = HashMap::new();
 		aes.extend([(("00", "00"), "52"), (("00", "01"), "09"), (("00", "02"), "6a"), (("00", "03"), "d5"), (("00", "04"), "30"), (("00", "05"), "36"), (("00", "06"), "a5"), (("00", "07"), "38"), (("00", "08"), "bf"), (("00", "09"), "40"), (("00", "0a"), "a3"), (("00", "0b"), "9e"), (("00", "0c"), "81"), (("00", "0d"), "f3"), (("00", "0e"), "d7"), (("00", "0f"), "fb"),
@@ -53,7 +53,7 @@ lazy_static! {
 
 	};
 
-	pub static ref roundConstants: HashMap<i8, Vec<&'static str>> = {
+	pub static ref roundConstants: HashMap<u8, Vec<&'static str>> = {
 
 		let mut table = HashMap::new();
 		table.insert(1, vec!["01", "00", "00", "00"]);
