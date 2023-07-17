@@ -93,7 +93,6 @@ pub fn scrambleDocument(mut document: Vec<Vec<Vec<String>>>, key: Vec<Vec<String
 	let mut lock = key.clone();
 	let mut memory = vec![];
 
-	// for block in document.iter_mut() {
 	for (index, block) in document.iter_mut().enumerate() {
 
 		*block = XOR(block.to_vec(), key.clone());
@@ -119,12 +118,12 @@ pub fn scrambleDocument(mut document: Vec<Vec<Vec<String>>>, key: Vec<Vec<String
 			*block = shiftRows(block.to_vec());
 			println!("block after row-shift = {:?}", block);
 
-			// if round != rounds - 1 {
+			if round != rounds - 1 {
 
-			// 	// mix();
+				println!("MIXING OPERATION GOES HERE");
 				// *block = mixColumns(block.to_vec(), lock.clone());
 
-			// }
+			}
 
 			*block = XOR(block.to_vec(), lock.clone());
 			println!("block after xor = {:?}", block);
