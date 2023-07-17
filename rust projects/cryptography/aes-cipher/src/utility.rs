@@ -540,7 +540,15 @@ fn binaryPolynomial(word: Vec<u8>) -> String {
 		// binary.replace_range(index as usize..(index + 1) as usize, "1");
 
 		// binary.replace_range(index.to_digit()..index.to_digit() + 1, "1");
-		binary.replace_range(*index as usize..(index + 1) as usize, "1");
+		println!("index = {}", index);
+		println!("binary before sub = {}", binary);
+		// binary.replace_range(*index as usize..(index + 1) as usize, "1");
+		// binary.replace_range(*(word.len() - 1 - index) as usize..(word.len() - 1 - index + 1) as usize, "1");
+		// binary.replace_range(*(word.len() - 1 - index) as usize..(word.len() - index) as usize, "1");
+		// binary.replace_range((word.len() - 1 - index)..(word.len() - index), "1");
+		// binary.replace_range((word.len() - 1 - *index as usize)..(word.len() - *index as usize), "1");
+		binary.replace_range((binary.len() - 1 - *index as usize)..(binary.len() - *index as usize), "1");
+		println!("binary after sub = {}", binary);
 
 	}
 
