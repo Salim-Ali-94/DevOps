@@ -113,7 +113,10 @@ pub fn scrambleDocument(mut document: Vec<Vec<Vec<String>>>, key: Vec<Vec<String
 			}
 
 			*block = sTransform(block.to_vec());
-			// *block = shiftRows(block.to_vec(), lock.clone());
+			println!("block before row-shift = {:?}", block);
+			*block = shiftRows(block.to_vec());
+			// shiftRows(block.to_vec());
+			println!("block after row-shift = {:?}", block);
 
 			// if round != rounds - 1 {
 
@@ -328,6 +331,41 @@ fn sTransform(mut block: Vec<Vec<String>>) -> Vec<Vec<String>> {
 
 	}
 
+	return block;
+
+}
+
+fn shiftRows(mut block: Vec<Vec<String>>) -> Vec<Vec<String>> {
+
+	let mut buffer = vec![];
+	let rows = block.len();
+
+	for position in 1..4 {
+
+		for address in 0..rows {
+
+			buffer.push(block[address][position].to_owned());
+
+		}
+
+		for (index, row) in block.iter_mut().enumerate() {
+
+			if index + position < rows {
+
+				row[position] = buffer[index + position].clone();
+
+			} else {
+
+				row[position] = buffer[position - (rows - 1 - index) - 1].clone();
+
+			}
+
+		}
+
+		buffer.clear();
+	
+	}
+	
 	return block;
 
 }
