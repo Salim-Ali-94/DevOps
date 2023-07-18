@@ -3,8 +3,52 @@ use rand::Rng;
 pub mod constants;
 
 
-// pub fn aesKeyGenerator(aes_standard: i16) -> (String, Vec<Vec<String>>, i8) {
-pub fn aesKeyGenerator(aes_standard: u16) -> (String, Vec<Vec<String>>, u8) {
+pub fn scrambleDocument(file: String, aes_standard: u16) -> (String, String, Vec<Vec<Vec<String>>>, Vec<Vec<String>>) {
+
+    let (binary_key, key, rounds) = aesKeyGenerator(aes_standard);
+    let (_, mut document) = spliceDocument(file.clone(), binary_key.len().try_into().unwrap());
+	let mut lock = key.clone();
+	let mut memory = vec![];
+
+	for (index, block) in document.iter_mut().enumerate() {
+
+		*block = XOR(block.to_vec(), key.clone());
+
+		for round in 1..=rounds {
+
+			if index == 0 {
+
+				lock = scheduleKey(lock, round);
+				memory.push(lock.clone());
+
+
+			} else {
+
+				lock = memory[round as usize].clone();
+
+			}
+
+			*block = sTransform(block.to_vec());
+			*block = shiftRows(block.to_vec());
+
+			if round != rounds - 1 {
+
+				*block = mixColumns(block.to_vec());
+
+			}
+
+			*block = XOR(block.to_vec(), lock.clone());
+
+		}
+
+	}
+
+	let cipher = collapseMatrix(document.clone());
+	return (cipher, binary_key, document, key);
+
+}
+
+fn aesKeyGenerator(aes_standard: u16) -> (String, Vec<Vec<String>>, u8) {
 
 	let mut rng = rand::thread_rng();
 	let mut key = if rng.gen_range(0.0..1.0) < 0.5 { "1".to_owned() } else { "0".to_string() };
@@ -48,8 +92,7 @@ pub fn aesKeyGenerator(aes_standard: u16) -> (String, Vec<Vec<String>>, u8) {
 
 }
 
-// pub fn spliceDocument(file: String, chunk: i16) -> (String, Vec<Vec<Vec<String>>>) {
-pub fn spliceDocument(file: String, chunk: u16) -> (String, Vec<Vec<Vec<String>>>) {
+fn spliceDocument(file: String, chunk: u16) -> (String, Vec<Vec<Vec<String>>>) {
 
 	let mut message = encodeMessage(file);
 	let mut document = vec![];
@@ -86,57 +129,6 @@ pub fn spliceDocument(file: String, chunk: u16) -> (String, Vec<Vec<Vec<String>>
 	}
 
 	return (message, document);
-
-}
-
-// pub fn scrambleDocument(document: Vec<Vec<Vec<String>>>, key: Vec<Vec<String>>) -> Vec<Vec<Vec<String>>> {
-// pub fn scrambleDocument(mut document: Vec<Vec<Vec<String>>>, key: Vec<Vec<String>>, rounds: i8) {
-pub fn scrambleDocument(mut document: Vec<Vec<Vec<String>>>, key: Vec<Vec<String>>, rounds: u8) {
-
-	let mut lock = key.clone();
-	let mut memory = vec![];
-
-	for (index, block) in document.iter_mut().enumerate() {
-
-		*block = XOR(block.to_vec(), key.clone());
-
-		for round in 1..=rounds {
-
-			if index == 0 {
-
-				lock = scheduleKey(lock, round);
-				memory.push(lock.clone());
-
-
-			} else {
-
-				lock = memory[round as usize].clone();
-
-			}
-
-			println!("\n==================================================\nround = {}\n==================================================\n", round);
-			println!("block before s-box = {:?}", block);
-			*block = sTransform(block.to_vec());
-			println!("block after s-box = {:?}", block);
-			println!("block before row-shift = {:?}", block);
-			*block = shiftRows(block.to_vec());
-			println!("block after row-shift = {:?}", block);
-
-			if round != rounds - 1 {
-
-				// println!("MIXING OPERATION GOES HERE");
-				println!("block before col-mix = {:?}", block);
-				*block = mixColumns(block.to_vec());
-				println!("block after col-mix = {:?}", block);
-
-			}
-
-			*block = XOR(block.to_vec(), lock.clone());
-			println!("block after xor = {:?}", block);
-
-		}
-
-	}
 
 }
 
@@ -178,9 +170,6 @@ fn partitionBits(bits: String) -> Vec<String> {
 
 	for byte in (0..bits.len()).step_by(8) {
 
-		// sections.push(format!("{:0width$x}",
-		// 					  u32::from_str_radix(&bits[byte..byte + 8], 2).unwrap(),
-		// 					  width = 2));
 		sections.push(format!("{:02x}", u8::from_str_radix(&bits[byte..byte + 8], 2).unwrap()));
 
 	}
@@ -218,17 +207,12 @@ fn encodeMessage(message: String) -> String {
 
 }
 
-// fn shuffleVector(mut word: Vec<String>, round: i8) -> Vec<String> {
 fn shuffleVector(mut word: Vec<String>, round: u8) -> Vec<String> {
 
 	let constant = constants::roundConstants.get(&round).unwrap();
 	word = leftShift(word);
 	word = forwardSubstitution(word);
-	// word = vectorXOR(word, constant.clone());
-	println!("using vector-xor word = {:?}", vectorXOR(word.clone(), constant.clone()));
-	// word[0] = xor(word[0], constant.clone()[0]);
 	word[0] = xor(word[0].to_string(), constant.clone()[0].to_string());
-	println!("using xor word = {:?}", word);
 	return word;
 
 }
@@ -264,16 +248,6 @@ fn forwardSubstitution(mut word: Vec<String>) -> Vec<String> {
 
 }
 
-fn vectorXOR(mut word: Vec<String>, constant: Vec<&str>) -> Vec<String> {
-
-	let binary = u8::from_str_radix(&word[0], 16).unwrap();
-	let vector = u8::from_str_radix(&constant[0], 16).unwrap();
-	let sum = binary ^ vector;
-	word[0] = format!("{:02x}", sum);
-	return word;
-
-}
-
 fn xor(a: String, b: String) -> String {
 
 	let x = u8::from_str_radix(&a, 16).unwrap();
@@ -290,12 +264,6 @@ fn XOR(mut data: Vec<Vec<String>>, matrix: Vec<Vec<String>>) -> Vec<Vec<String>>
 
 		for (column, character) in array.iter_mut().enumerate() {
 
-			// let binary = u8::from_str_radix(&character.to_string(), 16).unwrap();
-			// let vector = u8::from_str_radix(&matrix[row][column].to_owned(), 16).unwrap();
-			// let sum = binary ^ vector;
-			// *character = format!("{:02x}", sum).to_string();
-
-			// let x = xor(&character.to_string(), &matrix[row][column].to_owned());
 			let x = xor(character.to_string(), matrix[row][column].to_owned());
 			*character = x.to_string();
 
@@ -307,7 +275,6 @@ fn XOR(mut data: Vec<Vec<String>>, matrix: Vec<Vec<String>>) -> Vec<Vec<String>>
 
 }
 
-// fn scheduleKey(mut key: Vec<Vec<String>>, round: i8) -> Vec<Vec<String>> {
 fn scheduleKey(mut key: Vec<Vec<String>>, round: u8) -> Vec<Vec<String>> {
 
 	*key.last_mut().unwrap() = shuffleVector(key.last().unwrap().clone(), round);
@@ -398,34 +365,35 @@ fn shiftRows(mut block: Vec<Vec<String>>) -> Vec<Vec<String>> {
 
 }
 
-// fn mixColumns(mut block: Vec<Vec<String>>) -> Vec<Vec<String>> {
 fn mixColumns(block: Vec<Vec<String>>) -> Vec<Vec<String>> {
 
 	let mut matrix = vec![];
 	let mut buffer = vec![];
-	// let mut combination = "00000000".to_owned();
 	let mut combination = "00".to_owned();
 
-	// for row in block.iter_mut() {
 	for row in block.iter() {
 
 		for vector in constants::mixingMatrix.iter() {
 
-			// for (index, column) in row.iter_mut().enumerate() {
 			for (index, column) in row.iter().enumerate() {
 				
-				// let product = moduloProduct(column, vector[index]);
-				// let product = galoiProduct(column, vector[index]);
-				// let product = galoiProduct(column.to_string(), vector[index]);
-				println!("before product = {} / {} / {}", column, index, vector[index]);
-				let product = galoiProduct(column.to_string(), vector[index].to_string());
-				println!("product = {}", product);
+				let product =
+				if vector[index].to_string() == "01" {
+
+					column.to_string()
+
+				} else {
+
+					galoiProduct(column.to_string(), vector[index].to_string())
+
+				};
+
 				combination = xor(product, combination);
-				println!("combo = {}", combination);
 
 			}
 
 			buffer.push(combination.to_owned());
+			combination = "00".to_owned();
 
 		}
 
@@ -444,15 +412,14 @@ fn galoiProduct(x: String, y: String) -> String {
 	let Y = u8::from_str_radix(&y.to_string(), 16).unwrap();
 	let A = format!("{:08b}", X);
 	let B = format!("{:08b}", Y);
-	let mut a = moduloPolynomial(A);
-	let mut b = moduloPolynomial(B);
+	let a = moduloPolynomial(A);
+	let b = moduloPolynomial(B);
 	let mut c = vec![];
 
 	for i in a.iter() {
 
 		for j in b.iter() {
 
-			// if c.contains(i + j) {
 			if c.contains(&(i + j)) {
 
 				c.retain(|&value| value != i + j);
@@ -471,10 +438,8 @@ fn galoiProduct(x: String, y: String) -> String {
 
 		c.retain(|&value| value != 8);
 
-		// for k in vec![4, 3, 1, 0] {
 		for &k in &[4, 3, 1, 0] {
 
-			// if c.contains(k) {
 			if c.contains(&k) {
 
 				c.retain(|&value| value != k);
@@ -489,33 +454,21 @@ fn galoiProduct(x: String, y: String) -> String {
 
 	}
 
-	// let C = binaryPolynomial(c);
-	println!("before bin-poly = {:?}", c);
 	let polynomial = binaryPolynomial(c);
-	println!("after bin-poly = {:?}", polynomial);
-	// let polynomial = format!("{:02x}", C).to_owned();
 	let decimal = u8::from_str_radix(&polynomial, 2).unwrap();
 	let hex = format!("{:02x}", decimal).to_owned();
 	return hex;
 
-	// let polynomial = binaryPolynomial(c);
-	// return polynomial;
-
-	// return binaryPolynomial(c);
-
 }
 
-// fn moduloPolynomial(word: String) -> Vec<i8> {
 fn moduloPolynomial(word: String) -> Vec<u8> {
 
 	let mut polynomial = vec![];
 
 	for (index, character) in word.chars().enumerate() {
 
-		// if character == "1" {
 		if character == '1' {
 
-			// polynomial.push(word.len() - 1 - index);
 			polynomial.push((word.len() - 1 - index) as u8);
 
 		}
@@ -526,32 +479,37 @@ fn moduloPolynomial(word: String) -> Vec<u8> {
 
 }
 
-// fn binaryPolynomial(word: Vec<i8>) -> String {
 fn binaryPolynomial(word: Vec<u8>) -> String {
 
 	let mut binary = "00000000".to_owned();
 
 	for index in word.iter() {
 
-		// binary.replace_range(index..index + 1, &"1".to_string());
-		// binary.replace_range(index..index + 1, "1");
-		// binary.replace_range(&index..&(index + 1), "1");
-		// binary.replace_range(index..&(index + 1), "1");
-		// binary.replace_range(index as usize..(index + 1) as usize, "1");
-
-		// binary.replace_range(index.to_digit()..index.to_digit() + 1, "1");
-		println!("index = {}", index);
-		println!("binary before sub = {}", binary);
-		// binary.replace_range(*index as usize..(index + 1) as usize, "1");
-		// binary.replace_range(*(word.len() - 1 - index) as usize..(word.len() - 1 - index + 1) as usize, "1");
-		// binary.replace_range(*(word.len() - 1 - index) as usize..(word.len() - index) as usize, "1");
-		// binary.replace_range((word.len() - 1 - index)..(word.len() - index), "1");
-		// binary.replace_range((word.len() - 1 - *index as usize)..(word.len() - *index as usize), "1");
 		binary.replace_range((binary.len() - 1 - *index as usize)..(binary.len() - *index as usize), "1");
-		println!("binary after sub = {}", binary);
 
 	}
 
 	return binary;
 
+}
+
+fn collapseMatrix(message: Vec<Vec<Vec<String>>>) -> String {
+
+	let mut cipher = String::new();
+
+	for block in message.iter() {
+
+		for row in block.iter() {
+
+			for column in row.iter() {
+
+				cipher.push_str(column);
+
+			}
+
+		}
+
+	}
+
+	return cipher;
 }
