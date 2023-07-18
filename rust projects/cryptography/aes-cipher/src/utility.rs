@@ -1,4 +1,5 @@
 #![allow(non_snake_case)]
+#[allow(clippy::needless_return)]
 use rand::Rng;
 pub mod constants;
 
@@ -76,11 +77,11 @@ fn aesKeyGenerator(aes_standard: u16) -> (String, Vec<Vec<String>>, u8) {
 
         if rng.gen_range(0.0..1.0) < 0.5 {
 
-            key.push_str("1");
+            key.push('1');
 
         } else {
 
-            key.push_str("0");
+            key.push('0');
 
         }
         
@@ -229,7 +230,7 @@ fn formatIndex(character: String) -> (String, String) {
 
 	let mut row = character.chars().nth(0).unwrap().to_string();
 	let mut column = character.chars().nth(1).unwrap().to_string();
-	row.push_str("0");
+	row.push('0');
 	column = "0".to_owned() + &column;
 	return (row, column);
 
@@ -503,7 +504,7 @@ fn collapseMatrix(message: Vec<Vec<Vec<String>>>) -> String {
 
 			for column in row.iter() {
 
-				cipher.push_str(&column);
+				cipher.push_str(column);
 
 			}
 
@@ -513,3 +514,21 @@ fn collapseMatrix(message: Vec<Vec<Vec<String>>>) -> String {
 
 	return cipher;
 }
+// The cargo clippy command is showing several lints (warnings) for your code. Here's a summary of the warnings:
+
+// Type Complexity: The type signature of the scrambleDocument function is very complex. Consider factoring parts into type definitions.
+// Needless Return: There are multiple instances where return statements are unnecessary and can be removed.
+// Single Char Add Str: Instead of using push_str with a single-character string literal, consider using push with a character literal for better performance.
+// Iter Nth Zero: Instead of calling .nth(0) on an iterator, use .next() as it's equivalent and more idiomatic.
+// Needless Range Loop: The loop variable address in the loop at line 340 is only used to index block. Consider using an iterator instead.
+// Cmp Owned: Avoid creating an owned instance just for comparison. Use the original value directly for comparison instead.
+// Needless Borrow: The expression &column creates a reference that is immediately dereferenced. Change it to column.
+// To fix these warnings, you can make the following changes to your code:
+
+// Refactor the complex type signature in the scrambleDocument function by using type definitions if possible.
+// Remove unnecessary return statements.
+// Replace push_str with push when adding single-character string literals.
+// Replace .nth(0) with .next() in the loop at line 230.
+// Replace the loop at line 340 with an iterator-based approach if possible.
+// Replace comparisons with owned instances with direct comparisons.
+// After making these changes, run cargo clippy again to check for any remaining lints.
