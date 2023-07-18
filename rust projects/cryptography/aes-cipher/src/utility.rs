@@ -503,7 +503,7 @@ fn collapseMatrix(message: Vec<Vec<Vec<String>>>) -> String {
 
 			for column in row.iter() {
 
-				cipher.push_str(column);
+				cipher.push_str(&column);
 
 			}
 
