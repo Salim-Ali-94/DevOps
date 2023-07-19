@@ -1,4 +1,5 @@
-from network import Network
+import numpy as np
+from models.network import Network
 
 
 def initializeGeneration(population_size, architecture, parameters):
@@ -28,24 +29,3 @@ def initializeGeneration(population_size, architecture, parameters):
 		population.append(gene)
 
 	return population
-
-
-def activation(data, function = "sigmoid"):
-
-	if (function.lower().lstrip().rstrip() == "sigmoid"):
-
-		return 1 / (1 + np.exp(-data))
-
-	elif (function.lower().lstrip().rstrip() == "tanh"):
-
-		return np.tanh(data)
-
-	elif (function.lower().lstrip().rstrip() == "relu"):
-
-		return np.maximum(data, 0)
-
-	elif (function.lower().lstrip().rstrip() == "step"):
-
-		return np.sign(data)
-
-	return data

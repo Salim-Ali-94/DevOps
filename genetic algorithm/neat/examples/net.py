@@ -1,4 +1,6 @@
-from network import Network
+import sys, os
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+from models.network import Network
 
 
 if __name__ == "__main__":

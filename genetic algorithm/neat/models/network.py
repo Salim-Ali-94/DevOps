@@ -1,10 +1,11 @@
 import random
 import uuid
 import matplotlib.pyplot as plt
+import numpy as np
 import networkx as nx
-import utility
-from node import Node
-from branch import Branch
+import sys
+from .node import Node
+from .branch import Branch
 
 
 class Network:
@@ -14,10 +15,6 @@ class Network:
 	def __init__(self, architecture, recurrent = False, recurrent_rate = 0, active_rate = 1, connection_rate = 1, skip = True, bias_rate = 0.5):
 
 		self.architecture = architecture
-		self.layers = self._formatSize()
-		self.output = [0]*self.architecture["output_neurons"]
-		self.network = self._neuralNetwork()
-		self.id = str(uuid.uuid4()).replace("-", "")
 		self.recurrent = recurrent
 		self.recurrent_rate = recurrent_rate
 		self.active_rate = active_rate
@@ -25,6 +22,10 @@ class Network:
 		self.bias_rate = bias_rate
 		self.skip = skip
 		self.fitness = 0
+		self.layers = self._formatSize()
+		self.output = [0]*self.architecture["output_neurons"]
+		self.network = self._neuralNetwork()
+		self.id = str(uuid.uuid4()).replace("-", "")
 
 	def _formatSize(self):
 
@@ -209,6 +210,26 @@ class Network:
 					self.auditLUT(branch)
 					node.branches.append(branch)
 
+	def _activation(self, data, function = "sigmoid"):
+
+		if (function.lower().lstrip().rstrip() == "sigmoid"):
+
+			return 1 / (1 + np.exp(-data))
+
+		elif (function.lower().lstrip().rstrip() == "tanh"):
+
+			return np.tanh(data)
+
+		elif (function.lower().lstrip().rstrip() == "relu"):
+
+			return np.maximum(data, 0)
+
+		elif (function.lower().lstrip().rstrip() == "step"):
+
+			return np.sign(data)
+
+		return data
+
 	def auditLUT(self, branch):
 
 		if (len(self.history) > 0):
@@ -267,7 +288,7 @@ class Network:
 
 								node.activity += neuron.output*branch.weight
 
-					node.output = utility.activation(node.activity, node.function)
+					node.output = self._activation(node.activity, node.function)
 
 					if (layer == self.layers - 2):
 

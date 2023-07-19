@@ -1,7 +1,5 @@
 import random
-import uuid
 import os
-import numpy as np
 from constants import CHARACTERS
 
 
