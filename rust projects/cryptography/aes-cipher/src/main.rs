@@ -4,7 +4,7 @@ mod utility;
 fn main() {
 
     let msg = "Lift off".to_string();
-    let aes_standard = 128;
+    let aes_standard = 192;
     let (encrypted_msg, key, encrypted_doc, hex_key) = utility::scrambleDocument(msg.clone(), aes_standard);
     println!("\n\nthe aes key is = {} / {}-bits\n\n", key, key.len());
     println!("stacked hex key is = {:?}\n\n", hex_key);

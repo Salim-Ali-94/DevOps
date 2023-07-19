@@ -7,8 +7,8 @@ pub mod constants;
 
 pub fn scrambleDocument(file: String, aes_standard: u16) -> (String, String, Vec<Vec<Vec<String>>>, Vec<Vec<String>>) {
 
-    let (binary_key, key, rounds) = aesKeyGenerator(aes_standard);
-    let (_, mut document) = spliceDocument(file.clone(), binary_key.len().try_into().unwrap());
+	let (binary_key, key, rounds) = aesKeyGenerator(aes_standard);
+	let (_, mut document) = spliceDocument(file.clone(), binary_key.len().try_into().unwrap());
 	let mut lock = key.clone();
 	let mut memory = vec![];
 
@@ -390,7 +390,20 @@ fn mixColumns(block: Vec<Vec<String>>) -> Vec<Vec<String>> {
 
 				};
 
-				combination = xor(product, combination);
+				combination =
+				if combination == "00" {
+
+					product
+
+				} else if product == "00" {
+
+					combination
+
+				} else { 
+
+					xor(product, combination)
+
+				};
 
 			}
 
