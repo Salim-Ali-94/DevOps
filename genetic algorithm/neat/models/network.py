@@ -3,7 +3,6 @@ import uuid
 import matplotlib.pyplot as plt
 import numpy as np
 import networkx as nx
-import sys
 from .node import Node
 from .branch import Branch
 
