@@ -152,7 +152,7 @@ jobs:
       - name: Carry out unit testing
         run: |
 
-          python "./genetic algorithm/test_utility.py"
+          python "./genetic algorithm/tests/test_utility.py"
           echo "ALL UNIT TESTS HAVE PASSED SUCCESSFULLY"
 
   building:
@@ -187,12 +187,14 @@ jobs:
       - name: Run code to ensure it builds with no errors that linting can't pick up
         run: |
 
-          python "./genetic algorithm/evolve_word.py"
+          python "./genetic algorithm/examples/evolve_word.py"
           echo "passed word evolution test case"
-          python "./genetic algorithm/optimize_function.py"
+          python "./genetic algorithm/examples/optimize_function.py"
           echo "passed function optimization test case"
-          python "./genetic algorithm/search_manifold.py"
+          python "./genetic algorithm/examples/search_manifold.py"
           echo "passed manifold search test case"
+          python "./genetic algorithm/neat/examples/net.py"
+          echo "passed network example case"
           python "./tic tac toe/utility.py"
           python "./slither.io bot/bot.py"
           go run "./go projects/base-n converter/main.go" "./go projects/base-n converter/utility.go" "./go projects/base-n converter/constants.go"
