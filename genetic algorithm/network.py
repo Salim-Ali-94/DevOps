@@ -11,23 +11,20 @@ class Network:
 
 	history = []
 
-	def __init__(self, architecture, data, recurrent = False, recurrent_rate = 0, active_rate = 1, connection_rate = 1, skip = True, bias_rate = 0.5):
+	def __init__(self, architecture, recurrent = False, recurrent_rate = 0, active_rate = 1, connection_rate = 1, skip = True, bias_rate = 0.5):
 
 		self.architecture = architecture
+		self.layers = self._formatSize()
+		self.output = [0]*self.architecture["output_neurons"]
+		self.network = self._neuralNetwork()
+		self.id = str(uuid.uuid4()).replace("-", "")
 		self.recurrent = recurrent
 		self.recurrent_rate = recurrent_rate
 		self.active_rate = active_rate
 		self.connection_rate = connection_rate
 		self.bias_rate = bias_rate
 		self.skip = skip
-		self.sensor = data
-		self.output = 0
 		self.fitness = 0
-		self.architecture["input_neurons"] = len(data)
-		self.layers = self._formatSize()
-		self.network = self._neuralNetwork()
-		self.output = self.propagate()
-		self.id = str(uuid.uuid4()).replace("-", "")
 
 	def _formatSize(self):
 
@@ -120,13 +117,13 @@ class Network:
 				node = Node(node = identity,
 							layer = layer,
 							branches = [],
-							activity = self.sensor[index] if (layer == 0) else 0,
-							output = self.sensor[index] if (layer == 0) else 0,
+							activity = 0,
+							output = 0,
 							function = None if (layer == 0) else random.choice(("relu", "sigmoid", "tanh")))
 
 				if (layer > 0):
 
-					self._attachLinks(network, layer, node)
+					self._attachNodes(network, layer, node)
 
 				nodes += (node, )
 
@@ -150,7 +147,7 @@ class Network:
 
 		if (layer == 0):
 
-			width = len(self.sensor)
+			width = self.architecture["input_neurons"]
 
 		elif (layer == self.layers - 1):
 
@@ -189,7 +186,7 @@ class Network:
 
 		return identity
 
-	def _attachLinks(self, network, layer, node):
+	def _attachNodes(self, network, layer, node):
 
 		for level, neurons in enumerate(network):
 
@@ -209,28 +206,28 @@ class Network:
 									recurrent = True if (self.recurrent and (reverse < self.recurrent_rate)) else False,
 									skip = True if (self.skip and (abs(layer - level) > 1)) else False)
 
-					self._auditLUT(branch)
+					self.auditLUT(branch)
 					node.branches.append(branch)
 
-	def _auditLUT(self, branch):
+	def auditLUT(self, branch):
 
 		if (len(self.history) > 0):
 
 			if (branch.innovation == 0):
 
-				if not any(((link.input_node == branch.input_node) and
-							(link.output_node == branch.output_node) and
-							(link.skip == branch.skip) and
-							(link.branch_type == branch.branch_type) and
-							(link.active == branch.active) and
-							(link.recurrent == branch.recurrent)) for link in self.history):
+				if not any(((synapse.input_node == branch.input_node) and
+							(synapse.output_node == branch.output_node) and
+							(synapse.skip == branch.skip) and
+							(synapse.branch_type == branch.branch_type) and
+							(synapse.active == branch.active) and
+							(synapse.recurrent == branch.recurrent)) for synapse in self.history):
 
 					branch.innovation = len(self.history) + 1
 					self.history.append(branch)
 
 			else:
 
-				if not any((link.innovation == branch.innovation) for link in self.history):
+				if not any((synapse.innovation == branch.innovation) for synapse in self.history):
 
 					self.history.append(branch)
 
@@ -241,28 +238,67 @@ class Network:
 
 		self.history = sorted(self.history, key = lambda dna: dna.innovation)
 
-	def propagate(self):
+	def propagate(self, data):
 
-		output = []
+		self.output = []
 
 		for layer, nodes in enumerate(self.network[1:]):
 
-			for node in nodes:
+			for (address, node) in enumerate(nodes):
 
 				if (node.node_type != "bias"):
 
 					for branch in node.branches:
 
-						neuron = next((vertex for index, vertex in enumerate(self.network[branch.input_layer]) if (vertex.node == branch.input_node)), 0)
-						node.activity += neuron.output*branch.weight
+						if branch.active:
+
+							neuron = next((vertex for index, vertex in enumerate(self.network[branch.input_layer]) if (vertex.node == branch.input_node)), 0)
+
+							if (branch.input_layer == 0):
+
+								neuron.activity = data[neuron.node - 1]
+								neuron.output = data[neuron.node - 1]
+
+							if (address == 0):
+
+								node.activity = neuron.output*branch.weight
+
+							else:
+
+								node.activity += neuron.output*branch.weight
 
 					node.output = utility.activation(node.activity, node.function)
 
 					if (layer == self.layers - 2):
 
-						output.append(node.output)
+						self.output.append(node.output)
 
-		return output
+		return self.output
+
+	def purgeNetwork(self, data):
+
+		self.output = []
+
+		for (column, layer) in (self.network):
+
+			for (row, node) in enumerate(layer):
+
+				if (node.node_type != "bias"):
+
+					if (column == 0):
+
+							node.activity = data[row]
+							node.output = data[row]
+
+					else:
+
+						node.activity = 0
+						node.output = 0
+
+				else:
+
+					node.activity = 1
+					node.output = 1
 
 	def __repr__(self):
 
