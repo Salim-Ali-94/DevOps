@@ -287,8 +287,8 @@ class Network:
 
 					if (column == 0):
 
-							node.activity = data[row]
-							node.output = data[row]
+						node.activity = data[row]
+						node.output = data[row]
 
 					else:
 

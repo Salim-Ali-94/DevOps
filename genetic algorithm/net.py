@@ -1,8 +1,6 @@
 from network import Network
 
 
-
-
 if __name__ == "__main__":
 
 	x = [0.2, -0.5, 0.8]
@@ -16,5 +14,5 @@ if __name__ == "__main__":
 				  "maximum_neurons": 10,
 				  "minimum_neurons": 1 }
 
-	ann = Network(structure, x, active_rate = 0.75, connection_rate = 0.5)
+	ann = Network(structure, active_rate = 0.75, connection_rate = 0.5)
 	print(ann)
