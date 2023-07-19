@@ -28,6 +28,8 @@ class Network:
 
 	def _formatSize(self):
 
+		self.architecture["output_function"] = self.architecture["output_function"].lower().lstrip().rstrip()
+
 		if (type(self.architecture["minimum_layers"]) != int):
 
 			self.architecture["minimum_layers"] = int(self.architecture["minimum_layers"])
@@ -98,6 +100,10 @@ class Network:
 			self.architecture["minimum_neurons"] = self.architecture["maximum_neurons"]
 			self.architecture["maximum_neurons"] = minimum
 
+		if (self.architecture["output_function"] not in ("sigmoid", "relu", "tanh")):
+
+			self.architecture["output_function"] = random.choice(("sigmoid", "relu", "tanh"))
+
 		layers = random.randint(self.architecture["minimum_layers"], self.architecture["maximum_layers"]) + 2
 		return layers
 
@@ -119,7 +125,7 @@ class Network:
 							branches = [],
 							activity = 0,
 							output = 0,
-							function = None if (layer == 0) else random.choice(("relu", "sigmoid", "tanh")))
+							function = None if (layer == 0) else self.architecture["output_function"] if (layer == self.layers - 1) else random.choice(("relu", "sigmoid", "tanh")))
 
 				if (layer > 0):
 
@@ -294,31 +300,6 @@ class Network:
 						self.output.append(node.output)
 
 		return self.output
-
-	def purgeNetwork(self, data):
-
-		self.output = []
-
-		for (column, layer) in (self.network):
-
-			for (row, node) in enumerate(layer):
-
-				if (node.node_type != "bias"):
-
-					if (column == 0):
-
-						node.activity = data[row]
-						node.output = data[row]
-
-					else:
-
-						node.activity = 0
-						node.output = 0
-
-				else:
-
-					node.activity = 1
-					node.output = 1
 
 	def __repr__(self):
 

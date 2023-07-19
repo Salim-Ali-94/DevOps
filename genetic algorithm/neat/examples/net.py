@@ -10,6 +10,7 @@ if __name__ == "__main__":
 
 	structure = { "output_neurons": 2,
 				  "input_neurons": len(x),
+				  "output_function": "sigmoid",
 				  "maximum_layers": 10,
 				  "minimum_layers": 1,
 				  "maximum_weight": 2,
