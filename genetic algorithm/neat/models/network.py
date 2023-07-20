@@ -11,14 +11,15 @@ class Network:
 
 	history = []
 
-	def __init__(self, architecture, recurrent = False, recurrent_rate = 0, active_rate = 1, connection_rate = 1, skip = True, bias_rate = 0.5):
+	def __init__(self, architecture, recurrent = False, recurrent_rate = 0, active_rate = 1, connection_rate = 1, skip = True, skip_rate = 1, bias_rate = 0.5):
 
 		self.architecture = architecture
-		self.recurrent = recurrent
 		self.recurrent_rate = recurrent_rate
+		self.skip_rate = skip_rate
 		self.active_rate = active_rate
 		self.connection_rate = connection_rate
 		self.bias_rate = bias_rate
+		self.recurrent = recurrent
 		self.skip = skip
 		self.fitness = 0
 		self.layers = self._formatSize()
@@ -196,24 +197,30 @@ class Network:
 
 		for level, neurons in enumerate(network):
 
-			for neuron in neurons:
+			if ((self.skip and (abs(layer - level) > 1)) or
+				(abs(layer - level) == 1)):
 
-				if (random.random() < self.connection_rate):
+				for neuron in neurons:
 
-					reverse = random.random()
+					if ((random.random() < self.connection_rate) and
+						((self.skip and (abs(layer - level) > 1) and
+						(random.random() < self.skip_rate)) or
+						(abs(layer - level) == 1))):
 
-					branch = Branch(weight = random.uniform(self.architecture["minimum_weight"], self.architecture["maximum_weight"]),
-									input_node = node.node if (self.recurrent and (reverse < self.recurrent_rate)) else neuron.node,
-									output_node = neuron.node if (self.recurrent and (reverse < self.recurrent_rate)) else node.node,
-									input_layer = level,
-									output_layer = layer,
-									active = True if (random.random() < self.active_rate) else False,
-									branch_type = "bias" if (neuron.node_type == "bias") else "synapse",
-									recurrent = True if (self.recurrent and (reverse < self.recurrent_rate)) else False,
-									skip = True if (self.skip and (abs(layer - level) > 1)) else False)
+						reverse = random.random()
 
-					self.auditLUT(branch)
-					node.branches.append(branch)
+						branch = Branch(weight = random.uniform(self.architecture["minimum_weight"], self.architecture["maximum_weight"]),
+										input_node = node.node if (self.recurrent and (reverse < self.recurrent_rate)) else neuron.node,
+										output_node = neuron.node if (self.recurrent and (reverse < self.recurrent_rate)) else node.node,
+										input_layer = level,
+										output_layer = layer,
+										active = True if (random.random() < self.active_rate) else False,
+										branch_type = "bias" if (neuron.node_type == "bias") else "synapse",
+										recurrent = True if (self.recurrent and (reverse < self.recurrent_rate)) else False,
+										skip = True if (self.skip and (abs(layer - level) > 1)) else False)
+
+						self.auditLUT(branch)
+						node.branches.append(branch)
 
 	def _activation(self, data, function = "sigmoid"):
 
@@ -335,7 +342,7 @@ class Network:
 
 							lines = { "arrowstyle": "-",
 									  "color": "#9cf168" if (link.branch_type == "bias") else "#ac05f7",
-									  "connectionstyle": f"arc3,rad={ -0.08 if (link.skip and (positions[link.output_node][1] < -height / 2)) else 0.08 if (link.skip and (positions[link.output_node][1] >= -height / 2)) else 0 }",
+									  "connectionstyle": f"arc3,rad={ -0.08 if (link.skip and (positions[link.input_node][1] < -height / 2)) else 0.08 if (link.skip and (positions[link.input_node][1] >= -height / 2)) else 0 }",
 									  "linestyle": "--" if link.skip else "-",
 									  "alpha": 0.4 if link.skip else 1,
 									  "linewidth": 0.5 if ((2*abs(link.weight) / maximum) < 0.5) else 2*abs(link.weight) / maximum,

@@ -11,6 +11,7 @@ def initializeGeneration(population_size, architecture, parameters):
 					   bias_rate = parameters["bias_rate"],
 					   connection_rate = parameters["connection_rate"],
 					   active_rate = parameters["active_rate"],
+					   skip_rate = parameters["skip_rate"],
 					   recurrent = parameters["recurrent"],
 					   skip = parameters["skip"],
 					   recurrent_rate = parameters["recurrent_rate"])
@@ -21,6 +22,7 @@ def initializeGeneration(population_size, architecture, parameters):
 						   bias_rate = parameters["bias_rate"],
 						   connection_rate = parameters["connection_rate"],
 						   active_rate = parameters["active_rate"],
+						   skip_rate = parameters["skip_rate"],
 						   recurrent = parameters["recurrent"],
 						   skip = parameters["skip"],
 						   recurrent_rate = parameters["recurrent_rate"])
@@ -28,3 +30,12 @@ def initializeGeneration(population_size, architecture, parameters):
 		population.append(gene)
 
 	return population
+
+
+def speciation(population):
+
+	pass
+
+# nj* = fj x nj / (sum(fj) / g) = (sum(fi_j) / gj) x nj / (sum(sum(fi_j) / gj) / g)
+
+# nj# = fj_a x nj / (sum(fj_a) / g) = (sum(fi_j / gj) / gj) x nj / (sum(sum(fi_j / gj) / gj) / g)
