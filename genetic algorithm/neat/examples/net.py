@@ -1,3 +1,4 @@
+import random
 import sys
 import os
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
@@ -28,6 +29,7 @@ if __name__ == "__main__":
 			   "skip": True }
 
 	N = 5
+	delta = random.randint(10, 20)
 	ann = Network(structure, skip = True, active_rate = 0.75, skip_rate = 0.25, connection_rate = 0.5)
 	pop = utility.initializeGeneration(N, structure, params)
 	print(ann), print(pop)

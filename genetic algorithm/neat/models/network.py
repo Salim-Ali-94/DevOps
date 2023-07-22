@@ -22,6 +22,8 @@ class Network:
 		self.recurrent = recurrent
 		self.skip = skip
 		self.fitness = 0
+		self.species = 0
+		self.modified_fitness = 0
 		self.layers = self._formatSize()
 		self.output = [0]*self.architecture["output_neurons"]
 		self.network = self._neuralNetwork()
@@ -111,6 +113,8 @@ class Network:
 	def _neuralNetwork(self):
 
 		network = []
+		self.genome = []
+		self.neurons = []
 
 		for layer in range(self.layers):
 
@@ -133,6 +137,7 @@ class Network:
 					self._attachNodes(network, layer, node)
 
 				nodes += (node, )
+				self.neurons.append(node)
 
 			if ((layer < self.layers - 1) and
 				(random.random() < self.bias_rate)):
@@ -145,9 +150,11 @@ class Network:
 							node_type = "bias")
 
 				nodes += (node, )
+				self.neurons.append(node)
 
 			network.append(nodes)
 
+		self.neurons = sorted(self.neurons, key = lambda dna: dna.node)
 		return network
 
 	def _length(self, layer):
@@ -221,6 +228,9 @@ class Network:
 
 						self.auditLUT(branch)
 						node.branches.append(branch)
+						self.genome.append(branch)
+
+		self.genome = sorted(self.genome, key = lambda dna: dna.innovation)
 
 	def _activation(self, data, function = "sigmoid"):
 
@@ -289,8 +299,15 @@ class Network:
 
 							if (branch.input_layer == 0):
 
-								neuron.activity = data[neuron.node - 1]
-								neuron.output = data[neuron.node - 1]
+								if (neuron.node_type != "bias"):
+
+									neuron.activity = data[neuron.node - 1]
+									neuron.output = data[neuron.node - 1]
+
+								else:
+
+									neuron.activity = 1
+									neuron.output = 1
 
 							if (address == 0):
 
@@ -308,7 +325,7 @@ class Network:
 
 		return self.output
 
-	def __repr__(self):
+	def render(self):
 
 		canvas = nx.Graph()
 		connections = []

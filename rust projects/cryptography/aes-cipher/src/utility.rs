@@ -399,7 +399,7 @@ fn mixColumns(block: Vec<Vec<String>>) -> Vec<Vec<String>> {
 
 					combination
 
-				} else { 
+				} else {
 
 					xor(product, combination)
 
