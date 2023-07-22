@@ -41,7 +41,7 @@ def evaluateFitness(population, sensor, action, function):
 		chromosome.fitness = action(decision, function, sensor)
 
 
-def speciation(population, threshold, c1 = 1, c2 = 1, c3 = 0.4):
+def speciation(population, threshold = 0.3, c1 = 1, c2 = 1, c3 = 0.4):
 
 	species = []
 
@@ -166,3 +166,21 @@ def countOffset(genome_a, genome_b):
 			count += 1
 
 	return count
+
+def rouletteWheelSelection(group):
+
+	absolute_fitness = group["distributed_fitness"]*group["group_size"]
+	cumulative_fitness = 0
+	theta = random.random()
+
+	for chromosome in group["members"]:
+
+		cumulative_fitness += chromosome.modified_fitness
+
+		if (cumulative_fitness >= theta):
+
+			return chromosome
+
+	maximum = max(dna.fitness for dna in gene["members"])
+	candidate = next((gene for gene in group["members"] if (gene.fitness == maximum)), None)
+	return candidate
