@@ -32,4 +32,5 @@ if __name__ == "__main__":
 	delta = random.randint(10, 20)
 	ann = Network(structure, skip = True, active_rate = 0.75, skip_rate = 0.25, connection_rate = 0.5)
 	pop = utility.initializeGeneration(N, structure, params)
-	print(ann), print(pop)
+	ann.render()
+	print(pop)
