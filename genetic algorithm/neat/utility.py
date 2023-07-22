@@ -1,3 +1,4 @@
+import random
 from models.network import Network
 
 
@@ -47,18 +48,18 @@ def speciation(population, threshold = 0.3, c1 = 1, c2 = 1, c3 = 0.4):
 
 	for (group, chromosome_a) in enumerate(population[:-1]):
 
-		if not any(chromosome_a in dna["members"] for dna in species):
+		if not any(chromosome_a in dna["chromosomes"] for dna in species):
 
 			chromosome_a.species = group + 1
 			species.append({ "group": group + 1,
-							 "members": [chromosome_a],
+							 "chromosomes": [chromosome_a],
 							 "group_size": 1,
 							 "group_fitness": chromosome_a.fitness,
 							 "distributed_fitness": 0 })
 
 			for chromosome_b in population[group + 1:]:
 
-				if not any(chromosome_b in dna["members"] for dna in species):
+				if not any(chromosome_b in dna["chromosomes"] for dna in species):
 
 					pairs = alignGenes(chromosome_a.genome, chromosome_b.genome)
 					disjoint_a = countUnpaired(chromosome_a.genome, chromosome_b.genome)
@@ -73,18 +74,18 @@ def speciation(population, threshold = 0.3, c1 = 1, c2 = 1, c3 = 0.4):
 
 					if (compatibility < threshold):
 
-						species[group]["members"].append(chromosome_b)
+						species[group]["chromosomes"].append(chromosome_b)
 						species[group]["group_size"] += 1
-						species[group]["group_fitness"] = sum(chromosome.fitness for chromosome in species[group]["members"]) / species[group]["group_size"]
+						species[group]["group_fitness"] = sum(chromosome.fitness for chromosome in species[group]["chromosomes"]) / species[group]["group_size"]
 						chromosome_b.species = group + 1
 
 					if (group == len(population) - 2):
 
-						if not any(chromosome_b in dna["members"] for dna in species):
+						if not any(chromosome_b in dna["chromosomes"] for dna in species):
 
 							chromosome_b.species = group + 2
 							species.append({ "group": len(species) + 1,
-											 "members": [chromosome_b],
+											 "chromosomes": [chromosome_b],
 											 "group_size": 1,
 											 "group_fitness": chromosome_b.fitness,
 											 "distributed_fitness": 0 })
@@ -100,7 +101,7 @@ def modifyFitness(species):
 
 	for group in species:
 
-		for chromosome in group["members"]:
+		for chromosome in group["chromosomes"]:
 
 			chromosome.modified_fitness = chromosome.fitness / group["group_size"]
 			group["distributed_fitness"] += chromosome.modified_fitness
@@ -168,13 +169,13 @@ def countOffset(genome_a, genome_b):
 	return count
 
 
-def rouletteWheelSelection(group):
+def rouletteWheel(group):
 
 	absolute_fitness = group["distributed_fitness"]*group["group_size"]
-	cumulative_fitness = 0
 	theta = random.uniform(0, absolute_fitness)
+	cumulative_fitness = 0
 
-	for chromosome in group["members"]:
+	for chromosome in group["chromosomes"]:
 
 		cumulative_fitness += chromosome.modified_fitness
 
@@ -182,6 +183,6 @@ def rouletteWheelSelection(group):
 
 			return chromosome
 
-	maximum = max(dna.fitness for dna in gene["members"])
-	candidate = next((gene for gene in group["members"] if (gene.fitness == maximum)), None)
+	maximum = max(dna.fitness for dna in gene["chromosomes"])
+	candidate = next((gene for gene in group["chromosomes"] if (gene.fitness == maximum)), None)
 	return candidate

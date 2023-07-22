@@ -8,8 +8,8 @@ import utility
 if __name__ == "__main__":
 
 	table = { (0, 0): 0, (0, 1): 1, (1, 0): 1, (1, 1): 0 }
-	performance = lambda decision, sensor: len(decision) - sum((output - table[sensor])**2 for output in decision)
-	task = lambda decision, fitnessFunction, data: fitnessFunction(decision, data)
+	performance = lambda decision, sensor: 1 - (decision - table[sensor])**2
+	task = lambda decision, fitnessFunction, data: fitnessFunction(decision[0], data)
 
 	structure = { "output_neurons": 1,
 				  "input_neurons": 2,
@@ -40,3 +40,4 @@ if __name__ == "__main__":
 	if (len(species) < cluster): threshold -= delta
 	elif (len(species) > cluster): threshold += delta
 	else: delta = 0
+	utility.rouletteWheel(species[0]).render()

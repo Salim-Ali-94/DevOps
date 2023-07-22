@@ -106,7 +106,7 @@ class Network:
 			self.architecture["minimum_neurons"] = self.architecture["maximum_neurons"]
 			self.architecture["maximum_neurons"] = minimum
 
-		if (self.architecture["output_function"] not in ("sigmoid", "relu", "tanh")):
+		if (self.architecture["output_function"] not in ("sigmoid", "relu", "tanh", "step", "switch")):
 
 			self.architecture["output_function"] = random.choice(("sigmoid", "relu", "tanh"))
 
@@ -246,6 +246,10 @@ class Network:
 
 		elif (function.lower().lstrip().rstrip() == "step"):
 
+			return int(np.heaviside(data, 0))
+
+		elif (function.lower().lstrip().rstrip() == "switch"):
+
 			return np.sign(data)
 
 		return data
@@ -333,11 +337,11 @@ class Network:
 		maximum = max(abs(branch.weight) for layer in self.network for node in layer for branch in node.branches)
 		height = max(len(layer) for layer in self.network)
 		info = "\n"
-		info += "-"*50
-		info += f"\n{self.layers} layers:\n"
-		for index, layer in enumerate(self.network): info += f"\nlayer {index} --> {len(layer)} nodes"
+		info += "="*50
+		info += f"\n{self.layers} layer(s):\n"
+		for index, layer in enumerate(self.network): info += f"\nlayer {index} --> {len(layer) - 1 if any(node.node_type == 'bias' for node in layer) else len(layer)}x node(s){' + bias' if any(node.node_type == 'bias' for node in layer) else ''}"
 		info += "\n"
-		info += "-"*50
+		info += "="*50
 
 		for layer, neurons in enumerate(self.network):
 
