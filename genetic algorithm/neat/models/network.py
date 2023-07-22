@@ -23,10 +23,13 @@ class Network:
 		self.skip = skip
 		self.fitness = 0
 		self.species = 0
+		self.network = []
+		self.genome = []
+		self.neurons = []
 		self.modified_fitness = 0
 		self.layers = self._formatSize()
 		self.output = [0]*self.architecture["output_neurons"]
-		self.network = self._neuralNetwork()
+		self._neuralNetwork()
 		self.id = str(uuid.uuid4()).replace("-", "")
 
 	def _formatSize(self):
@@ -112,10 +115,6 @@ class Network:
 
 	def _neuralNetwork(self):
 
-		network = []
-		self.genome = []
-		self.neurons = []
-
 		for layer in range(self.layers):
 
 			nodes = tuple()
@@ -123,7 +122,7 @@ class Network:
 
 			for index in range(width):
 
-				identity = self._identify(network, nodes, layer, index)
+				identity = self._identify(nodes, layer, index)
 
 				node = Node(node = identity,
 							layer = layer,
@@ -134,7 +133,7 @@ class Network:
 
 				if (layer > 0):
 
-					self._attachNodes(network, layer, node)
+					self._attachNodes(layer, node)
 
 				nodes += (node, )
 				self.neurons.append(node)
@@ -152,10 +151,9 @@ class Network:
 				nodes += (node, )
 				self.neurons.append(node)
 
-			network.append(nodes)
+			self.network.append(nodes)
 
 		self.neurons = sorted(self.neurons, key = lambda dna: dna.node)
-		return network
 
 	def _length(self, layer):
 
@@ -174,21 +172,21 @@ class Network:
 
 		return width
 
-	def _identify(self, network, nodes, layer, index):
+	def _identify(self, nodes, layer, index):
 
 		if (layer > 0):
 
 			if ((index == 0) and (layer == self.layers - 1)):
 
-				identity = network[0][-1].node + 1
+				identity = self.network[0][-1].node + 1
 
 			elif ((index == 0) and (layer > 1)):
 
-				identity = network[-1][-1].node + 1
+				identity = self.network[-1][-1].node + 1
 
 			elif ((index == 0) and (layer == 1)):
 
-				identity = network[-1][-1].node + self.architecture["output_neurons"] + 1
+				identity = self.network[-1][-1].node + self.architecture["output_neurons"] + 1
 
 			else:
 
@@ -200,9 +198,9 @@ class Network:
 
 		return identity
 
-	def _attachNodes(self, network, layer, node):
+	def _attachNodes(self, layer, node):
 
-		for level, neurons in enumerate(network):
+		for level, neurons in enumerate(self.network):
 
 			if ((self.skip and (abs(layer - level) > 1)) or
 				(abs(layer - level) == 1)):

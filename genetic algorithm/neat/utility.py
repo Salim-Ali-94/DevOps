@@ -1,4 +1,3 @@
-import random
 from models.network import Network
 
 
