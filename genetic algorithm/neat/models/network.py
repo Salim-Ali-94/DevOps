@@ -390,4 +390,4 @@ class Network:
 
 		plt.axis("off")
 		plt.show()
-		return info + "\n"
+		print(info + "\n")
