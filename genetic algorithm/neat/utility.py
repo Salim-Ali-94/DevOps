@@ -167,11 +167,12 @@ def countOffset(genome_a, genome_b):
 
 	return count
 
+
 def rouletteWheelSelection(group):
 
 	absolute_fitness = group["distributed_fitness"]*group["group_size"]
 	cumulative_fitness = 0
-	theta = random.random()
+	theta = random.uniform(0, absolute_fitness)
 
 	for chromosome in group["members"]:
 
