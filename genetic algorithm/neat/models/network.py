@@ -246,11 +246,11 @@ class Network:
 
 		elif (function.lower().lstrip().rstrip() == "step"):
 
-			return int(np.heaviside(data, 0))
+			return np.heaviside(data, 0).astype(int)
 
 		elif (function.lower().lstrip().rstrip() == "switch"):
 
-			return np.sign(data)
+			return np.sign(data).astype(int)
 
 		return data
 
@@ -264,7 +264,6 @@ class Network:
 							(synapse.output_node == branch.output_node) and
 							(synapse.skip == branch.skip) and
 							(synapse.branch_type == branch.branch_type) and
-							(synapse.active == branch.active) and
 							(synapse.recurrent == branch.recurrent)) for synapse in self.history):
 
 					branch.innovation = len(self.history) + 1

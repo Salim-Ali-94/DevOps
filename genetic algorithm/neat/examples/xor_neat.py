@@ -40,4 +40,4 @@ if __name__ == "__main__":
 	if (len(species) < cluster): threshold -= delta
 	elif (len(species) > cluster): threshold += delta
 	else: delta = 0
-	utility.rouletteWheel(species[0]).render()
+	x = utility.crossover(species)

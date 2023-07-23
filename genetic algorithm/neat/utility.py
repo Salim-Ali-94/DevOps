@@ -94,6 +94,62 @@ def speciation(population, threshold = 0.3, c1 = 1, c2 = 1, c3 = 0.4):
 	return species
 
 
+def crossover(species):
+
+	generation = []
+
+	for group in species:
+
+		population = []
+
+		while (len(population) < group["group_limit"]):
+
+			offspring = []
+			network_a = rouletteWheel(group)
+			group["chromosomes"].remove(network_a)
+			network_b = rouletteWheel(group)
+			group["chromosomes"].append(network_a)
+			pairs = alignGenes(network_a.genome, network_b.genome, True)
+			detached_a = segmentGenes(network_a.genome, network_b.genome)
+			detached_b = segmentGenes(network_b.genome, network_a.genome)
+			offset_a = segmentGenes(network_a.genome, network_b.genome, "interior")
+			offset_b = segmentGenes(network_b.genome, network_a.genome, "interior")
+			detached = detached_a + detached_b
+			offset = offset_a + offset_b
+			offspring.extend(detached)
+
+			for pair in pairs:
+
+				gene = random.choice(pair)
+				offspring.append(gene)
+
+			for synapse in offset:
+
+				if (((network_a.fitness > network_b.fitness) and
+					  synapse in network_a.genome) or
+					((network_b.fitness > network_a.fitness) and
+					  synapse in network_b.genome)):
+
+					offspring.append(synapse)
+
+				elif (network_a.fitness == network_b.fitness):
+
+					if (random.random() < 0.5):
+
+						offspring.append(synapse)
+
+			population.append(offspring)
+
+		generation.append(population)
+
+	return generation
+
+
+# def decodeGenome(genome):
+
+	# return network
+
+
 def modifyFitness(species):
 
 	global_fitness = 0
@@ -118,7 +174,7 @@ def modifyFitness(species):
 		group["group_limit"] = max(limit, 1)
 
 
-def alignGenes(genome_a, genome_b):
+def alignGenes(genome_a, genome_b, off = False):
 
 	group = []
 
@@ -126,12 +182,31 @@ def alignGenes(genome_a, genome_b):
 
 		for b in genome_b:
 
+			# if ((a.innovation == b.innovation) if off else
+			# 	(a.innovation == b.innovation) and
+			# 	(a.active and b.active)):
 			if ((a.innovation == b.innovation) and
-				(a.active and b.active)):
+				(off or (a.active and b.active))):
 
 				group.append((a, b))
 
 	return group
+
+
+def segmentGenes(genome_a, genome_b, region = "interior"):
+
+	unpaired = []
+	maximum_b = genome_b[-1].innovation
+
+	for a in genome_a:
+
+		if all(((b.innovation != a.innovation) and
+				((a.innovation < maximum_b) if (region == "interior") else
+				 (a.innovation > maximum_b))) for b in genome_b):
+
+			unpaired.append(a)
+
+	return unpaired
 
 
 def countUnpaired(genome_a, genome_b):
@@ -172,17 +247,18 @@ def countOffset(genome_a, genome_b):
 def rouletteWheel(group):
 
 	absolute_fitness = group["distributed_fitness"]*group["group_size"]
-	theta = random.uniform(0, absolute_fitness)
-	cumulative_fitness = 0
+	random.shuffle(group["chromosomes"])
+	theta = random.uniform(0, 1)
+	probability = 0
 
 	for chromosome in group["chromosomes"]:
 
-		cumulative_fitness += chromosome.modified_fitness
+		probability += chromosome.modified_fitness / absolute_fitness
 
-		if (cumulative_fitness >= theta):
+		if (probability >= theta):
 
 			return chromosome
 
-	maximum = max(dna.fitness for dna in gene["chromosomes"])
-	candidate = next((gene for gene in group["chromosomes"] if (gene.fitness == maximum)), None)
+	maximum = max(dna.fitness for dna in group["chromosomes"])
+	candidate = next((gene for gene in group["chromosomes"] if (gene.fitness == maximum)), random.choice(group["chromosomes"]))
 	return candidate
