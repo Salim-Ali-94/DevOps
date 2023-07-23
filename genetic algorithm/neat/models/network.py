@@ -11,26 +11,30 @@ class Network:
 
 	history = []
 
-	def __init__(self, architecture, recurrent = False, recurrent_rate = 0, active_rate = 1, connection_rate = 1, skip = True, skip_rate = 1, bias_rate = 0.5):
+	def __init__(self, architecture, recurrent = False, recurrent_rate = 0, active_rate = 1, connection_rate = 1, skip = True, skip_rate = 1, bias_rate = 0.5, generate = True):
 
 		self.architecture = architecture
-		self.recurrent_rate = recurrent_rate
-		self.skip_rate = skip_rate
-		self.active_rate = active_rate
-		self.connection_rate = connection_rate
-		self.bias_rate = bias_rate
-		self.recurrent = recurrent
-		self.skip = skip
+		self.output = [0]*self.architecture["output_neurons"]
+		self.id = str(uuid.uuid4()).replace("-", "")
 		self.fitness = 0
 		self.species = 0
 		self.network = []
 		self.genome = []
 		self.neurons = []
 		self.modified_fitness = 0
-		self.layers = self._formatSize()
-		self.output = [0]*self.architecture["output_neurons"]
-		self._neuralNetwork()
-		self.id = str(uuid.uuid4()).replace("-", "")
+		self.layers = 0
+
+		if generate:
+
+			self.recurrent_rate = recurrent_rate
+			self.skip_rate = skip_rate
+			self.active_rate = active_rate
+			self.connection_rate = connection_rate
+			self.bias_rate = bias_rate
+			self.recurrent = recurrent
+			self.skip = skip
+			self.layers = self._formatSize()
+			self._neuralNetwork()
 
 	def _formatSize(self):
 
@@ -217,6 +221,8 @@ class Network:
 						branch = Branch(weight = random.uniform(self.architecture["minimum_weight"], self.architecture["maximum_weight"]),
 										input_node = node.node if (self.recurrent and (reverse < self.recurrent_rate)) else neuron.node,
 										output_node = neuron.node if (self.recurrent and (reverse < self.recurrent_rate)) else node.node,
+										input_neuron = node if (self.recurrent and (reverse < self.recurrent_rate)) else neuron,
+										output_neuron = neuron if (self.recurrent and (reverse < self.recurrent_rate)) else node,
 										input_layer = level,
 										output_layer = layer,
 										active = True if (random.random() < self.active_rate) else False,
@@ -256,7 +262,7 @@ class Network:
 
 	def auditLUT(self, branch):
 
-		if (len(self.history) > 0):
+		if (len(Network.history) > 0):
 
 			if (branch.innovation == 0):
 
@@ -264,23 +270,33 @@ class Network:
 							(synapse.output_node == branch.output_node) and
 							(synapse.skip == branch.skip) and
 							(synapse.branch_type == branch.branch_type) and
-							(synapse.recurrent == branch.recurrent)) for synapse in self.history):
+							(synapse.recurrent == branch.recurrent)) for synapse in Network.history):
 
-					branch.innovation = len(self.history) + 1
-					self.history.append(branch)
+					branch.innovation = len(Network.history) + 1
+					Network.history.append(branch)
+
+				else:
+
+					innovation = next((synapse.innovation for synapse in Network.history if (((synapse.input_node == branch.input_node) and
+																							  (synapse.output_node == branch.output_node) and
+																							  (synapse.skip == branch.skip) and
+																							  (synapse.branch_type == branch.branch_type) and
+																							  (synapse.recurrent == branch.recurrent)))), 0)
+
+					branch.innovation = innovation
 
 			else:
 
-				if not any((synapse.innovation == branch.innovation) for synapse in self.history):
+				if not any((synapse.innovation == branch.innovation) for synapse in Network.history):
 
-					self.history.append(branch)
+					Network.history.append(branch)
 
 		else:
 
 			branch.innovation = 1
-			self.history.append(branch)
+			Network.history.append(branch)
 
-		self.history = sorted(self.history, key = lambda dna: dna.innovation)
+		Network.history = sorted(Network.history, key = lambda dna: dna.innovation)
 
 	def propagate(self, data):
 
@@ -392,5 +408,5 @@ class Network:
 					 weight = "bold")
 
 		plt.axis("off")
-		plt.show()
 		print(info + "\n")
+		plt.show()

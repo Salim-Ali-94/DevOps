@@ -1,5 +1,7 @@
 import random
 from models.network import Network
+from models.node import Node
+from models.branch import Branch
 
 
 def initializeGeneration(population_size, architecture, parameters):
@@ -69,7 +71,7 @@ def speciation(population, threshold = 0.3, c1 = 1, c2 = 1, c3 = 0.4):
 					weight = sum(abs(pair[0].weight - pair[1].weight) for pair in pairs) / (len(pairs) if (len(pairs) > 0) else 1)
 					disjoint = disjoint_a + disjoint_b
 					excess = excess_a + excess_b
-					factor = max(sum(1 for gene in chromosome_a.genome if gene.active), sum(1 for gene in chromosome_b.genome if gene.active))
+					factor = max(sum(1 for gene in chromosome_a.genome if gene.active), sum(1 for gene in chromosome_b.genome if gene.active), 1)
 					compatibility = disjoint*c1 / factor + excess*c2 / factor + weight*c3
 
 					if (compatibility < threshold):
@@ -94,7 +96,8 @@ def speciation(population, threshold = 0.3, c1 = 1, c2 = 1, c3 = 0.4):
 	return species
 
 
-def crossover(species):
+def crossover(species, topology):
+# def crossover(species):
 
 	generation = []
 
@@ -112,8 +115,8 @@ def crossover(species):
 			pairs = alignGenes(network_a.genome, network_b.genome, True)
 			detached_a = segmentGenes(network_a.genome, network_b.genome)
 			detached_b = segmentGenes(network_b.genome, network_a.genome)
-			offset_a = segmentGenes(network_a.genome, network_b.genome, "interior")
-			offset_b = segmentGenes(network_b.genome, network_a.genome, "interior")
+			offset_a = segmentGenes(network_a.genome, network_b.genome, "exterior")
+			offset_b = segmentGenes(network_b.genome, network_a.genome, "exterior")
 			detached = detached_a + detached_b
 			offset = offset_a + offset_b
 			offspring.extend(detached)
@@ -138,16 +141,94 @@ def crossover(species):
 
 						offspring.append(synapse)
 
-			population.append(offspring)
+			population.append(decodeGenome(offspring, topology))
+			# population.append(decodeGenome(offspring))
 
-		generation.append(population)
+		# generation.append(population)
+		generation.extend(population)
 
 	return generation
 
 
+def decodeGenome(genome, architecture):
 # def decodeGenome(genome):
 
-	# return network
+	network = Network(architecture, generate = False)
+	network.layers = max(gene.output_layer for gene in genome) + 1
+	# network = Network(generate = False)
+	network.genome = genome[:]
+	neurons = []
+	network.network = [tuple()]*network.layers
+
+	for gene in genome:
+
+		# if gene.input_neuron not in network.neurons:
+		if gene.input_neuron not in neurons:
+
+			# network.neurons.append(gene.input_neuron)
+			neurons.append(gene.input_neuron)
+
+		# if gene.output_neuron not in network.neurons:
+		if gene.output_neuron not in neurons:
+
+			# network.neurons.append(gene.output_neuron)
+			neurons.append(gene.output_neuron)
+
+	# neurons = network.neurons[:]
+	nodes = neurons[:]
+
+	# for node in network.neurons:
+
+	# for node in neurons:
+	for (index, node) in enumerate(neurons):
+
+		for branch in node.branches:
+		# for (ID, branch) in enumerate(node.branches):
+
+			if branch not in genome:
+
+				# # # neurons.remove(branch)
+				# # nodes.remove(branch)
+				# # nodes[index].branches.pop(ID)
+				# nodes[index].branches.remove(branch)
+
+				if branch in nodes[index].branches:
+
+					nodes[index].branches.remove(branch)
+
+	# network.neurons = neurons[:]
+	network.neurons = nodes[:]
+
+
+
+	# for node in network.neurons:
+
+	# 	for branch in node.branches:
+
+	# 		if branch not in genome:
+
+	# 			if branch in node.branches:
+
+	# 				node.branches.remove(branch)
+
+	# network.neurons = neurons[:]
+	# # network.neurons = nodes[:]
+
+	# print()
+	# print()
+	# print()
+	# print()
+
+	for node in nodes:
+
+		# print(f"node = {node.node} @{node.layer} / type = {node.node_type}")
+		network.network[node.layer] += (node, )
+
+	# print()
+	# print()
+	# print()
+	# print()
+	return network
 
 
 def modifyFitness(species):

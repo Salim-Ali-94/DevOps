@@ -30,6 +30,7 @@ if __name__ == "__main__":
 				   "skip": True }
 
 	size = 50
+	# size = 10
 	cluster = int(size / 10) if (size >= 20) else 2
 	threshold = random.randint(10, 20)
 	delta = threshold / 10**len(str(threshold))
@@ -40,4 +41,13 @@ if __name__ == "__main__":
 	if (len(species) < cluster): threshold -= delta
 	elif (len(species) > cluster): threshold += delta
 	else: delta = 0
-	x = utility.crossover(species)
+	x = utility.crossover(species, structure)
+	# x = utility.crossover(species)
+	# print(len(x))
+	# print(x)
+
+	# for (i, net) in enumerate(x):
+
+	# 	if  (i%10 == 0):
+
+	# 		net.render()
