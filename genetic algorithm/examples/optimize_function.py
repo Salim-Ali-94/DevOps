@@ -1,36 +1,39 @@
-import math
+import sys
+import os
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 import utility
 
 
 if __name__ == "__main__":
 
-	function = lambda X: math.exp(-(X[0]**2 + X[1]**2))
+	function = lambda x: x**2 - 3
+	chromosome_length = 1
 	population_size = 10
-	chromosome_length = 2
 	generations = 5
 	category = "number"
-	genotype = "encoded"
+	genotype = "base"
 	mutation_rate = 0.5 / 100
-	loop = True
+	loop = False
 	display = False
-	objective = "maximize"
+	objective = "minimize"
 	task = "search"
 
-	domain = { "minimum": -1e3,
-    		   "maximum": 1e3 }
+	domain = { "minimum": -1e12,
+    		   "maximum": 1e12 }
+
+	horizon = { "window": generations // 2,
+				"tolerance": 1e-12 }
 
 	natural_selection = { "function": utility.tournamentSelection,
 						  "arguments": { "size": population_size // 2,
 						  				 "objective": objective,
 						  				 "chromosome_length": chromosome_length } }
 
-	pairing = { "function": utility.symbolMatching,
-				"arguments": { "group_size": 2,
-				 			   "strategy": "random",
-				 			   "chaos": True } }
+	pairing = { "function": None,
+				"arguments": None }
 
-	combination = { "function": utility.linearAverage,
-					"arguments": { "chromosome_length": chromosome_length } }
+	combination = { "function": utility.heuristicAverage,
+					"arguments": { "objective": objective } }
 
 	mutation = { "function": utility.randomMutation,
 				 "arguments": { "mutation_number": 1,
@@ -50,6 +53,7 @@ if __name__ == "__main__":
 				   "objective": objective,
 				   "loop": loop,
 				   "domain": domain,
+				   "horizon": horizon,
 				   "generations": generations,
 				   "display": display }
 

@@ -36,8 +36,22 @@ jobs:
 
       #     node-version: 18.15.0
 
+
+
+
+      - name: Set up Rust for remote server
+        uses: actions-rs/toolchain@v1
+
+        with:
+
+          toolchain: stable
+          profile: minimal
+
+
+
+
       - name: Install dependencies required for GitHub checks
-        run: pip install pylint pyppeteer numpy
+        run: pip install pylint pyppeteer numpy matplotlib networkx
 
       - name: Install linter for Go files
         run: go install golang.org/x/lint/golint@latest
@@ -75,6 +89,16 @@ jobs:
       #     echo "  }" >> .eslintrc.js
       #     echo "};" >> .eslintrc.js
 
+
+
+
+      - name: Install Rust dependencies
+        # run: cargo "./rust projects/cryptography/aes-cipher" fetch
+        run: cd "./rust projects/cryptography/aes-cipher" && cargo fetch
+
+
+
+
       - name: Run code lint checks for genetic algorithm directory
         run: pylint "genetic algorithm/**/*.py"
 
@@ -84,14 +108,27 @@ jobs:
       - name: Run code linter for slither.io bot folder
         run: pylint "slither.io bot/**/*.py"
 
-      - name: Run lint checks for Golang files
+      - name: Run lint checks for Golang starter project
         run: golint "go projects/base-n converter/*.go"
+
+      - name: Run lint checks for numerical algorithms
+        run: golint "go projects/numerical methods/root finding/bisection/*.go"
 
       # - name: Run lint checks for all react.js files
       #   run: |
         
       #     cd "kubernetes/todo list/ui"
       #     eslint --ext .js,.jsx .
+
+
+
+
+      - name: Run Rust linter
+        # run: cargo clippy --all --all-features -- -D warnings
+        run: cd "./rust projects/cryptography/aes-cipher" && cargo clippy --all --all-features -- -D warnings
+
+
+
 
   testing:
 
@@ -115,7 +152,7 @@ jobs:
       - name: Carry out unit testing
         run: |
 
-          python "./genetic algorithm/test_utility.py"
+          python "./genetic algorithm/tests/test_utility.py"
           echo "ALL UNIT TESTS HAVE PASSED SUCCESSFULLY"
 
   building:
@@ -150,14 +187,17 @@ jobs:
       - name: Run code to ensure it builds with no errors that linting can't pick up
         run: |
 
-          python "./genetic algorithm/evolve_word.py"
+          python "./genetic algorithm/examples/evolve_word.py"
           echo "passed word evolution test case"
-          python "./genetic algorithm/optimize_function.py"
+          python "./genetic algorithm/examples/optimize_function.py"
           echo "passed function optimization test case"
-          python "./genetic algorithm/search_manifold.py"
+          python "./genetic algorithm/examples/search_manifold.py"
           echo "passed manifold search test case"
+          python "./genetic algorithm/neat/examples/net.py"
+          echo "passed network example case"
           python "./tic tac toe/utility.py"
           python "./slither.io bot/bot.py"
           go run "./go projects/base-n converter/main.go" "./go projects/base-n converter/utility.go" "./go projects/base-n converter/constants.go"
+          go run "./go projects/numerical methods/root finding/bisection/main.go" "./go projects/numerical methods/root finding/bisection/utility.go"
           # go build -o integration_test "./go projects/base-n converter"
           echo "SUCCESSFULLY ALL BUILT PROJECTS"
