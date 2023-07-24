@@ -145,7 +145,7 @@ class Network:
 			if ((layer < self.layers - 1) and
 				(random.random() < self.bias_rate)):
 
-				node = Node(node = nodes[-1].node + 1,
+				node = Node(node = nodes[-1].node + 1 if (layer > 0) else self.architecture["input_neurons"] + self.architecture["output_neurons"] + 1,
 							layer = layer,
 							activity = 1,
 							output = 1,
@@ -182,7 +182,7 @@ class Network:
 
 			if ((index == 0) and (layer == self.layers - 1)):
 
-				identity = self.network[0][-1].node + 1
+				identity = self.architecture["input_neurons"] + 1
 
 			elif ((index == 0) and (layer > 1)):
 

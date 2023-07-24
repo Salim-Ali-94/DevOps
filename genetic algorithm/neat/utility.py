@@ -97,7 +97,6 @@ def speciation(population, threshold = 0.3, c1 = 1, c2 = 1, c3 = 0.4):
 
 
 def crossover(species, topology):
-# def crossover(species):
 
 	generation = []
 
@@ -142,9 +141,7 @@ def crossover(species, topology):
 						offspring.append(synapse)
 
 			population.append(decodeGenome(offspring, topology))
-			# population.append(decodeGenome(offspring))
 
-		# generation.append(population)
 		generation.extend(population)
 
 	return generation
@@ -152,6 +149,21 @@ def crossover(species, topology):
 
 def decodeGenome(genome, architecture):
 # def decodeGenome(genome):
+
+	print(":"*100)
+	print("GENOME:")
+	print(":"*100)
+
+	for gene in genome:
+
+		print()
+		print()
+		print(f"N{gene.input_node} (@L{gene.input_layer}) / N{gene.output_node} (@L{gene.output_layer}) / id = {gene.innovation} / active = {gene.active} / w = {gene.weight} ({gene.branch_type})")
+		print()
+		print()
+
+	# print(":"*100)
+
 
 	network = Network(architecture, generate = False)
 	network.layers = max(gene.output_layer for gene in genome) + 1
@@ -176,6 +188,17 @@ def decodeGenome(genome, architecture):
 
 	# neurons = network.neurons[:]
 	nodes = neurons[:]
+	print(":"*100)
+	print("NODES BEFORE:")
+	print(":"*100)
+
+	for node in nodes:
+
+		print()
+		print()
+		print(f"N{node.node} (@L{node.layer}) / {node.node_type} & Ws = {len(node.branches)}")
+		print()
+		print()
 
 	# for node in network.neurons:
 
@@ -195,6 +218,29 @@ def decodeGenome(genome, architecture):
 				if branch in nodes[index].branches:
 
 					nodes[index].branches.remove(branch)
+
+	# for (index, node) in enumerate(nodes):
+
+	for gene in genome:
+	# for (ID, branch) in enumerate(node.branches):
+
+		# a = next((node for node in nodes if node.node == gene.input_node), [])
+		a = next((node for node in nodes if node == gene.input_neuron), [])
+		# b = next((node for node in nodes if node.neuron == gene.output_neuron), [])
+
+		# if branch not in genome:
+		if gene not in a.branches:
+
+			a.branches.append(gene)
+
+			# # # neurons.remove(branch)
+			# # nodes.remove(branch)
+			# # nodes[index].branches.pop(ID)
+			# nodes[index].branches.remove(branch)
+
+			# if branch in nodes[index].branches:
+
+			# 	nodes[index].branches.remove(branch)
 
 	# network.neurons = neurons[:]
 	network.neurons = nodes[:]
@@ -219,16 +265,95 @@ def decodeGenome(genome, architecture):
 	# print()
 	# print()
 
+	print(":"*100)
+	print("NODES AFTER:")
+	print(":"*100)
+
+	for node in nodes:
+
+		print()
+		print()
+		print(f"N{node.node} (@L{node.layer}) / {node.node_type} & Ws = {len(node.branches)}")
+		print()
+		print()
+
+	print(":"*100)
+
 	for node in nodes:
 
 		# print(f"node = {node.node} @{node.layer} / type = {node.node_type}")
 		network.network[node.layer] += (node, )
+		network.network[node.layer] = sorted(network.network[node.layer], key = lambda dna: dna.node)
 
 	# print()
 	# print()
 	# print()
 	# print()
 	return network
+# def decodeGenome(genome, architecture):
+# # def decodeGenome(genome):
+
+# 	print(":"*100)
+# 	print("GENOME:")
+# 	print(":"*100)
+
+# 	for gene in genome:
+
+# 		print()
+# 		print()
+# 		print(f"N{gene.input_node} (@L{gene.input_layer}) / N{gene.output_node} (@L{gene.output_layer}) / id = {gene.innovation} / active = {gene.active} / w = {gene.weight} ({gene.branch_type})")
+# 		print()
+# 		print()
+
+# 	# print(":"*100)
+
+
+# 	network = Network(architecture, generate = False)
+# 	network.layers = max(gene.output_layer for gene in genome) + 1
+# 	# network = Network(generate = False)
+# 	network.genome = genome[:]
+# 	neurons = []
+# 	network.network = [tuple()]*network.layers
+
+# 	for gene in genome:
+
+# 		if gene.input_neuron not in network.neurons:
+# 		# if gene.input_neuron not in neurons:
+
+# 			network.neurons.append(gene.input_neuron)
+# 			# neurons.append(gene.input_neuron)
+
+# 		if gene.output_neuron not in network.neurons:
+# 		# if gene.output_neuron not in neurons:
+
+# 			network.neurons.append(gene.output_neuron)
+# 			# neurons.append(gene.output_neuron)
+
+# 	print(":"*100)
+# 	print("NODES AFTER:")
+# 	print(":"*100)
+
+# 	for node in nodes:
+
+# 		print()
+# 		print()
+# 		print(f"N{node.node} (@L{node.layer}) / {node.node_type} & Ws = {len(node.branches)}")
+# 		print()
+# 		print()
+
+# 	print(":"*100)
+
+# 	for node in nodes:
+
+# 		# print(f"node = {node.node} @{node.layer} / type = {node.node_type}")
+# 		network.network[node.layer] += (node, )
+# 		network.network[node.layer] = sorted(network.network[node.layer], key = lambda dna: dna.node)
+
+# 	# print()
+# 	# print()
+# 	# print()
+# 	# print()
+# 	return network
 
 
 def modifyFitness(species):
@@ -263,9 +388,6 @@ def alignGenes(genome_a, genome_b, off = False):
 
 		for b in genome_b:
 
-			# if ((a.innovation == b.innovation) if off else
-			# 	(a.innovation == b.innovation) and
-			# 	(a.active and b.active)):
 			if ((a.innovation == b.innovation) and
 				(off or (a.active and b.active))):
 

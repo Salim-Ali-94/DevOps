@@ -46,8 +46,8 @@ if __name__ == "__main__":
 	# print(len(x))
 	# print(x)
 
-	# for (i, net) in enumerate(x):
+	for (i, net) in enumerate(x):
 
-	# 	if  (i%10 == 0):
+		if  (i%10 == 0):
 
-	# 		net.render()
+			net.render()
