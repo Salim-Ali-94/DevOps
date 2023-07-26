@@ -42,12 +42,9 @@ if __name__ == "__main__":
 	elif (len(species) > cluster): threshold += delta
 	else: delta = 0
 	x = utility.crossover(species, structure)
-	# x = utility.crossover(species)
-	# print(len(x))
-	# print(x)
 
-	for (i, net) in enumerate(x):
+	# for (i, net) in enumerate(x):
 
-		if  (i%5 == 0):
+	# 	if  (i%10 == 0):
 
-			net.render(True)
+	# 		net.render()
