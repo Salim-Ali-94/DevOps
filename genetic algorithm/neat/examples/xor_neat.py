@@ -48,6 +48,6 @@ if __name__ == "__main__":
 
 	for (i, net) in enumerate(x):
 
-		if  (i%10 == 0):
+		if  (i%5 == 0):
 
-			net.render()
+			net.render(True)

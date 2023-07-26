@@ -342,7 +342,7 @@ class Network:
 
 		return self.output
 
-	def render(self):
+	def render(self, display_inactive = False):
 
 		canvas = nx.Graph()
 		connections = []
@@ -370,15 +370,15 @@ class Network:
 
 					for link in neuron.branches:
 
-						if link.active:
+						if (link.active or display_inactive):
 
 							connections.append((link.input_node, link.output_node))
 
 							lines = { "arrowstyle": "-",
 									  "color": "#9cf168" if (link.branch_type == "bias") else "#ac05f7",
 									  "connectionstyle": f"arc3,rad={ -0.08 if (link.skip and (positions[link.input_node][1] < -height / 2)) else 0.08 if (link.skip and (positions[link.input_node][1] >= -height / 2)) else 0 }",
-									  "linestyle": "--" if link.skip else "-",
-									  "alpha": 0.4 if link.skip else 1,
+									  "linestyle": "--" if link.skip else ":" if not link.active else "-",
+									  "alpha": 0.4 if link.skip else 0.2 if not link.active else 1,
 									  "linewidth": 0.5 if ((2*abs(link.weight) / maximum) < 0.5) else 2*abs(link.weight) / maximum,
 									  "zorder": 1 }
 

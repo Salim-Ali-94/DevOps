@@ -148,212 +148,78 @@ def crossover(species, topology):
 
 
 def decodeGenome(genome, architecture):
-# def decodeGenome(genome):
-
-	print(":"*100)
-	print("GENOME:")
-	print(":"*100)
-
-	for gene in genome:
-
-		print()
-		print()
-		print(f"N{gene.input_node} (@L{gene.input_layer}) / N{gene.output_node} (@L{gene.output_layer}) / id = {gene.innovation} / active = {gene.active} / w = {gene.weight} ({gene.branch_type})")
-		print()
-		print()
-
-	# print(":"*100)
-
 
 	network = Network(architecture, generate = False)
-	network.layers = max(gene.output_layer for gene in genome) + 1
-	# network = Network(generate = False)
-	network.genome = genome[:]
-	neurons = []
+
+	for gene in genome:
+
+		if not any(dna.node == gene.input_node for dna in network.neurons):
+
+			input_neuron = Node(node = gene.input_node,
+							    layer = gene.input_layer,
+							    branches = [],
+							    function = gene.input_neuron.function,
+							    activity = 1 if (gene.input_neuron.node_type == "bias") else 0,
+							    output = 1 if (gene.input_neuron.node_type == "bias") else 0,
+							    node_type = gene.input_neuron.node_type)
+
+			network.neurons.append(input_neuron)
+
+		else:
+
+			input_neuron = next((dna for dna in network.neurons if (dna.node == gene.input_node)), None)
+
+			if (gene.input_layer < input_neuron.layer):
+
+				input_neuron.layer = gene.input_layer
+				input_neuron.function = random.choice((gene.input_neuron.function, input_neuron.function))
+
+		if not any(dna.node == gene.output_node for dna in network.neurons):
+
+			output_neuron = Node(node = gene.output_node,
+							     layer = gene.output_layer,
+							     branches = [],
+							     function = gene.output_neuron.function,
+							     activity = 1 if (gene.output_neuron.node_type == "bias") else 0,
+							     output = 1 if (gene.output_neuron.node_type == "bias") else 0,
+							     node_type = gene.output_neuron.node_type)
+
+			network.neurons.append(output_neuron)
+
+		else:
+
+			output_neuron = next((dna for dna in network.neurons if (dna.node == gene.output_node)), None)
+
+			if (gene.output_layer < output_neuron.layer):
+
+				output_neuron.layer = gene.output_layer
+				output_neuron.function = random.choice((gene.output_neuron.function, output_neuron.function))
+
+		synapse = Branch(weight = gene.weight,
+						 input_node = gene.input_node,
+						 output_node = gene.output_node,
+						 input_neuron = input_neuron,
+						 output_neuron = output_neuron,
+						 input_layer = input_neuron.layer,
+						 output_layer = output_neuron.layer,
+						 active = gene.active,
+						 branch_type = gene.branch_type,
+						 recurrent = gene.recurrent,
+						 skip = gene.skip,
+						 innovation = gene.innovation)
+
+		output_neuron.branches.append(synapse)
+		network.genome.append(synapse)
+
+	network.layers = max(dna.layer for dna in network.neurons) + 1
 	network.network = [tuple()]*network.layers
 
-	for gene in genome:
+	for node in network.neurons:
 
-		# if gene.input_neuron not in network.neurons:
-		if gene.input_neuron not in neurons:
-
-			# network.neurons.append(gene.input_neuron)
-			neurons.append(gene.input_neuron)
-
-		# if gene.output_neuron not in network.neurons:
-		if gene.output_neuron not in neurons:
-
-			# network.neurons.append(gene.output_neuron)
-			neurons.append(gene.output_neuron)
-
-	# neurons = network.neurons[:]
-	nodes = neurons[:]
-	print(":"*100)
-	print("NODES BEFORE:")
-	print(":"*100)
-
-	for node in nodes:
-
-		print()
-		print()
-		print(f"N{node.node} (@L{node.layer}) / {node.node_type} & Ws = {len(node.branches)}")
-		print()
-		print()
-
-	# for node in network.neurons:
-
-	# for node in neurons:
-	for (index, node) in enumerate(neurons):
-
-		for branch in node.branches:
-		# for (ID, branch) in enumerate(node.branches):
-
-			if branch not in genome:
-
-				# # # neurons.remove(branch)
-				# # nodes.remove(branch)
-				# # nodes[index].branches.pop(ID)
-				# nodes[index].branches.remove(branch)
-
-				if branch in nodes[index].branches:
-
-					nodes[index].branches.remove(branch)
-
-	# for (index, node) in enumerate(nodes):
-
-	for gene in genome:
-	# for (ID, branch) in enumerate(node.branches):
-
-		# a = next((node for node in nodes if node.node == gene.input_node), [])
-		a = next((node for node in nodes if node == gene.input_neuron), [])
-		# b = next((node for node in nodes if node.neuron == gene.output_neuron), [])
-
-		# if branch not in genome:
-		if gene not in a.branches:
-
-			a.branches.append(gene)
-
-			# # # neurons.remove(branch)
-			# # nodes.remove(branch)
-			# # nodes[index].branches.pop(ID)
-			# nodes[index].branches.remove(branch)
-
-			# if branch in nodes[index].branches:
-
-			# 	nodes[index].branches.remove(branch)
-
-	# network.neurons = neurons[:]
-	network.neurons = nodes[:]
-
-
-
-	# for node in network.neurons:
-
-	# 	for branch in node.branches:
-
-	# 		if branch not in genome:
-
-	# 			if branch in node.branches:
-
-	# 				node.branches.remove(branch)
-
-	# network.neurons = neurons[:]
-	# # network.neurons = nodes[:]
-
-	# print()
-	# print()
-	# print()
-	# print()
-
-	print(":"*100)
-	print("NODES AFTER:")
-	print(":"*100)
-
-	for node in nodes:
-
-		print()
-		print()
-		print(f"N{node.node} (@L{node.layer}) / {node.node_type} & Ws = {len(node.branches)}")
-		print()
-		print()
-
-	print(":"*100)
-
-	for node in nodes:
-
-		# print(f"node = {node.node} @{node.layer} / type = {node.node_type}")
 		network.network[node.layer] += (node, )
 		network.network[node.layer] = sorted(network.network[node.layer], key = lambda dna: dna.node)
 
-	# print()
-	# print()
-	# print()
-	# print()
 	return network
-# def decodeGenome(genome, architecture):
-# # def decodeGenome(genome):
-
-# 	print(":"*100)
-# 	print("GENOME:")
-# 	print(":"*100)
-
-# 	for gene in genome:
-
-# 		print()
-# 		print()
-# 		print(f"N{gene.input_node} (@L{gene.input_layer}) / N{gene.output_node} (@L{gene.output_layer}) / id = {gene.innovation} / active = {gene.active} / w = {gene.weight} ({gene.branch_type})")
-# 		print()
-# 		print()
-
-# 	# print(":"*100)
-
-
-# 	network = Network(architecture, generate = False)
-# 	network.layers = max(gene.output_layer for gene in genome) + 1
-# 	# network = Network(generate = False)
-# 	network.genome = genome[:]
-# 	neurons = []
-# 	network.network = [tuple()]*network.layers
-
-# 	for gene in genome:
-
-# 		if gene.input_neuron not in network.neurons:
-# 		# if gene.input_neuron not in neurons:
-
-# 			network.neurons.append(gene.input_neuron)
-# 			# neurons.append(gene.input_neuron)
-
-# 		if gene.output_neuron not in network.neurons:
-# 		# if gene.output_neuron not in neurons:
-
-# 			network.neurons.append(gene.output_neuron)
-# 			# neurons.append(gene.output_neuron)
-
-# 	print(":"*100)
-# 	print("NODES AFTER:")
-# 	print(":"*100)
-
-# 	for node in nodes:
-
-# 		print()
-# 		print()
-# 		print(f"N{node.node} (@L{node.layer}) / {node.node_type} & Ws = {len(node.branches)}")
-# 		print()
-# 		print()
-
-# 	print(":"*100)
-
-# 	for node in nodes:
-
-# 		# print(f"node = {node.node} @{node.layer} / type = {node.node_type}")
-# 		network.network[node.layer] += (node, )
-# 		network.network[node.layer] = sorted(network.network[node.layer], key = lambda dna: dna.node)
-
-# 	# print()
-# 	# print()
-# 	# print()
-# 	# print()
-# 	return network
 
 
 def modifyFitness(species):
