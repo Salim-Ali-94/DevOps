@@ -5,7 +5,7 @@
 # # 	def __init__(self, structure):
 
 # # 		pass
-# # 		
+# #
 
 
 # import random
