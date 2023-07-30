@@ -1,0 +1,5 @@
+/models
+Dockerfile
+.dockerignore
+.env
+docker-compose.yaml

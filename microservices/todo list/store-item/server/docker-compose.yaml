@@ -1,0 +1,49 @@
+version: "3.8"
+
+services:
+
+  mongo_db:
+
+    image: mongo
+
+    container_name: mongodb-container
+
+    ports:
+
+      - "27017:27017"
+
+    networks:
+
+      - mongo-net
+
+  go-server:
+
+    build: .
+
+    image: add-button-api:v0
+
+    ports:
+
+      - "8081:8081"
+
+    networks:
+
+      - mongo-net
+
+    depends_on:
+
+      - mongo_db
+
+    volumes:
+
+      - .:/app
+
+    env_file:
+
+      - ./.env
+
+networks:
+
+  mongo-net:
+
+    driver: bridge
