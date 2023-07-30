@@ -9,6 +9,7 @@ import ( "net/http"
 
 func main() {
 
+	initializeDotEnv()
 	storeItemClosure := initializeDB()
 	http.HandleFunc("/", entryPoint)
 	http.HandleFunc("/todo-app/store", storeItemClosure)
@@ -35,7 +36,7 @@ func initializeDB() func(http.ResponseWriter, *http.Request) {
 
 	}
 
-	database := client.Database("todo-app")
+	database := client.Database("todo-list-app")
 	collection := database.Collection("checklist")
 
 	closure := func(writer http.ResponseWriter, request *http.Request) {
@@ -59,6 +60,7 @@ func storeItem(writer http.ResponseWriter, request *http.Request, collection *mo
 	if (request.Method == "POST") {
 
 		var todo Todo
+		// var todo models.Todo
 		error := json.NewDecoder(request.Body).Decode(&todo)
 
 		if (error != nil) {
