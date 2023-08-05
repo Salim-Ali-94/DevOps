@@ -7,12 +7,23 @@ export default function ItemModal({ setVisible }) {
 
         <div className={styles.overlay}>
 
-            <div className={styles.modal}>
+            {/* <div className={styles.modal}> */}
 
-                <h1>INPUT TEXT</h1>
-                <button onClick={() => setVisible(false)}>Close</button>
+                <form className={styles.modal}>
 
-            </div>
+                    <label className={styles.headingText}>Add a new item to your checklist</label>
+
+                    <input className={styles.inputField}
+                           placeholder="New item"
+                           type="text"/>
+
+                    <button className={styles.submitButton}
+                            onClick={() => setVisible(false)}>Submit</button>
+
+                </form>
+
+
+            {/* </div> */}
 
         </div>
 
