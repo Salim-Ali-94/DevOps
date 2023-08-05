@@ -1,9 +1,13 @@
 import Head from "next/head";
 import styles from "@/styles/Home.module.css";
 import AddButton from "../components/AddButton";
+import Modal from "../components/Modal";
+import { useState } from "react";
 
 
 export default function Home() {
+
+  const [visible, setVisible] = useState(false);
 
   return (
 
@@ -21,7 +25,8 @@ export default function Home() {
       <main className={styles.content}>
 
         <h1 className={styles.text}>YOUR TODO LIST</h1>
-        <AddButton />
+        <AddButton addHandler={() => setVisible(true)} />
+        { visible && <Modal setVisible={setVisible} /> }
 
       </main>
 
