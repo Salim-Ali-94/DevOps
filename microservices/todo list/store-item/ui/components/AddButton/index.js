@@ -1,7 +1,7 @@
-import styles from "./styles.module.css"
+import styles from "./styles.module.css";
 
 
-export default function AddButton({addHandler}) {
+export default function AddButton({ addHandler }) {
 
     return (
 
