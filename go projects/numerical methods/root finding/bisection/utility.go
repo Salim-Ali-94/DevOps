@@ -6,7 +6,7 @@ func findInterval(function func(float64) float64, window [2]float64) []map[strin
 
 	var interval []map[string]float64
 	initial := window[0]
-	length := window[1] - initial
+	length := math.Abs(window[1] - initial)
 	step := 1.0
 	delta := float64(length) / step
 	x := initial
