@@ -1,4 +1,5 @@
 import styles from "./styles.module.css";
+import Image from "next/image";
 
 
 export default function ItemModal({ setVisible }) {
@@ -7,23 +8,31 @@ export default function ItemModal({ setVisible }) {
 
         <div className={styles.overlay}>
 
-            {/* <div className={styles.modal}> */}
+            <form className={styles.modal}>
 
-                <form className={styles.modal}>
+                <div className={styles.xButton}>
 
-                    <label className={styles.headingText}>Add a new item to your checklist</label>
+                    <div className={styles.circle}
+                         onClick={() => setVisible(false)}>
 
-                    <input className={styles.inputField}
-                           placeholder="New item"
-                           type="text"/>
+                        <Image src="/assets/icons/x.png"
+                            width={20}
+                            height={20} />
 
-                    <button className={styles.submitButton}
-                            onClick={() => setVisible(false)}>Submit</button>
+                    </div>
 
-                </form>
+                </div>
 
+                <label className={styles.headingText}>Add a new item to your checklist</label>
 
-            {/* </div> */}
+                <input className={styles.inputField}
+                        placeholder="New item"
+                        type="text"/>
+
+                <button className={styles.submitButton}
+                        onClick={() => setVisible(false)}>Submit</button>
+
+            </form>
 
         </div>
 

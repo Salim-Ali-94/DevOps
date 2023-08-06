@@ -24,7 +24,7 @@ export default function Home() {
 
       <main className={styles.content}>
 
-        <h1 className={styles.text}>YOUR TODO LIST</h1>
+        <h1 className={styles.text} style={{marginBottom: "10px"}}>YOUR TODO LIST</h1>
         <AddButton addHandler={() => setVisible(true)} />
         { visible && <Modal setVisible={setVisible} /> }
 
