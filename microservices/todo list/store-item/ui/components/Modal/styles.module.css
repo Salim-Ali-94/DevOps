@@ -22,6 +22,31 @@
     border-radius: 10px;
 }
 
+.xButton {
+
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    width: 100%;
+    margin-bottom: 30px;
+}
+
+.circle {
+
+    background-color: var(--space-grey);
+    border-radius: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 35px;
+    height: 35px;
+}
+
+.circle:hover {
+
+    cursor: pointer;
+}
+
 .headingText {
 
     font-weight: 700;
@@ -32,7 +57,7 @@
 .inputField {
 
     color: var(--space-grey);
-    margin-bottom: 30px;
+    margin-bottom: 10px;
     outline: none;
     border: none;
     border-radius: 5px;
