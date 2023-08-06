@@ -8,7 +8,8 @@ export default function ItemModal({ setVisible }) {
 
         <div className={styles.overlay}>
 
-            <form className={styles.modal}>
+            <form className={styles.modal}
+                  onSubmit={(event) => event.preventDefault()}>
 
                 <div className={styles.xButton}>
 
