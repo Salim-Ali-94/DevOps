@@ -6,7 +6,7 @@ func findInterval(function func(float64) float64, window [2]float64) []map[strin
 
 	var interval []map[string]float64
 	initial := window[0]
-	length := window[1] - initial
+	length := math.Abs(window[1] - initial)
 	step := 1.0
 	delta := float64(length) / step
 	x := initial
@@ -44,7 +44,7 @@ func findInterval(function func(float64) float64, window [2]float64) []map[strin
 
 }
 
-func bisection(function func(float64) float64, interval []map[string]float64, precision float64) ([]float64, int) {
+func bisection(function func(float64) float64, interval []map[string]float64, precision float64) ([]float64, float64, int) {
 
 	var roots []float64
 	var left float64
@@ -96,6 +96,6 @@ func bisection(function func(float64) float64, interval []map[string]float64, pr
 
 	}
 
-	return roots, iteration + 1
+	return roots, residual, iteration + 1
 
 }
