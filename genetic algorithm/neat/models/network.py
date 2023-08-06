@@ -133,6 +133,7 @@ class Network:
 							branches = [],
 							activity = 0,
 							output = 0,
+							dna = self.id,
 							function = None if (layer == 0) else self.architecture["output_function"] if (layer == self.layers - 1) else random.choice(("relu", "sigmoid", "tanh")))
 
 				if (layer > 0):
@@ -145,11 +146,13 @@ class Network:
 			if ((layer < self.layers - 1) and
 				(random.random() < self.bias_rate)):
 
-				node = Node(node = nodes[-1].node + 1 if (layer > 0) else self.architecture["input_neurons"] + self.architecture["output_neurons"] + 1,
+				# node = Node(node = -1*(nodes[-1].node + 1) if (layer > 0) else -1*(self.architecture["input_neurons"] + self.architecture["output_neurons"] + 1),
+				node = Node(node = 1*(nodes[-1].node + 1) if (layer > 0) else 1*(self.architecture["input_neurons"] + self.architecture["output_neurons"] + 1),
 							layer = layer,
 							activity = 1,
 							output = 1,
 							branches = [],
+							dna = self.id,
 							node_type = "bias")
 
 				nodes += (node, )
@@ -228,10 +231,12 @@ class Network:
 										active = True if (random.random() < self.active_rate) else False,
 										branch_type = "bias" if (neuron.node_type == "bias") else "synapse",
 										recurrent = True if (self.recurrent and (reverse < self.recurrent_rate)) else False,
+										dna = self.id,
 										skip = True if (self.skip and (abs(layer - level) > 1)) else False)
 
 						self.auditLUT(branch)
 						node.branches.append(branch)
+						neuron.paths.append(branch)
 						self.genome.append(branch)
 
 		self.genome = sorted(self.genome, key = lambda dna: dna.innovation)
@@ -296,11 +301,12 @@ class Network:
 			branch.innovation = 1
 			Network.history.append(branch)
 
-		Network.history = sorted(Network.history, key = lambda dna: dna.innovation)
+		# Network.history = sorted(Network.history, key = lambda dna: dna.innovation)
 
 	def propagate(self, data):
 
 		self.output = []
+		self.purgeNetwork()
 
 		for layer, nodes in enumerate(self.network[1:]):
 
@@ -313,6 +319,7 @@ class Network:
 						if branch.active:
 
 							neuron = next((vertex for index, vertex in enumerate(self.network[branch.input_layer]) if (vertex.node == branch.input_node)), 0)
+							# neuron, position = next(((vertex, index) for index, vertex in enumerate(self.network[branch.input_layer]) if (vertex.node == branch.input_node)), 0)
 
 							if (branch.input_layer == 0):
 
@@ -320,6 +327,8 @@ class Network:
 
 									neuron.activity = data[neuron.node - 1]
 									neuron.output = data[neuron.node - 1]
+									# neuron.activity = data[position]
+									# neuron.output = data[position]
 
 								else:
 
@@ -341,6 +350,38 @@ class Network:
 						self.output.append(node.output)
 
 		return self.output
+
+	def purgeNetwork(self):
+
+		for neuron in self.neurons:
+
+			if (neuron.node_type == "bias"):
+
+				node.activity = 1
+				node.output = 1
+
+			else:
+
+				node.activity = 0
+				node.output = 0
+
+		# # for (layer, neurons) in enumerate(self.network):
+		# for layer in self.network:
+
+		# 	# for neuron in neurons:
+		# 	for neuron in layer:
+
+		# 		# if (layer == 0):
+
+		# 		if (neuron.node_type == "bias"):
+
+		# 			node.activity = 1
+		# 			node.output = 1
+
+		# 		else:
+
+		# 			node.activity = 0
+		# 			node.output = 0
 
 	def render(self, display_inactive = False):
 
@@ -366,6 +407,8 @@ class Network:
 				styling[neuron.node] = { "color": "#9cf168" if (neuron.node_type == "bias") else "#ac05f7",
 										 "size": 500 if (neuron.node_type == "bias") else 800 }
 
+				# print(positions)
+
 				if (layer > 0):
 
 					for link in neuron.branches:
@@ -373,6 +416,7 @@ class Network:
 						if (link.active or display_inactive):
 
 							connections.append((link.input_node, link.output_node))
+							# print(connections)
 
 							lines = { "arrowstyle": "-",
 									  "color": "#9cf168" if (link.branch_type == "bias") else "#ac05f7",
@@ -384,6 +428,7 @@ class Network:
 
 							axis.annotate("",
 										  xy = positions[link.input_node],
+										  # xy = positions[link.input_node if ],
 										  xytext = positions[link.output_node],
 										  arrowprops = lines)
 

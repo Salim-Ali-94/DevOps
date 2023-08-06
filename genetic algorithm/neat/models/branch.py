@@ -2,7 +2,8 @@
 
 class Branch:
 
-	def __init__(self, weight, input_node, output_node, input_neuron, output_neuron, input_layer, output_layer, active = True, branch_type = "synapse", recurrent = False, skip = False, innovation = 0):
+	# def __init__(self, weight, input_node, output_node, input_neuron, output_neuron, input_layer, output_layer, active = True, branch_type = "synapse", recurrent = False, skip = False, innovation = 0):
+	def __init__(self, weight, input_node, output_node, input_neuron, output_neuron, input_layer, output_layer, active = True, branch_type = "synapse", recurrent = False, skip = False, dna = "x", innovation = 0):
 
 		self.weight = weight
 		self.input_node = input_node
@@ -15,4 +16,5 @@ class Branch:
 		self.active = active
 		self.recurrent = recurrent
 		self.skip = skip
+		self.dna = dna
 		self.innovation = innovation

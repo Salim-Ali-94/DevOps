@@ -14,14 +14,15 @@ if __name__ == "__main__":
 	structure = { "output_neurons": 1,
 				  "input_neurons": 2,
 				  "output_function": "step",
-				  "maximum_layers": 0,
-				  "minimum_layers": 0,
+				  "maximum_layers": 2,
+				  "minimum_layers": 2,
 				  "maximum_weight": 2,
 				  "minimum_weight": -2,
-				  "maximum_neurons": 0,
-				  "minimum_neurons": 0 }
+				  "maximum_neurons": 3,
+				  "minimum_neurons": 1 }
 
-	parameters = { "bias_rate": 0.5,
+	# parameters = { "bias_rate": 0.5,
+	parameters = { "bias_rate": 0,
 				   "connection_rate": 0.75,
 				   "active_rate": 0.75,
 				   "recurrent_rate": 0,
@@ -43,8 +44,8 @@ if __name__ == "__main__":
 	else: delta = 0
 	x = utility.crossover(species, structure)
 
-	# for (i, net) in enumerate(x):
+	for (i, net) in enumerate(x):
 
-	# 	if  (i%10 == 0):
+		if  (i%10 == 0):
 
-	# 		net.render()
+			net.render(True)
