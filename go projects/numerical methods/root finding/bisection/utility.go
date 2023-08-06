@@ -10,9 +10,8 @@ func findInterval(function func(float64) float64, window [2]float64) []map[strin
 	step := 1.0
 	delta := float64(length) / step
 	x := initial
-	check := 0.0
 
-	for delta > 1 {
+	for (delta > 1) {
 
 		step += 1
 		delta = float64(length) / float64(step)
@@ -22,21 +21,15 @@ func findInterval(function func(float64) float64, window [2]float64) []map[strin
 	for (x < window[1]) {
 
 		x += delta
-		check = function(initial)*function(x)
 
-		if (check < 0) {
-
-			if (initial == window[0]) {
-
-				initial = x - delta
-
-			}
+		if (function(initial)*function(x) < 0) {
 
 			interval = append(interval, map[string]float64{ "lower": initial,
 															"upper": x })
-			initial = x
 
 		}
+
+		initial = x
 
 	}
 
@@ -44,7 +37,7 @@ func findInterval(function func(float64) float64, window [2]float64) []map[strin
 
 }
 
-func bisection(function func(float64) float64, interval []map[string]float64, precision float64) ([]float64, float64, int) {
+func bisection(function func(float64) float64, window [2]float64, precision float64) ([]float64, float64, int) {
 
 	var roots []float64
 	var left float64
@@ -53,13 +46,14 @@ func bisection(function func(float64) float64, interval []map[string]float64, pr
 	var residual float64
 	var previous float64
 	iteration := 0
+	interval := findInterval(function, window)
 
 	for _, bracket := range interval {
 
 		left = bracket["lower"]
 		right = bracket["upper"]
 		center = (left + right) / 2
-		residual = 2.0*precision
+		residual = math.Abs(2.0*precision)
 		previous = center
 
 		for (residual > precision) {
@@ -96,6 +90,6 @@ func bisection(function func(float64) float64, interval []map[string]float64, pr
 
 	}
 
-	return roots, residual, iteration + 1
+	return roots, residual, iteration
 
 }
