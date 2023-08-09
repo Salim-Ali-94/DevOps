@@ -33,7 +33,7 @@ pub fn scrambleDocument(file: String, aes_standard: u16) -> (String, String, Vec
 			*block = sTransform(block.to_vec());
 			*block = shiftRows(block.to_vec());
 
-			if round != rounds - 1 {
+			if round < rounds {
 
 				*block = mixColumns(block.to_vec());
 
