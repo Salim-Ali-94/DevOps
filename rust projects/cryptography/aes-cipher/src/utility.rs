@@ -129,16 +129,16 @@ fn aesKeyGenerator(aes_standard: u16) -> (String, u8) {
 
 	while key.len() < key_length as usize {
 
-        if rng.gen_range(0.0..1.0) < 0.5 {
+		if rng.gen_range(0.0..1.0) < 0.5 {
 
-            key.push('1');
+			key.push('1');
 
-        } else {
+		} else {
 
-            key.push('0');
+			key.push('0');
 
-        }
-        
+		}
+ 
 	}
 
 	key = shuffleBits(key);
@@ -715,21 +715,16 @@ fn decodeMessage(message: String, flag: bool) -> String {
 
 
 
-    for index in (0..message.len()).step_by(2) {
+	for index in (0..message.len()).step_by(2) {
 
-        let pair = format!("{}{}", message.chars().nth(index).unwrap(), message.chars().nth(index + 1).unwrap());
-        ascii.push_str(&char::from(u8::from_str_radix(&pair, 16).unwrap()).to_string());
+		let pair = format!("{}{}", message.chars().nth(index).unwrap(), message.chars().nth(index + 1).unwrap());
+		ascii.push_str(&char::from(u8::from_str_radix(&pair, 16).unwrap()).to_string());
 
-    }
+	}
 
-    if flag {
+	if flag {
 
-
-		while ascii.contains('~') {
-
-			ascii = ascii.replace('~', "");
-
-		}
+		ascii.retain(|character| character != '~');
 
 	}
 
