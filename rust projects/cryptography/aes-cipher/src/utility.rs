@@ -502,7 +502,7 @@ fn galoiProduct(x: String, y: String) -> String {
 
 	for (offset, correction) in [8, 9, 10].iter().zip([[4, 3, 1, 0], [5, 4, 2, 1], [6, 5, 3, 2]].iter()) {
 
-		if c.contains(&offset) {
+		if c.contains(offset) {
 
 			c.retain(|&value| value != *offset);
 
