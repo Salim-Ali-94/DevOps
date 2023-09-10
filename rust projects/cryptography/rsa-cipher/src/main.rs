@@ -1,10 +1,10 @@
 mod utility;
 
+
 fn main() {
 
-    let msg = "Lift off";
-    // let (e, n) = utility::rsaKeyGenerator();
-    let (e, n) = utility::rsaKeyGenerator(100);
-    println!("(e, n) = ({}; {})", e, n);
+    // let msg = "Lift off";
+    let (phi, n) = utility::rsaPublicKeyGenerator(100);
+    println!("(phi, n) = ({}; {})", phi, n);
 
 }

@@ -1,6 +1,7 @@
 #![allow(non_snake_case)]
 #![allow(clippy::needless_return)]
 #![allow(clippy::type_complexity)]
+#![allow(unused_parens)]
 use rand::Rng;
 pub mod constants;
 
@@ -20,7 +21,7 @@ pub fn scrambleDocument(file: String, aes_standard: u16) -> (String, String) {
 
 		for round in 1..=rounds {
 
-			if index == 0 {
+			if (index == 0) {
 
 				lock = scheduleKey(lock, round);
 				memory.push(lock.clone());
@@ -34,7 +35,7 @@ pub fn scrambleDocument(file: String, aes_standard: u16) -> (String, String) {
 			*block = sTransform(block.to_vec());
 			*block = shiftRows(block.to_vec());
 
-			if round < rounds {
+			if (round < rounds) {
 
 				*block = mixColumns(block.to_vec());
 
@@ -59,11 +60,11 @@ pub fn extractDocument(encrypted_message: String, key: String) -> String {
 	let mut document_matrix = spliceDocument(cipherText.clone(), key.len().try_into().unwrap());
 	let rounds;
 
-	if key.len() <= 128 {
+	if (key.len() <= 128) {
 
 		rounds = 10;
 
-	} else if key.len() >= 128 && key.len() <= 192 {
+	} else if (key.len() >= 128 && key.len() <= 192) {
 
 		rounds = 12;
 
@@ -85,7 +86,7 @@ pub fn extractDocument(encrypted_message: String, key: String) -> String {
 			*block = inverseTransform(block.to_vec());
 			*block = unshiftRows(block.to_vec());
 
-			if round < rounds {
+			if (round < rounds) {
 
 				*block = unmixColumns(block.to_vec());
 
@@ -107,15 +108,15 @@ fn aesKeyGenerator(aes_standard: u16) -> (String, u8) {
 
 	let mut rng = rand::thread_rng();
 	let mut key = if rng.gen_range(0.0..1.0) < 0.5 { "1".to_owned() } else { "0".to_string() };
-	let rounds;
 	let key_length;
+	let rounds;
 
-	if aes_standard <= 128 {
+	if (aes_standard <= 128) {
 
 		key_length = 128;
 		rounds = 10;
 
-	} else if aes_standard > 128 && aes_standard <= 192 {
+	} else if (aes_standard > 128 && aes_standard <= 192) {
 
 		key_length = 192;
 		rounds = 12;
@@ -127,9 +128,9 @@ fn aesKeyGenerator(aes_standard: u16) -> (String, u8) {
 
 	}
 
-	while key.len() < key_length as usize {
+	while (key.len() < key_length as usize) {
 
-		if rng.gen_range(0.0..1.0) < 0.5 {
+		if (rng.gen_range(0.0..1.0) < 0.5) {
 
 			key.push('1');
 
@@ -161,7 +162,7 @@ fn spliceDocument(file: String, chunk: u16) -> Vec<Vec<Vec<String>>> {
 
 			column.push(block[character..character + 8 / 4].to_string());
 
-			if column.len() == 4 {
+			if (column.len() == 4) {
 
 				buffer.push(column.clone());
 				column.clear();
@@ -195,7 +196,7 @@ fn shuffleBits(bits: String) -> String {
 		address_b = rng.gen_range(0..bits.len());
 		bit_b = word.chars().nth(address_b).unwrap();
 
-		while bit_b == bit_a || address_b == address_a {
+		while (bit_b == bit_a || address_b == address_a) {
 
 			address_b = rng.gen_range(0..bits.len());
 			bit_b = word.chars().nth(address_b).unwrap();
@@ -250,7 +251,7 @@ fn encodeMessage(message: String, chunk: u16) -> String {
 
 	}
 
-	while hex.len() % (chunk as usize / 4) != 0 {
+	while (hex.len() % (chunk as usize / 4) != 0) {
 
 		hex.push_str(&format!("{:02x}", b'~'));
 
@@ -398,7 +399,7 @@ fn shiftRows(mut block: Vec<Vec<String>>) -> Vec<Vec<String>> {
 
 		for (index, row) in block.iter_mut().enumerate() {
 
-			if index + position < rows {
+			if (index + position < rows) {
 
 				row[position] = column[index + position].clone();
 
@@ -431,7 +432,7 @@ fn mixColumns(block: Vec<Vec<String>>) -> Vec<Vec<String>> {
 			for (index, column) in row.iter().enumerate() {
 				
 				let product =
-				if vector[index] == "01" {
+				if (vector[index] == "01") {
 
 					column.to_string()
 
