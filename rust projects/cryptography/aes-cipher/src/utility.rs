@@ -158,7 +158,7 @@ fn spliceDocument(file: String, chunk: u16) -> Vec<Vec<Vec<String>>> {
 		block = file[word..word + (chunk as usize) / 4].to_string();
 
 		for character in (0..(chunk as usize) / 4).step_by(8 / 4) {
-		
+
 			column.push(block[character..character + 8 / 4].to_string());
 
 			if column.len() == 4 {
@@ -711,9 +711,6 @@ fn unshiftRows(mut block: Vec<Vec<String>>) -> Vec<Vec<String>> {
 fn decodeMessage(message: String, flag: bool) -> String {
 
 	let mut ascii = String::new();
-
-
-
 
 	for index in (0..message.len()).step_by(2) {
 
