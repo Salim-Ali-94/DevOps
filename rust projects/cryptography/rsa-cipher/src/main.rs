@@ -4,7 +4,7 @@ mod utility;
 fn main() {
 
     // let msg = "Lift off";
-    let (phi, n) = utility::rsaPublicKeyGenerator(100);
-    println!("(phi, n) = ({}; {})", phi, n);
+    let (p, q, n, phi, e) = utility::rsaPublicKeyGenerator(100);
+    println!("(p, q, n, phi, e) = ({}; {}; {}; {}; {})", p, q, n, phi, e);
 
 }
