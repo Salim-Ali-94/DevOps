@@ -62,7 +62,7 @@ pub fn rsaPublicKeyGenerator(maximum: u128) -> (u128, u128, u128, u128, u128) {
 
 			let index = primes.iter().position(|&value| value == last).unwrap();
 
-			for prime in primes[index..].iter() {
+			for prime in primes[index + 1..].iter() {
 
 				let gcd = euclideanAlgorithm(*prime, phi);
 
