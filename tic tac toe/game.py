@@ -3,6 +3,8 @@ import utility
 
 def gameManager():
 
+	board = utility.initializeGame()
+
 	while True:
 
 		human = utility.promptUser(board)
@@ -19,5 +21,4 @@ def gameManager():
 
 if __name__ == "__main__":
 
-	board = utility.initializeGame()
 	gameManager()

@@ -20,7 +20,7 @@ References:
 ------------------------------------------------------------------------------------------------------------------------------------------------------
 
 
-NUMERICAL METHODS (GO)
+BISECTION METHOD NUMERICAL ROOT FINDING (GO)
 ------------------------------------------------------------------------------------------------------------------------------------------------------
 
 References:
@@ -45,3 +45,25 @@ References:
 [4] Satish C J / AES III - Advanced Encryption Standard - Introduction , Key Expansion in AES Cyber Security CSE4003 [YouTube]; https://www.youtube.com/watch?v=w4aWIVhcUyo&t=410s
 
 [5] Satish C J / AES IV - Advanced Encryption Standard - Encryption and Decryption - Cyber Security CSE4003 [YouTube]; https://www.youtube.com/watch?v=5PHMbGr8eOA&t=1566s
+
+
+------------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+AES DECRYPTION (RUST)
+------------------------------------------------------------------------------------------------------------------------------------------------------
+
+References:
+
+[1] Chirag Bhalodia / How to solve AES Decryption example | AES Decryption Example | Solved Example [YouTube]; https://www.youtube.com/watch?v=CTqvPze8uv8&t=3s
+
+
+------------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+SECANT METHOD NUMERICAL ROOT FINDING (RUST)
+------------------------------------------------------------------------------------------------------------------------------------------------------
+
+References:
+
+[1] numericalmethodsguy / Chapter 03.05: Lesson: Secant Method Example [YouTube]; https://www.youtube.com/watch?v=qC9xnsfOd30
